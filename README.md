@@ -1,8 +1,8 @@
 
-# Gestion de álbumes fotograficos
+# Gestion de videoteca y álbumes fotograficos
 
-Se trata de una aplicación implementada en Node JS + Express, que utiliza MySQL como base de datos.
+Aplicación implementada en Node JS + Express, que utiliza MySQL como base de datos.
 
-Esta aplicación permite crear álbumes fotográficos a los que poder adjuntar fotografías. Los álbumes pueden ser públicos o privados.
+Permite gestionar tus álbumes fotográficos a los que poder adjuntar fotografías y publicarlos para que estén visibles de forma pública.
 
 La aplicación permite autenticarse, de modo que los usuarios puedan crear sus álbumes. Desde la parte administrativa, los administradores podrán habilitar los álbumes no sólo suyos, sino el de los otros usuarios.
