@@ -1,0 +1,6 @@
+{
+"mysql_server":"localhost", 
+"mysql_db_name":"foto", 
+"mysql_user":"foto",
+"mysql_pass":"foto"
+}

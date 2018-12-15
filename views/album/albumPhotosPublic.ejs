@@ -1,0 +1,111 @@
+<link rel="stylesheet" href="/stylesheets/lightbox.css">
+
+<div class="row">
+    <!--Edit Main Content Area here-->
+    <div class="span12" id="divMain">
+
+        <h1>
+            <%=album.nombre%>
+        </h1>
+        <hr>
+        <p>
+            <%=album.descripcion%>
+        </p>
+    </div>
+</div>
+<br>
+
+
+<section>
+    <% 
+           var indice = 1; 
+           var contador = 0;
+           var NUM_TOTAL_FILA = 4 
+           var NUM_FILAS = Math.round(indice/NUM_TOTAL_FILA) + 1; 
+        %>
+
+
+        <!-- prueba -->
+        <table border="0" cellpadding="6">
+            <% for(var i=0;fotos!=undefined && i<fotos.length;i++) { %>
+                <% if(contador==0) { // Se establece 4 fotos por fila %>
+                    <tr>
+                        <% }   %>
+
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td><img src="<%=fotos[i].RUTAMINIATURA%>" class="img-rounded" alt="
+                                                <%=fotos[i].NOMBRE%>" title="<%=fotos[i].NOMBRE%>" onclick="lightBoxFacade.openModalNuevo(<%=fotos[i].ID%>);lightBoxFacade.currentSlide(<%=indice%>)" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h3>
+                                                <%=fotos[i].NOMBRE %>
+                                            </h3>
+                                            <p>
+                                                <%= __('visto') %>
+                                                <span id="visto<%=fotos[i].ID%>">
+                                                    <%=fotos[i].NUMEROVISUALIZACIONES %> 
+                                                </span> 
+                                                <%= __('veces') %>
+                                            </p>
+                                            <p>
+                                                ID #
+                                                <%=fotos[i].ID %>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+
+
+                            <% indice++; contador++; %>
+                                <% if(contador==NUM_TOTAL_FILA) { 
+                         contador=0;
+                     %>
+
+                    </tr>
+                    <% } %>
+                        <% } // for %>
+
+        </table>
+        
+        <br>
+
+</section>
+
+
+<!-- Se crea la modal para poder visualizar las fotografías en el LightBox -->
+<% if(fotos!=undefined && fotos.length>0) { %>
+    <div id="myModal" class="modal-lightbox">
+        <span class="close cursor" onclick="lightBoxFacade.closeModal()">&times;</span>
+        <div class="modal-content-lightbox">
+
+            <% var indice = 1; %>
+                <% for(var i=0;fotos!=undefined && i<fotos.length;i++) { %>
+                    <div class="mySlides">
+                        <div class="numbertext">
+                            <%=indice%> /
+                                <%=fotos.length%>
+                        </div>
+                        <img src="<%=fotos[i].RUTA%>" style="width:100%">
+                    </div>
+                    <%
+          indice++;
+        }// for
+      %>
+
+                        <a class="prev" onclick="lightBoxFacade.plusSlides(-1)">&#10094;</a>
+                        <a class="next" onclick="lightBoxFacade.plusSlides(1)">&#10095;</a>
+
+                        <div class="caption-container">
+                            <p id="caption"></p>
+                        </div>
+        </div>
+    </div>
+    <% }// if %>
+
+
+<script type="text/javascript" src="/javascripts/facade/lightbox/LightBoxFacade.js"></script>
+<script type="text/javascript" src="/javascripts/facade/foto/FotoFacade.js"></script>

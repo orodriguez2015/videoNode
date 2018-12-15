@@ -1,0 +1,258 @@
+<!DOCTYPE HTML>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title><%= __('albumes_fotograficos') %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Óscar Rodríguez Brea">
+
+    <link href="/stylesheets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/stylesheets/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Icons -->
+    <link href="/stylesheets/icons/general_foundicons.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/icons/social_foundicons.css" media="screen" rel="stylesheet" type="text/css" />
+    <!--[if lt IE 8]>
+        <link href="scripts/icons/general/stylesheets/general_foundicons_ie7.css" media="screen" rel="stylesheet" type="text/css" />
+        <link href="scripts/icons/social/stylesheets/social_foundicons_ie7.css" media="screen" rel="stylesheet" type="text/css" />
+    <![endif]-->
+    <link rel="stylesheet" href="/stylesheets/fonts/font-awesome.min.css">
+    <!--[if IE 7]>
+        <link rel="stylesheet" href="scripts/fontawesome/css/font-awesome-ie7.min.css">
+    <![endif]-->
+
+      
+  
+
+    <link href="http://fonts.googleapis.com/css?family=Syncopate" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Abel" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Pontano+Sans" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet" type="text/css">
+    <link href="/stylesheets/custom.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/stylesheets/error.css">
+
+    <link href="/stylesheets/videojs/video-js.css" media="screen" rel="stylesheet" type="text/css" />
+    
+    <script type="text/javascript" src="/javascripts/vendor/jquery/1.9.1/jquery.min.js"></script>
+    <script src="/javascripts/vendor/tether/tether.min.js"></script>
+    <script src="/javascripts/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/javascripts/default.js" type="text/javascript"></script>
+
+
+    <script type="text/javascript">
+        // Variable global con la codificación del idioma por defecto
+        var IDIOMA_USUARIO  = "<%=session.lang %>";
+    </script>
+
+</head>
+
+<body id="pageBody">
+
+    <div id="divBoxed" class="container">
+
+        <div class="transparent-bg" style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;z-index: -1;zoom: 1;"></div>
+
+        <div class="divPanel notop nobottom">
+            <div class="row-fluid">
+                <div class="span12">
+
+                    <div id="divLogo" class="pull-left">
+                        <a href="/" id="divSiteTitle">ORB Soft</a><br />
+                        <a href="/" id="divTagLine">
+                            <%= __('albumes_fotograficos') %>
+                        </a>
+                    </div>
+
+                    <div id="divMenuRight" class="pull-right">
+                        <div class="navbar">
+                            <button type="button" class="btn btn-navbar-highlight btn-large btn-primary" data-toggle="collapse" data-target=".nav-collapse">
+                         <span class="icon-chevron-down icon-white"></span>
+                        </button>
+                            <div class="nav-collapse collapse">
+                                <ul class="nav nav-pills ddmenu">
+                                    <li><a href="/"><%= __ ('inicio')%></a></li>
+                                
+                                    <%
+                                    if(session.usuario!=undefined) {
+                                    %>
+
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle"><%= __ ('videos')%> <b class="caret"></b></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/videoteca/nueva"><%= __ ('nuevo')%></a></li>
+                                            <li><a href="/videoteca"><%= __ ('tus_videotecas')%></a></li>
+                                        </ul>
+                                    </li>
+ 
+
+
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle"><%= __ ('album')%><b class="caret"></b></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="/album/create"><%= __ ('nuevo')%></a></li>
+                                                <li><a href="/album/admin"><%= __ ('tus_albumes')%></a></li>
+
+                                            </ul>
+                                        </li>
+
+
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle"><%= __ ('usuarios')%> <b class="caret"></b></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="/user/new"><%= __ ('nuevo')%></a></li>
+                                                <li><a href="/users"><%= __ ('usuarios')%></a></li>
+
+                                            </ul>
+                                        </li>
+                                        <%
+                                    }
+                                    %>
+
+
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle"><%= __ ('idioma')%> <b class="caret"></b></a>
+                                        <ul class="dropdown-menu">
+
+                                            <li><a href="#" onclick="urlFacade.recargarPantallaIdioma('es');"><%= __ ('espanol')%></a></li>
+                                            <li><a href="#" onclick="urlFacade.recargarPantallaIdioma('en');"><%= __ ('ingles')%></a></li>
+
+                                        </ul>
+                                    </li>
+
+
+
+                                            <%
+                                    if(session.usuario!=undefined) {
+                                    %>
+                                                <li class="dropdown">
+                                                    <a href="#" class="dropdown-toggle">
+                                                        <%= session.usuario.NOMBRE %>
+                                                            <%= session.usuario.APELLIDO1 %>
+                                                                <%= session.usuario.APELLIDO2 %>
+                                                                    <b class="caret"></b></a>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href="/profile"><%= __ ('perfil')%></a></li>
+                                                        <li><a href="/logout"><%= __ ('cerrar_sesion')%></a></li>
+
+                                                    </ul>
+                                                </li>
+                                                <% } else { %>
+                                                    <li><a href="#" onclick="loginFacade.show();">Login</a></li>
+                                                    <% } %>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <div id="contentInnerSeparator"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contentArea">
+
+            <div class="divPanel notop page-content">
+
+
+                <!-- INICIO CONTENIDO DE LA PAGINA -->
+
+                <%- body %>
+                    <!-- FIN CONTENIDO DE LA PAGINA -->
+
+                    <div id="footerInnerSeparator"></div>
+            </div>
+        </div>
+
+
+        <!-- INICIO: MODAL BOOTSTRAP PARA AUTENTICACIÓN -->
+        <div id="login" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+            </div>
+        </div>
+        <!-- FIN: MODAL BOOTSTRAP PARA AUTENTICACIÓN -->
+
+
+
+        <!-- INICIO: MODAL BOOTSTRAP PARA MOSTRAR BARRA DE PROGRESO/CARGANDO -->
+        <div id="processingModal" class="modal hide" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
+            <div id="idTxtModalHeader" class="modal-header">
+                <h1></h1>
+            </div>
+            <div class="modal-body">
+                <div class="progress progress-striped active">
+                    <div class="bar" style="width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+        <!-- FIN: MODAL BOOTSTRAP PARA MOSTRAR BARRA DE PROGRESO/CARGANDO -->
+
+
+
+        <div id="footerOuterSeparator"></div>
+
+        <div id="divFooter" class="footerArea">
+
+            <div class="divPanel">
+
+
+
+                <div class="row-fluid">
+                    <div class="span12">
+                        <p class="copyright">
+                            Copyright © 2017 ORB Soft. Todos los derechos reservados.
+                        </p>
+
+                        <p class="social_bookmarks">
+                            <a href="http://github.com/orodriguez2015" target="_blank"><i class="social foundicon-github"></i>GitHub</a>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="/javascripts/vendor/notify/notify.min.js"></script>
+    <script type="text/javascript" src="/javascripts/notify/MessagesNotificationArea.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/user/LoginFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/url/UrlFacade.js"></script>
+
+    <script type="text/javascript">
+        var USER_ROOT = false;
+        var NUM_MAX_FILES_UPLOAD = 0;
+        var ID_USUARIO;
+        
+        <% if(session.usuario!=undefined) { %>
+
+            ID_USUARIO = <%=session.usuario.id%>
+        <% } %>
+
+        <% if(session.usuario!=undefined && session.usuario.ROOT==1) { %>
+            USER_ROOT = true;
+        <% } %>
+
+        <% if(session.usuario!=undefined && session.usuario.config!=undefined) { %>
+
+            NUM_MAX_FILES_UPLOAD = <%= session.usuario.config.num_max_files_upload %>
+        <% } %>
+    </script>
+
+</body>
+
+</html>

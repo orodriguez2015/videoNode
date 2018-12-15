@@ -1,0 +1,19 @@
+{
+    "FILE_SEPARATOR": "/",
+    "PARENT_DIR": "..",
+    "CONFIG_BBDD": "/config/config_bbdd.json",
+    "CONFIG_SCRIPTS_DIR": "/config/scripts_bbdd",
+    "TABLE_USERS": "Users",
+    "TABLE_ALBUMS": "albums",
+    "TABLE_FOTO": "foto",
+    "TABLE_PERMISOS": "permisos",
+    "TABLE_PERMISOS_USUARIOS": "permisos_usuario",
+    "TABLE_CONFIGURACION": "configuracion",
+    "DIRECTORIO_PUBLIC": "public",
+    "DIRECTORIO_STORE": "store",
+    "DIRECTORIO_FOTO": "photo",
+    "DIRECTORIO_VIDEO": "videos",
+    "PUNTO": ".",
+    "THUMB": "_thumb",
+    "IDIOMA_DEFECTO": "es"
+}

@@ -1,0 +1,103 @@
+<% include ../breadcrumbs/userCreate %>
+    <div class="row-fluid">
+        <!--Edit Main Content Area here-->
+        <div class="span12" id="divMain">
+            <h1><%= __('nuevo_usuario')%></h1>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12" id="divMain" style="margin-left:0px;">
+            <p>
+                <form id="formAltaUsuario" name="formAltaUsuario" role="form" method="POST" action="" novalidate>
+
+                    <div class="form-group">
+                        <label for="nombre"><b><%= __('nombre_obligatorio')%></b></label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" value="" placeholder="Nombre">
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="apellido1"><b><%= __('primer_apellido_obligatorio')%></b></label>
+                        <input type="text" class="form-control" id="apellido1" name="apellido1" value="" placeholder="Primer apellido">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="apellido2"><b><%= __('segundo_apellido_obligatorio')%></b></label>
+                        <input type="text" class="form-control" id="apellido2" name="apellido2" value="" placeholder="Segundo apellido">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email"><b><%= __('email_obligatorio')%></b></label>
+                        <input type="text" class="form-control" id="email" name="email" value="" placeholder="Email/Correo electrónico">
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="login"><b><%= __('login_obligatorio')%></b></label>
+                        <input type="text" class="form-control" id="usuario" name="usuario" required placeholder="Login">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password"><b><%= __('password')%></b></label>
+                        <input type="password" class="form-control" id="contrasena" name="contrasena" required placeholder="Contraseña">
+                    </div>
+
+                    <button type="submit" class="btn btn-success"><%= __('grabar')%></button>
+                    <a href="/users">
+                        <button type="button" class="btn btn-danger"><%= __('cancelar')%></button>
+                    </a>
+                </form>
+            </p>
+        </div>
+    </div>
+
+
+
+    <script type="text/javascript" src="/javascripts/facade/user/UserFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/vendor/jquery/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/javascripts/vendor/jquery/additional-methods.js"></script>
+    <script type="text/javascript" src="/javascripts/vendor/jquery/messages_es.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/validation/FormValidationFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/validation/UserFormValidationFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/validation/ValidatorUser.js"></script>
+
+    <script type="text/javascript">
+        userFormValidationFacade.init({
+            idForm: "formAltaUsuario",
+            rules: {
+                nombre: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 100
+                },
+
+                apellido1: {
+                    required: true,
+                    minlength: 2
+                },
+
+                apellido2: {
+                    required: true,
+                    minlength: 2
+                },
+
+                email: {
+                    required: true,
+                    email: true,
+                    comprobarEmail: true
+                },
+
+                usuario: {
+                    required: true,
+                    minlength: 4,
+                    comprobarLogin: true
+                },
+
+                contrasena: {
+                    required: true,
+                    minlength: 4
+                }
+            },
+        }, userFormValidationFacade.TYPE_NEW);
+    </script>

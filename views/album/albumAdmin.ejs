@@ -1,0 +1,47 @@
+<link rel="stylesheet" href="/stylesheets/jquery.dataTables.min.css">
+
+<% include ../breadcrumbs/albumAdmin %>
+    <div class="row-fluid">
+        <!--Edit Main Content Area here-->
+        <div class="span12" id="divMain">
+
+            <!-- DATATABLE JQUERY -->
+            <table style="width:100%" id="albumsTable">
+                <thead>
+                    <tr style="background-color:#C0C0C0;">
+                        <th style="width:2%" id="id">#Id</th>
+                        <th style="width:20%" id="nombre"><%= __ ('nombre')%></th>
+                        <th style="width:45%" id="descripcion"><%= __ ('descripcion')%></th>
+                        <th style="width:3%" id="publico"><%= __ ('publico')%></th>
+                        <th style="width:17%" id="fechaAlta"><%= __ ('fecha_alta')%></th>
+                        <th style="width:13%">
+                            &nbsp;
+                        </th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <!-- DATATABLE JQUERY -->
+        </div>
+    </div>
+
+    <script type="text/javascript" src="/javascripts/facade/user/PermissionFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/album/AlbumFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/datatable/TableFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/datatable/AlbumAdminTableFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/vendor/bootbox/bootbox.js"></script>
+
+
+    <script type="text/javascript">
+        var config = {
+            idDataTable: 'albumsTable',
+            ajaxType: 'GET',
+            ajaxUrl: '/album/administracion',
+            displayLength: 10,
+            i18n: IDIOMA_USUARIO
+        };
+        // Se inicializa la datatable
+
+        var albumAdminTableFacade = new AlbumAdminTableFacade(config);
+    </script>

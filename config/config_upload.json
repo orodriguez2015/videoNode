@@ -1,0 +1,6 @@
+{
+    "path_upload_photo": "/public/store/photo/",
+    "relative_path_show_photo": "/store/photo/",
+    "num_max_files_upload": "20"
+
+}

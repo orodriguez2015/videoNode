@@ -1,0 +1,54 @@
+<% include ../breadcrumbs/usersPermissions %>
+    <link rel="stylesheet" href="/stylesheets/jquery.dataTables.min.css">
+    <div class="row-fluid">
+        <!--Edit Main Content Area here-->
+        <div class="span12" id="divMain">
+
+            <%=user.NOMBRE%>
+
+                <!-- DATATABLE JQUERY -->
+                <table style="width:100%" id="permissionsTable">
+                    <thead>
+                        <tr style="background-color:#C0C0C0;">
+
+                            <th style="width:10%" id="id">#Id</th>
+                            <th style="width:70%" id="login">Descripción permiso</th>
+                            <th style="width:20%">Asignación</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <!-- DATATABLE JQUERY -->
+
+        </div>
+    </div>
+
+    <script type="text/javascript" src="/javascripts/vendor/bootbox/bootbox.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/user/UserFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/datatable/TableFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/datatable/UsersPermissionsTableFacade.js"></script>
+
+
+    <script type="text/javascript">
+        var ID_USUARIO_SELECCIONADO = <%=user.id%>;
+
+        /*
+         * Se configura el datatable para el listado de usuarios. Se obtienen los usuarios del servidor en el 
+         * formato JSON que requiere la datatable invocando a /users/administration
+         */
+        var config = {
+            idUsuario: "<%=user.id%>",
+            idDataTable: 'permissionsTable',
+            ajaxType: 'GET',
+            ajaxUrl: '/users/permissions/administration/<%=user.id%>',
+            displayLength: 10,
+            alignment: [{
+                "className": "dt-center",
+                "targets": "_all"
+            }]
+        };
+
+        // Se inicializa la datatable
+        var usersPermissionsTableFacade = new UsersPermissionsTableFacade(config);
+    </script>

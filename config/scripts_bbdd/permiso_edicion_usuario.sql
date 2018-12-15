@@ -1,0 +1,1 @@
+INSERT INTO `foto`.`permisos` (`permiso`) VALUES ('Edición de usuario');

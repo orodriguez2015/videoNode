@@ -1,0 +1,9 @@
+#errorTitle {
+    color: red;
+    font-size: 120px;
+}
+
+.errorContainer {
+    margin-top: 60px;
+    text-align: center
+}

@@ -1,0 +1,44 @@
+<section class="mbr-section" id="form1-l" style="background-color: rgb(255, 255, 255); padding-top: 120px; padding-bottom: 120px;">
+
+    <div class="mbr-section mbr-section-nopadding">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-8 col-lg-12">
+                    <p>
+                        <h3>Conexión a la base de datos correcta</h3>
+                    </p>
+                    <hr>
+                    <p>
+                        <div id="divMensaje">
+                            Se procederá a comprobar si la base de datos que usa Fotolog ya está creada.
+                        </div>
+                    </p>
+
+                    <p>
+                        <div id="divMensajeBoton">
+                            Pulsa el botón Siguiente para continuar.
+                        </div>
+                    </p>
+
+                    <button type="button" id="btnSiguiente" class="btn btn-success" onclick="configFacade.checkExistenceTables();">Siguiente</button>
+                    <button type="button" id="btnCrear" class="btn btn-success" onclick="configFacade.createTablesDatabase();" style="display:none;">Crear tablas de base de datos</button>
+
+                    <a href="/config/bd">
+                        <button type="button" class="btn btn-danger">Anterior</button>
+                    </a>
+
+                    <p>
+                        <div id="msgErrorInstallation" style="display:none;">
+                            <div class="alert alert-danger fade in">
+                                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                                <strong>Atención</strong>
+                                <div id="txtErrorDatabase"></div>
+                            </div>
+                        </div>
+                    </p>
+                </div>
+            </div>
+        </div>
+</section>
+
+<script type="text/javascript" src="/javascripts/facade/config/ConfigFacade.js"></script>

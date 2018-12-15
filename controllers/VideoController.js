@@ -1,0 +1,264 @@
+var httpUtil = require('../util/HttpResponseUtil.js');
+var path = require('path');
+var fileUtil = require('../util/FileUtils.js');
+var constantes = require('../config/constantes.json');
+var config = fileUtil.getContentConfigBBDDFile();
+var database = require('../db/DatabaseMysql.js');
+
+/**
+ * Renderiza la pantalla que muestra un listado de los vídeos
+ * @param {request} req
+ * @param {response} res
+ * @param {next} next
+ */
+exports.showVideos = function(req,res,next) {
+    var videoteca = req.Videoteca;
+    res.render("videos/videos",{videoteca:videoteca,errors:{}});
+};
+
+
+/**
+ * Renderiza la pantalla que muestra un listado de los vídeos
+ * @param {request} req
+ * @param {response} res
+ * @param {next} next
+ */
+exports.showVideotecas = function(req,res,next) {
+    res.render("videos/videotecas");
+};
+
+/**
+ * Renderiza la pantalla que muestra la pantalla de alta de una videoteca
+ * @param {request} req
+ * @param {response} res
+ * @param {next} next
+ */
+exports.nuevaVideoteca = function(req,res,next) {
+    res.render("videos/nuevaVideoteca");
+};
+
+
+
+/**
+ * Función de autoload para cargar un álbum en la request.
+ * También sirve para realizar un control de errores
+ * @param req: Objeto request
+ * @param res: Objeto response
+ * @param next: Objeto next
+ * @param idAlbum: Identificador del álbum
+ */
+exports.load = function(req, res, next, idVideoteca) {
+    var idUsuario = req.session.usuario.ID;
+    var db = new database.DatabaseMysql();
+
+    var sql = "select * from videoteca where id=" + idVideoteca + " and idUsuario=" + idUsuario;
+    console.log("load sql: " + sql);
+
+    db.query(sql).then(resultado => {
+        db.close();
+        req.Videoteca = resultado[0];
+        next();
+    })
+    .catch(err => {
+        console.log("Error al recuperar la videoteca de id " + idVideoteca + " de la BBDD: " + err.message);
+        db.close();
+        next(err);
+    });
+};
+
+
+/**
+ * Comprueba que exista la ruta Almacena una videoteca en base de datos
+ * @param {request} req
+ * @param {response} res
+ * @param {next} next
+ */
+exports.comprobarRutaVideoteca = function(req,res,next) {
+    var carpeta = req.body.carpeta;
+    var idUsuario = req.session.usuario.ID;
+    var resultado = {
+        status: 0,
+        descStatus: "OK"
+    };
+
+    console.log("comprobarRutaVideoteca");
+    console.log("idUsuario: " + idUsuario + ", carpeta: " + carpeta);
+
+
+    if(carpeta==null || carpeta==undefined) {
+        resultado.status = 2;
+        resultado.descStatus = "Es necesario indicar una ruta en la que alojar los vídeos";
+    }else {
+        console.log("dirActual: " + __dirname);
+
+        var rutaCompleta = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
+            + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO  + 
+            constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + carpeta);
+
+        console.log("rutaCompleta: " + rutaCompleta);
+
+        if(!fileUtil.existsFile(rutaCompleta)) {
+            console.log("No existe el archivo " + rutaCompleta);
+            resultado.status = 0;
+            resultado.descStatus = "No existe la carpeta de usuario";
+
+           // fileUtil.mkdirSync(rutaCompleta);
+            console.log("se ha creado la carpeta : " + rutaCompleta);
+        } else {
+            console.log("Existe la carpeta: " + rutaCompleta);
+            resultado.status = 1;
+            resultado.descStatus = "Existe la carpeta de usuario. Se debe seleccionar otra";
+        }
+    }
+
+    // Se devuelve la respuesta en formato JSON
+    httpUtil.devolverJSON(res,resultado);
+};
+
+
+/**
+ * Almacena una videoteca en base de datos
+ * @param {request} req
+ * @param {response} res
+ * @param {next} next
+ */
+exports.saveVideoteca = function(req,res,next) {
+    var db = new database.DatabaseMysql();
+    var nombre = req.body.nombre;
+    var carpeta = req.body.carpeta;
+    var publico = req.body.publico;
+    var idUsuario = req.session.usuario.ID;
+
+    console.log("publico: " + publico);
+
+    if(nombre!=undefined && carpeta!=undefined && nombre!='' && carpeta!='') {
+
+
+        var sql = "INSERT INTO VIDEOTECA(nombre,ruta,idUsuario,publico) VALUES ('" + nombre + "','" + carpeta + "'," + idUsuario + "," + publico +  ")";
+        console.log("sql: " + sql);
+        db.query(sql).then(resultado =>{
+    
+            var resultado = {
+                status: 0, descStatus: 'OK'
+            };
+
+            httpUtil.devolverJSON(res,resultado);
+
+        }) .catch(err => {
+            console.log('Error al insertar videoteca: ' + err.message);
+
+            var resultado = {
+                status: 1, descStatus: 'Error al insertar videoteca: ' + err.message
+            };
+
+            httpUtil.devolverJSON(res,resultado);
+
+        });
+    }
+    
+};
+
+
+
+/**
+ * Recupera los videotecas de un determinado usuario. Recibe la petición por AJAX y Devuelve
+ * el resultado al formato más adecuado para mostrarlo en un datatable de JQuery
+ * @param req Objeto Request
+ * @param res Objeto Response
+ * @param req Objeto next
+ */
+exports.getVideotecasAdministracion = function(req, res, next) {
+    var user = req.session.usuario;
+
+    var columnas = ['id', 'nombre', 'ruta', 'publico', 'fechaAlta'];
+    // Se recuperan los parámetros enviados del datatable en la petición AJAX
+    var search = req.query.search;
+    var limit = req.query.length;
+    var draw = req.query.draw;
+    var start = req.query.start;
+    var columns = req.query.columns;
+    var order = req.query.order;
+    var idColumnOrden;
+    var tipoOrden;
+
+
+
+    if (order != undefined && order.length == 1) {
+        tipoOrden = order[0]['dir'];
+        idColumnOrden = order[0]['column'];
+    }
+
+
+    /*
+     * Se recuperan las videotecas del usuario
+     */
+    var sqlAlbums = "select id,nombre,ruta,publico,DATE_FORMAT(fechaAlta,'%d/%m/%Y %T') as fechaAlta from videoteca where idUsuario=" + user.ID
+    if (search != undefined && search.value.length > 0) {
+        var valor = search.value;
+        sqlAlbums = sqlAlbums + " and (id like ('%" + valor + "%') or nombre like('%" + valor + "%') or ruta like ('%" + valor + "%') or fechaAlta like ('%" + valor + "%'))";
+    }
+
+    var orderBy = " order by fechaAlta desc";
+    if (idColumnOrden != undefined && tipoOrden != undefined) {
+        orderBy = " ORDER BY " + columnas[idColumnOrden] + " " + tipoOrden;
+    }
+
+    sqlAlbums = sqlAlbums + orderBy;
+    sqlAlbums = sqlAlbums + " limit " + limit + " offset " + start;
+    console.log("sqlAlbums: " + sqlAlbums);
+
+
+    /*
+     * Se cuenta el número total de videotecas del usuario
+     */
+    var sqlNumTotal = "select count(*) as num from videoteca where idUsuario=" + user.ID;
+    var db = new database.DatabaseMysql();
+
+
+    var listadoFinal = new Array();
+    db.query(sqlAlbums).then(albumes => {
+        console.log("1- albumes: " + JSON.stringify(albumes));
+
+        if (albumes != null && albumes != undefined) {
+
+            /** Se devuelve los resultados de la BBDD en un array para que
+                pueda ser mostrado en un datatable de JQuery correctamente */
+            for (var i = 0; albumes != undefined && i < albumes.length; i++) {
+                var aux = [];
+                aux.push(albumes[i].id);
+                aux.push(albumes[i].nombre);
+                aux.push(albumes[i].ruta);
+                aux.push(albumes[i].publico);
+                aux.push(albumes[i].fechaAlta);
+                listadoFinal.push(aux);
+            };
+
+            return db.query(sqlNumTotal);
+        } // if
+
+    }).then(resultado => {
+        console.log("2- resultado: " + JSON.stringify(resultado));
+
+        db.close();
+
+        if (resultado != null && resultado != undefined && resultado[0] != undefined) {
+
+            var numTotal = resultado[0].num;
+            var salida = {
+                'recordsTotal': numTotal,
+                'recordsFiltered': numTotal,
+                'data': listadoFinal
+            }
+            httpUtil.devolverJSON(res, salida);
+
+        }
+    }).catch(err => {
+        console.log("Error al recuperar listado de videotecas: " + err.message);
+
+    });
+}
+
+
+
+
+

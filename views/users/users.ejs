@@ -1,0 +1,54 @@
+<% include ../breadcrumbs/usersList %>
+    <link rel="stylesheet" href="/stylesheets/jquery.dataTables.min.css">
+    <div class="row-fluid">
+        <!--Edit Main Content Area here-->
+        <div class="span12" id="divMain">
+
+
+            <!-- DATATABLE JQUERY -->
+            <table style="width:100%" id="usersTable">
+                <thead>
+                    <tr style="background-color:#C0C0C0;">
+                        <th style="width:1%" id="id">#Id</th>
+                        <th style="width:7%" id="login">Login</th>
+                        <th style="width:12%" id="nombre"><%= __('nombre')%></th>
+                        <th style="width:12%" id="apellido1"><%= __('primer_apellido')%></th>
+                        <th style="width:12%" id="apellido2"><%= __('segundo_apellido')%></th>
+                        <th style="width:12%" id="email"><%= __('email_corto')%></th>
+                        <th style="width:3%" id="activo"><%= __('activo')%></th>
+                        <th style="width:5%" id="fechaAlta"><%= __('alta')%></th>
+                        <th style="width:5%" id="fechaBaja"><%= __('baja')%></th>
+                        <th style="width:42%" id="opciones"></th>
+
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <!-- DATATABLE JQUERY -->
+
+        </div>
+    </div>
+
+    <script type="text/javascript" src="/javascripts/vendor/bootbox/bootbox.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/user/PermissionFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/user/UserFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/datatable/TableFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/datatable/UsersAdminTableFacade.js"></script>
+
+    <script type="text/javascript">
+        /*
+         * Se configura el datatable para el listado de usuarios. Se obtienen los usuarios del servidor en el 
+         * formato JSON que requiere la datatable invocando a /users/administration
+         */
+        var config = {
+            idDataTable: 'usersTable',
+            ajaxType: 'GET',
+            ajaxUrl: '/users/administration',
+            displayLength: 10,
+            i18n: IDIOMA_USUARIO
+        };
+
+        // Se inicializa la datatable
+        var userAdminTableFacade = new UsersAdminTableFacade(config);
+    </script>
