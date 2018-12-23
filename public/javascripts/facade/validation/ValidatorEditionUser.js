@@ -21,37 +21,33 @@
        }, function(data) {
 
            switch (data.status) {
-               case 0:
-                   {
+               case 0:{
                        // El login no existe, por tanto puede ser utilizado
                        salida = true;
                        break;
                    }
 
-               case 1:
-                   {
+               case 1:{
                        // Error al comprobar existencia del login en BBDD
-                       msg = "Se ha producido un error técnico. Inténtelo de nuevo.";
+                       msg = $.validator.messages.errorTecnico;
                        salida = false;
                    }
 
-               case 2:
-                   {
+               case 2:{
                        // Error al comprobar conexión a la  BBDD
-                       msg = "Se ha producido un error técnico. Inténtelo de nuevo.";
+                       msg = $.validator.messages.errorTecnico;
                        salida = false;
                    }
 
-               case 3:
-                   {
-                       // Existe un usuario con el login en BBDD
-                       msg = "Existe un usuario con el login introducido. Prueba con otro.";
+               case 3:{
+                       // Existe un usuario con el login en BBDD                       
+                       msg = $.validator.messages.existeUsuarioConLoginIntroducido;
                        salida = false;
                    }
            }
 
        }, function(error) {
-           msg = "Uppsss ... Se ha producido un error técnico. Intentalo de nuevo."
+           msg = $.validator.messages.errorTecnicoCompleto;
            salida = false;
        });
 
@@ -80,32 +76,28 @@
        }, function(data) {
 
            switch (data.status) {
-               case 0:
-                   {
+               case 0:{
                        // El email no existe, por tanto puede ser utilizado
                        salida = true;
                        break;
                    }
 
-               case 1:
-                   {
+               case 1:{
                        // Error al comprobar existencia del email en BBDD
-                       msgEmail = "Se ha producido un error técnico. Inténtelo de nuevo.";
+                       msgEmail = $.validator.messages.errorTecnico;
                        salida = false;
                    }
 
-               case 2:
-                   {
+               case 2:{
                        // Error al comprobar conexión a la  BBDD
-                       msgEmail = "Se ha producido un error técnico. Inténtelo de nuevo.";
+                       msgEmail = $.validator.messages.errorTecnico;
                        salida = false;
                    }
 
-               case 3:
-                   {
+               case 3:{
                        // Existe un usuario con el email en BBDD
-                       msgEmail = "Existe un usuario con el email introducido.";
-                       salida = false;
+                      msgEmail = $.validator.messages.existeUsuarioConMailIntroducido;
+                      salida = false;
                    }
            }
 

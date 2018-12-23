@@ -22,5 +22,10 @@ $.extend( $.validator.messages, {
 	min: $.validator.format( "Por favor, escribe un valor mayor o igual a {0}." ),
 	nifES: "Por favor, escribe un NIF válido.",
 	nieES: "Por favor, escribe un NIE válido.",
-	cifES: "Por favor, escribe un CIF válido."
+	cifES: "Por favor, escribe un CIF válido.",
+	existeUsuarioConLoginIntroducido:"Existe un usuario con el login introducido. Prueba con otro.",
+	existeUsuarioConMailIntroducido:"Existe un usuario con el email introducido.",
+	errorTecnico:"Se ha producido un error técnico. Inténtelo de nuevo.",
+	errorTecnicoCompleto:"Uppsss ... Se ha producido un error técnico. Intentalo de nuevo."
+	
 } );
