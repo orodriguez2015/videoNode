@@ -2,7 +2,7 @@
     <div class="row-fluid">
         <!--Edit Main Content Area here-->
         <div class="span12" id="divMain">
-            <h1>Edición de usuario</h1>
+            <h1><%= __('edicion_usuario')%></h1>
         </div>
     </div>
 
@@ -15,46 +15,45 @@
                     <input type="hidden" value="<%=usuario.id%>" name="idUsuario" id="idUsuario" />
 
                     <div class="form-group">
-                        <label for="nombre"><b>Nombre *</b></label>
+                        <label for="nombre"><b><%= __('nombre_obligatorio')%></b></label>
                         <input type="text" class="form-control" id="nombre" name="nombre" value="<%=usuario.nombre%>" placeholder="Nombre">
                     </div>
 
                     <div class="form-group">
-                        <label for="apellido1"><b>Primer apellido *</b></label>
+                        <label for="apellido1"><b><%= __('primer_apellido_obligatorio')%></b></label>
                         <input type="text" class="form-control" id="apellido1" name="apellido1" value="<%=usuario.apellido1%>" placeholder="Primer apellido">
                     </div>
 
                     <div class="form-group">
-                        <label for="apellido2"><b>Segundo apellido *</b></label>
+                        <label for="apellido2"><b><%= __('segundo_apellido_obligatorio')%></b></label>
                         <input type="text" class="form-control" id="apellido2" name="apellido2" value="<%=usuario.apellido2%>" placeholder="Segundo apellido">
                     </div>
 
                     <div class="form-group">
-                        <label for="email"><b>Email/Correo electrónico *</b></label>
+                        <label for="email"><b><%= __('email_obligatorio')%></b></label>
                         <input type="text" class="form-control" id="email" name="email" value="<%=usuario.email%>" placeholder="Email/Correo electrónico">
                     </div>
 
 
                     <div class="form-group">
-                        <label for="login"><b>Login *</b></label>
+                        <label for="login"><b><%= __('login_obligatorio')%></b></label>
                         <input type="text" class="form-control" id="usuario" name="usuario" required placeholder="Login" value="<%=usuario.login%>">
                     </div>
 
                     <div class="form-group">
-                        <label for="password"><b>Contraseña</b></label>
+                        <label for="password"><b><%= __('password')%></b></label>
                         <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Contraseña">
                     </div>
 
-                    <button type="submit" class="btn btn-success">Grabar</button>
+                    <button type="submit" class="btn btn-success"><%= __('grabar')%></button>
                     <a href="/users">
-                        <button type="button" class="btn btn-danger">Cancelar</button>
+                        <button type="button" class="btn btn-danger"><%= __('cancelar')%></button>
                     </a>
                 </form>
 
             </p>
         </div>
     </div>
-
 
 
     <script type="text/javascript" src="/javascripts/facade/user/UserFacade.js"></script>
