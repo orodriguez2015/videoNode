@@ -22,6 +22,17 @@ var messages = {
         "sSortDescending": ": Activate to order the column in descending order"
     },
 
+    atencion_titulo_modal: "Attention",
+    mensaje_eliminar_album_1: "You want to delete the album with #id",
+    mensaje_eliminar_album_2: "and all its associated pictures ?",
+    boton_cancelar : "Cancel",
+    boton_confirmar : "Confirm",
+    mensaje_error_no_permiso_borrar_album : "You do not have permission to delete an album. Contact the administrator",
+    mensaje_error_comprobar_permiso_borrar_album : "There was an error checking if you have permission to delete the album",
+    mensaje_error_eliminar_album : "There was an error deleting the album",
+    mensaje_error_grabar_album : "The album could not be stored in database",
+    mensaje_error_editar_album : "The album could not be edited in database",
+
    required: "This field is required.",
    remote: "Please fill in this field.",
    email: "Please enter a valid email address.",

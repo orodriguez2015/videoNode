@@ -76,7 +76,7 @@ function AlbumFacade() {
      * @param err Error
      */
     this.onErrorSaveAlbum = function(err) {
-        messagesArea.showMessageError("No se ha podido editar el álbum en base de datos");
+        messagesArea.showMessageError(messages.mensaje_error_editar_album);
     };
 
 
@@ -94,7 +94,7 @@ function AlbumFacade() {
      * @param err Error
      */
     this.onErrorSaveAlbum = function(err) {
-        messagesArea.showMessageError("No se ha podido almacenar el álbum en base de datos");
+        messagesArea.showMessageError(messages.mensaje_error_grabar_album);
     };
 
 
@@ -111,17 +111,18 @@ function AlbumFacade() {
             switch (data.status) {
                 case 0:
                     {
+
                         if (id != undefined) {
                             bootbox.confirm({
-                                title: "Atención",
-                                message: "¿Deseas eliminar el álbum con #id " + id + " y todas sus fotografías asociadas?",
+                                title: messages.atencion_titulo_modal,
+                                message: messages.mensaje_eliminar_album_1 + " " +  id + " " +  messages.mensaje_eliminar_album_2,
                                 buttons: {
                                     cancel: {
-                                        label: 'Cancelar',
+                                        label: messages.boton_cancelar,
                                         className: 'btn btn-danger'
                                     },
                                     confirm: {
-                                        label: 'Confirmar',
+                                        label: messages.boton_confirmar,
                                         className: 'btn btn-success'
                                     }
                                 },
@@ -149,13 +150,13 @@ function AlbumFacade() {
 
                 case 1:
                     {
-                        bootbox.alert("No dispones de permiso para borrar un álbum. Contacta con el administrador");
+                        bootbox.alert(messages.mensaje_error_no_permiso_borrar_album);
                         break;
                     }
 
                 case 2:
                     {
-                        bootbox.alert("Se ha producido un error al comprobar si dispone de permiso de borrado del álbum");
+                        bootbox.alert(messages.mensaje_error_comprobar_permiso_borrar_album);
                         break;
                     }
             } // switch
@@ -184,7 +185,7 @@ function AlbumFacade() {
      * @param err Respuesta del servidor
      */
     this.onErrorDeleteAlbum = function(err) {
-        messagesArea.showMessageError("Se ha producido un error al eliminar el álbum");
+        messagesArea.showMessageError(messages.mensaje_error_eliminar_album);
     };
 
 };
