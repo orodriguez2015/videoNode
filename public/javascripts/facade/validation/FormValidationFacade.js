@@ -13,6 +13,42 @@ function FormValidationFacade() {
 
 
     /**
+     * Configurar el idioma para el plugin de JQuery Validation, extrayendo las etiquetas de idioma
+     * del archivo de internacionalización correspondiente /javascripts/i18n/messages_[es|en].js
+     */
+    this.configurarIdioma = function() {    
+
+        $.extend( $.validator.messages, {
+            required: messages.required,
+            remote: messages.remote,
+            email: messages.email,
+            url: messages.url,
+            date: messages.date,
+            dateISO: messages.dateISO,
+            number: messages.number,
+            digits: messages.digits,
+            creditcard: messages.creditcard,
+            equalTo: messages.equalTo,
+            extension: messages.extension,
+            maxlength: messages.maxlength,
+            minlength: messages.minlength,
+            rangelength: messages.rangelength,
+            range: messages.range,
+            max: messages.max,
+            min: messages.min,
+            nifES: messages.nifES,
+            nieES: messages.nieES,
+            cifES: messages.cifES,
+            existeUsuarioConLoginIntroducido: messages.existeUsuarioConLoginIntroducido,
+            existeUsuarioConMailIntroducido: messages.existeUsuarioConMailIntroducido,
+            errorTecnico: messages.errorTecnico,
+            errorTecnicoCompleto : messages.errorTecnicoCompleto
+        });
+    }// configurarIdioma
+
+
+
+    /**
      * Inicializa la validación de un formulario
      * @param config Objeto que contiene la configuración del formulario y reglas de validación
      */
@@ -20,6 +56,8 @@ function FormValidationFacade() {
         idForm = config.idForm; // Id del formulario
         reglas = config.rules; // Reglas de validación
         submitFunction = config.submitFunction; // Función que se invoca cuando se desea enviar el formulario
+
+        this.configurarIdioma();
 
         if (idForm != undefined && reglas != undefined && submitFunction != undefined && typeof(idForm) == "string" &&
             typeof(reglas) == "object" && typeof(submitFunction) == "function") {

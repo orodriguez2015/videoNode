@@ -38,10 +38,10 @@ class TableFacade {
                     // Fichero de idiomas
                     var language = "";
                     if(config.i18n!=null && config.i18n!=undefined) {
-                        language = "/javascripts/vendor/datatables/datatables_i18n_" + config.i18n + ".json";
+                        language = "/javascripts/i18n/messages_" + config.i18n + ".js";
                     }else {
                         // Sino hay un idioma configurado por defecto, se supone que es el español
-                        language = '/javascripts/vendor/datatables/datatables_i18n_es.json';
+                        language = "/javascripts/i18n/messages_es.js";
                     }
 
                     // Alineado del contenido de las celdas, por defecto a la izquierda
