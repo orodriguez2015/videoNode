@@ -117,6 +117,13 @@ router.post("/album", userController.isAuthenticatedUser, albumController.altaAl
 
 
 /**
+ * DELETE /photo/:idPhoto
+ * Borra una fotografía de la base de datos y del disco
+ */
+router.delete("/photo/:idPhoto(\\d+)", userController.isAuthenticatedUser, fotoController.deletePhoto);
+
+
+/**
  * DELETE /photo/multiple
  * Borra una fotografía de la base de datos y del disco
  */

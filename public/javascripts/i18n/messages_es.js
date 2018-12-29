@@ -23,8 +23,10 @@ var messages = {
     },
 
     atencion_titulo_modal: "Atención",
-    mensaje_eliminar_album_1: "¿Deseas eliminar el álbum con #id",
+    mensaje_eliminar_album_1: "¿ Deseas eliminar el álbum con #id",
     mensaje_eliminar_album_2: "y todas sus fotografías asociadas?",
+    mensaje_confirmar_hacer_visible_foto_1    : "¿ Deseas hacer visible la foto con #id ",
+    mensaje_confirmar_hacer_visible_foto_2    : " para todo el mundo?",
     boton_cancelar : "Cancelar",
     boton_confirmar : "Confirmar",
     mensaje_error_no_permiso_borrar_album : "No dispones de permiso para borrar un álbum. Contacta con el administrador",
@@ -33,7 +35,24 @@ var messages = {
     mensaje_error_grabar_album : "No se ha podido almacenar el álbum en base de datos",
     mensaje_error_editar_album : "No se ha podido editar el álbum en base de datos",
     
+    mensaje_eliminar_foto_1 : "¿ Deseas eliminar la fotografía con #id ",
+    mensaje_eliminar_foto_2 : " del álbum ?",
+    mensaje_error_cambiar_visibilidad_fotografia : "Se ha producido un error al cambiar la visibilidad de la fotografía seleccionada",
+    mensaje_seleccionar_fotografia : "Es necesario que selecciones alguna fotografía",
+    mensaje_error_borrado_fotografias : "Se ha producido un error al realizar el borrado de las fotografías",
+    mensaje_error_borrado_fotografia : "Se ha producido un error al borrar la fotografía",
+    mensaje_error_base_datos         : "Se ha producido un error en base de datos",
+    mensaje_error_tecnico_borrado_fotografia   : "Se ha producido un error técnico al eliminar la fotografía",
+    mensaje_error_no_existe_fotografia   : "No existe la fotografía en el servidor",
+    mensaje_error_eliminar_fotografia_disco   : "Se ha producido un error al eliminar la fotografia del disco",
+    mensaje_error_obtener_conexion_bbdd       : "No se ha podido obtener conexión a la base de datos",
+    mensaje_confirmar_ocultar_foto       : "¿ Deseas ocultar la foto con #id ",
+    mensaje_error_no_permiso_editar_album   : "No dispones de permisos para editar el álbum. Contacta con el administrador",
+    mensaje_error_comprobar_permisos_editar_album : "Se ha producido un error al comprobar si dispones de permiso para editar el álbum. Contacta con el administrador",
+    mensaje_error_cambio_visibilidad_foto : "Se ha producido un error al cambiar la visibilidad de la fotografía",
 
+    
+    /** etiquetas del plugin de jQuery validation */
     required: "Este campo es obligatorio.",
 	remote: "Por favor, rellena este campo.",
 	email: "Por favor, escribe una dirección de correo válida.",

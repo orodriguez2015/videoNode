@@ -69,19 +69,19 @@ class FotoFacade {
                     window.location.reload(true);
                     break;
                 case 1:
-                    messagesArea.showMessageWarning("Se ha producido un error en base de datos");
+                    messagesArea.showMessageWarning(messages.mensaje_error_base_datos);                    
                     break;
                 case 2:
-                    messagesArea.showMessageWarning("Se ha producido un error técnico al eliminar la fotografía");
+                    messagesArea.showMessageWarning(messages.mensaje_error_tecnico_borrado_fotografia);
                     break;
                 case 3:
-                    messagesArea.showMessageWarning("No existe la fotografía en el servidor");
+                    messagesArea.showMessageWarning(messages.mensaje_error_no_existe_fotografia);
                     break;
                 case 4:
-                    messagesArea.showMessageWarning("Se ha producido un error al eliminar la fotografia del disco");
+                    messagesArea.showMessageWarning(messages.mensaje_error_eliminar_fotografia_disco);
                     break;
                 case 5:
-                    messagesArea.showMessageWarning("No se ha podido obtener conexión a la base de datos");
+                    messagesArea.showMessageWarning(messages.mensaje_error_obtener_conexion_bbdd);
                     break;
             } // switch
         }
@@ -92,7 +92,7 @@ class FotoFacade {
      * Operación invocado en caso de fracaso al eliminar una fotografía
      */
     onErrorDeletePhoto(err) {
-        messagesArea.showMessageError("Se ha producido un error al borrar la fotografía");
+        messagesArea.showMessageError(messages.mensaje_error_borrado_fotografia);
     };
 
 
@@ -115,22 +115,22 @@ class FotoFacade {
                             var message = "";
                             var flag = true;
                             if (publico == 0) {
-                                message = "¿Deseas hacer visible la foto con #id " + id + " para todo el mundo?";
+                                message = messages.mensaje_confirmar_hacer_visible_foto_1 + id + messages.mensaje_confirmar_hacer_visible_foto_2;
                             } else {
-                                message = "¿Deseas ocultar la foto con #id " + id + "?";
+                                message = messages.mensaje_confirmar_ocultar_foto + id + "?";
                                 flag = false;
                             }
 
                             bootbox.confirm({
-                                title: "Atención",
+                                title: messages.atencion,
                                 message: message,
                                 buttons: {
                                     cancel: {
-                                        label: 'Cancelar',
+                                        label: messages.boton_cancelar,
                                         className: 'btn btn-danger'
                                     },
                                     confirm: {
-                                        label: 'Confirmar',
+                                        label: messages.boton_confirmar,
                                         className: 'btn btn-success'
                                     }
                                 },
@@ -145,15 +145,13 @@ class FotoFacade {
                         break;
                     }
 
-                case 1:
-                    {
-                        bootbox.alert("No dispones de permisos para editar el álbum. Contacta con el administrador");
+                case 1: {
+                        bootbox.alert(messages.mensaje_error_no_permiso_editar_album);
                         break;
                     }
 
-                case 2:
-                    {
-                        bootbox.alert("Se ha producido un error al comprobarNo dispones de permisos para editar el álbum. Contacta con el administrador");
+                case 2: {
+                        bootbox.alert(messages.mensaje_error_comprobar_permisos_editar_album);
                         break;
                     }
 
@@ -161,7 +159,7 @@ class FotoFacade {
             } // switch
 
         }, function(err) {
-            bootbox.alert("Se ha producido un error al cambiar la visibilidad de la fotografía");
+            bootbox.alert(messages.mensaje_error_cambio_visibilidad_foto);
         });
 
     };
@@ -222,7 +220,7 @@ class FotoFacade {
      * @param data Objeto con la respuesta del servidor
      */
     onErrorPublishPhoto(data) {
-        messagesArea.showMessageError("Se ha producido un error al cambiar la visibilidad de la fotografía seleccionada");
+        messagesArea.showMessageError(messages.mensaje_error_cambiar_visibilidad_fotografia);
     };
 
 
@@ -243,21 +241,20 @@ class FotoFacade {
                             if (id != undefined) {
 
                                 bootbox.confirm({
-                                    title: "Atención",
-                                    message: "¿Deseas eliminar la fotografía con #id " + id + " del álbum ?",
+                                    title: messages.atencion_titulo_modal,
+                                    message: messages.mensaje_eliminar_foto_1 + id + messages.mensaje_eliminar_foto_2,
                                     buttons: {
                                         cancel: {
-                                            label: 'Cancelar',
+                                            label: messages.boton_cancelar,
                                             className: 'btn btn-danger'
                                         },
                                         confirm: {
-                                            label: 'Confirmar',
+                                            label: messages.boton_confirmar,
                                             className: 'btn btn-success'
                                         }
                                     },
                                     callback: function(result) {
                                         if (result) {
-
                                             fotoFacade.deletePhoto(id);
 
                                         } //if
@@ -270,19 +267,19 @@ class FotoFacade {
 
                     case 1:
                         {
-                            bootbox.alert("No dispones de permiso para borrar un álbum. Contacta con el administrador");
+                            bootbox.alert(messages.mensaje_error_no_permiso_borrar_album);
                             break;
                         }
 
                     case 2:
                         {
-                            bootbox.alert("Se ha producido un error al comprobar si dispone de permiso de borrado del álbum");
+                            bootbox.alert(messages.mensaje_error_comprobar_permiso_borrar_album);
                             break;
                         }
                 }
             },
             function(err) {
-                bootbox.alert("Se ha producido un error al comprobar si dispone de permiso de borrado del álbum");
+                bootbox.alert(messages.mensaje_error_comprobar_permiso_borrar_album);
             });
     }
 
@@ -304,7 +301,7 @@ class FotoFacade {
         }); 
 
         if(seleccionados==null || seleccionados.length==0) {
-            bootbox.alert("Es necesario que selecciones alguna fotografía");
+            bootbox.alert(messages.mensaje_seleccionar_fotografia);
 
         } else {
 
@@ -331,7 +328,8 @@ class FotoFacade {
 
 
     onErrorBorradoFotografiaMultiple(error) {
-        bootbox.alert("Se ha producido un error al realizar el borrado de las fotografías");
+        bootbox.alert(messages.mensaje_error_borrado_fotografias);
+        
     }
 
 
