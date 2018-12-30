@@ -45,7 +45,7 @@ function UserFacade() {
         if (login != '' && password != '' && login.length > 0 && password.length > 0) {
             userFacade.authenticateUser({ username: login, password: password });
         } else {
-            messagesArea.showMessageWarning("Es necesario el nombre de usuario y la contraseña");
+            messagesArea.showMessageWarning(messages.mensaje_nombre_contrasena_usuario_obligatorio);
         }
     }
 
@@ -57,7 +57,7 @@ function UserFacade() {
      */
     this.onSuccessAuthentication = function(data) {
         if (data.status != 0) {
-            messagesArea.showMessageError("Error durante la autenticación. Inténtelo de nuevo");
+            messagesArea.showMessageError(messages.mensaje_error_durante_autenticacion);
             $("#username").val('');
             $("#password").val('');
             $("#username").focus();
@@ -71,7 +71,7 @@ function UserFacade() {
      * @param err Error
      */
     this.onErrorAuthentication = function(err) {
-        messagesArea.showMessageError("Error durante autenticación: " + err.message);
+        messagesArea.showMessageError(messages.mensaje_error_durante_autenticacion + " : " + err.message);
     };
 
 
@@ -156,28 +156,29 @@ function UserFacade() {
                 case 1:
                     {
                         // El login está ocupado
-                        messagesArea.showMessageWarning("El login está siendo utilizado por otro usuario");
+                        messagesArea.showMessageWarning(messages.mensaje_error_login_utilizado);
+                        
                         break;
                     }
 
                 case 2:
                     {
                         // El email está ocupado
-                        messagesArea.showMessageWarning("El email está siendo utilizado por otro usuario");
+                        messagesArea.showMessageWarning(messages.mensaje_error_email_utilizado);
                         break;
                     }
 
                 case 3:
                     {
                         // Error al comprobar el mail
-                        messagesArea.showMessageWarning("Se ha producido un error al comprobar el email");
+                        messagesArea.showMessageWarning(messages.mensaje_error_comprobar_email);
                         break;
                     }
 
                 case 4:
                     {
                         // Error al comprobar el login
-                        messagesArea.showMessageWarning("Se ha producido un error al comprobar el login");
+                        messagesArea.showMessageWarning(messages.mensaje_error_comprobar_login);
                         break;
                     }
 
@@ -192,7 +193,7 @@ function UserFacade() {
      * @param {Err} err 
      */
     this.onErrorExistsUser = function(err) {
-        messagesArea.showMessageError("Se ha producido un error técnico. Inténtelo de nuevo.");
+        messagesArea.showMessageError(messages.errorTecnico);
     };
 
 
@@ -331,13 +332,13 @@ function UserFacade() {
 
                 case 1:
                     {
-                        messagesArea.showMessageError("Se ha producido un error al dar de alta el usuario");
+                        messagesArea.showMessageError(messages.mensaje_error_alta_usuario);
                         break;
                     }
 
                 case 2:
                     {
-                        messagesArea.showMessageError("Se ha producido un error al obtener conexión a la BBDD");
+                        messagesArea.showMessageError(messages.mensaje_error_conexion_bbdd);
                         break;
                     }
             }
@@ -351,7 +352,7 @@ function UserFacade() {
      * @param data Objeto con la respuesta del servidor
      */
     this.onErrorNewUser = function(data) {
-        messagesArea.showMessageError("Se ha producido un error al dar de alta el usuario");
+        messagesArea.showMessageError(messages.mensaje_error_alta_usuario);
     };
 
 
@@ -378,28 +379,27 @@ function UserFacade() {
                                     activo: (activo == 1) ? 0 : 1
                                 };
 
-                                var mensaje = "¿Deseas desactivar la cuenta del usuario con #id " + id + "?";
+                                var mensaje = messages.mensaje_confirmacion_desactivar_cuenta_usuario + id + "?";
                                 if (activo == 0) {
-                                    mensaje = "¿Deseas activar la cuenta del usuario con #id " + id + "?";
+                                    mensaje = messages.mensaje_confirmacion_activar_cuenta_usuario + id + "?";
                                 }
 
                                 bootbox.confirm({
-                                    title: "Atención",
+                                    title: messages.atencion,
                                     message: mensaje,
                                     buttons: {
                                         cancel: {
-                                            label: 'Cancelar',
+                                            label: messages.boton_cancelar,
                                             className: 'btn btn-danger'
                                         },
                                         confirm: {
-                                            label: 'Confirmar',
+                                            label: messages.boton_confirmar,
                                             className: 'btn btn-success'
                                         }
                                     },
                                     callback: function(result) {
+                                        
                                         if (result) {
-
-
                                             return $.ajax({
                                                 async: true,
                                                 context: this,
@@ -412,7 +412,6 @@ function UserFacade() {
                                                 error: userFacade.onErrorDisableUserAccount
                                             });
 
-
                                         } //if
                                     }
                                 });
@@ -423,13 +422,13 @@ function UserFacade() {
 
                     case 1:
                         {
-                            bootbox.alert("No dispones de permiso para deshabilitar la cuenta de un usuario. Contacta con el administrador");
+                            bootbox.alert(messages.mensaje_error_no_permiso_deshabilitar_cuenta);
                             break;
                         }
 
                     case 2:
                         {
-                            bootbox.alert("Se ha producido un error al verificar si dispones de permiso para deshabilitar la cuenta del usuario");
+                            bootbox.alert(messages.mensaje_error_comprobar_permiso_deshabilitar_cuenta);
                             break;
                         }
                 }
@@ -448,8 +447,7 @@ function UserFacade() {
      * @param data Respuesta del servidor
      */
     this.onSuccessDisableUserAccount = function(data) {
-        console.log("onSuccessDissable: " + JSON.stringify(data));
-
+        
         if (data != undefined) {
             switch (data.status) {
                 case 0:
@@ -460,13 +458,13 @@ function UserFacade() {
 
                 case 1:
                     {
-                        messagesArea.showMessageError("Se ha producido un error al activar/desactivar la cuenta del usuario");
+                        messagesArea.showMessageError(messages.mensaje_error_activar_desactivar_cuenta_usuario);
                         break;
                     }
 
                 case 2:
                     {
-                        messagesArea.showMessageError("Se ha producido un error al obtener conexión a la BBDD");
+                        messagesArea.showMessageError(messages.mensaje_error_conexion_bbdd);
                         break;
                     }
             }
@@ -480,7 +478,7 @@ function UserFacade() {
      * @param data Respuesta del servidor
      */
     this.onErrorDisableUserAccount = function(data) {
-        messagesArea.showMessageError("Se ha producido un error al activar/desactivar la cuenta de usuario seleccionada");
+        messagesArea.showMessageError(messages.mensaje_error_activar_desactivar_cuenta_usuario);
     };
 
 

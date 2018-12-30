@@ -50,6 +50,41 @@ var messages = {
     mensaje_error_no_permiso_editar_album   : "No dispones de permisos para editar el álbum. Contacta con el administrador",
     mensaje_error_comprobar_permisos_editar_album : "Se ha producido un error al comprobar si dispones de permiso para editar el álbum. Contacta con el administrador",
     mensaje_error_cambio_visibilidad_foto : "Se ha producido un error al cambiar la visibilidad de la fotografía",
+    mensaje_nombre_contrasena_usuario_obligatorio : "Es necesario el nombre de usuario y la contraseña",
+    mensaje_error_durante_autenticacion : "Error durante la autenticación. Inténtelo de nuevo",
+    mensaje_error_login_utilizado : "El login está siendo utilizado por otro usuario",
+    mensaje_error_email_utilizado : "El email está siendo utilizado por otro usuario",
+    mensaje_error_comprobar_email : "Se ha producido un error al comprobar el email",
+    mensaje_error_comprobar_login : "Se ha producido un error al comprobar el login",
+    mensaje_error_alta_usuario    : "Se ha producido un error al dar de alta el usuario",
+    mensaje_error_conexion_bbdd   : "Se ha producido un error al obtener conexión a la BBDD",
+    mensaje_confirmacion_desactivar_cuenta_usuario : "¿ Deseas desactivar la cuenta del usuario con #id ",
+    mensaje_confirmacion_activar_cuenta_usuario : "¿ Deseas activar la cuenta del usuario con #id ",
+    mensaje_error_no_permiso_deshabilitar_cuenta : "No dispones de permiso para deshabilitar la cuenta de un usuario. Contacta con el administrador",
+
+    mensaje_error_comprobar_permiso_deshabilitar_cuenta : "Se ha producido un error al verificar si dispones de permiso para deshabilitar la cuenta del usuario",
+    mensaje_error_activar_desactivar_cuenta_usuario : "Se ha producido un error al activar/desactivar la cuenta del usuario",
+
+    
+
+
+
+    
+    
+
+    
+
+    
+
+
+    
+
+    
+    
+
+    
+
+    
 
     
     /** etiquetas del plugin de jQuery validation */
