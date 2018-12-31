@@ -14,6 +14,8 @@
 
        var resultado = videoFacade.existeRutaCarpetaUsuario(value, 
         function(data) { // onSuccess
+
+            console.log("data: " + JSON.stringify(data));
            switch (data.status) {
              
                case 0: {

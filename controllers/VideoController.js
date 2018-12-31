@@ -94,8 +94,8 @@ exports.comprobarRutaVideoteca = function(req,res,next) {
         var rutaCompleta = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
             + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO  + 
             constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + carpeta);
-
-        console.log("rutaCompleta: " + rutaCompleta);
+        
+            console.log("rutaCompleta: " + rutaCompleta);
 
         if(!fileUtil.existsFile(rutaCompleta)) {
             console.log("No existe el archivo " + rutaCompleta);
@@ -133,8 +133,39 @@ exports.saveVideoteca = function(req,res,next) {
 
     if(nombre!=undefined && carpeta!=undefined && nombre!='' && carpeta!='') {
 
+        var rutaDirectorioVideosPadre = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
+            + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO  + 
+            constantes.FILE_SEPARATOR + idUsuario);
 
-        var sql = "INSERT INTO VIDEOTECA(nombre,ruta,idUsuario,publico) VALUES ('" + nombre + "','" + carpeta + "'," + idUsuario + "," + publico +  ")";
+        var rutaDirectorioVideoteca = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
+            + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO  + 
+            constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + carpeta);
+
+        console.log("rutaDirectorioVideosPadre = " + rutaDirectorioVideosPadre);
+        console.log("rutaDirectorioVideoteca = " + rutaDirectorioVideoteca);
+
+        if(!fileUtil.existsFile(rutaDirectorioVideosPadre)) {
+            console.log("No existe directorio: " + rutaDirectorioVideosPadre + ", se crea");
+            // Se crea el directorio padre
+            fileUtil.mkdirSync(rutaDirectorioVideosPadre);
+            fileUtil.mkdirSync(rutaDirectorioVideoteca);
+        }else {
+
+            console.log("Existe directorio: " + rutaDirectorioVideosPadre);
+
+            if(!fileUtil.existsFile(rutaDirectorioVideoteca)) {
+                console.log("No existe directorio: " + rutaDirectorioVideoteca + ", se crea");
+                // Se crea el directorio padre
+                fileUtil.mkdirSync(rutaDirectorioVideoteca);
+            }
+        }
+
+       
+
+       
+        //fileUtil.mkdirSync(rutaCompleta);
+
+        var sql = "INSERT INTO VIDEOTECA(nombre,ruta,idUsuario,publico) VALUES ('" + nombre + "','" + rutaDirectorioVideoteca + "'," + idUsuario + "," + publico +  ")";
         console.log("sql: " + sql);
         db.query(sql).then(resultado =>{
     
