@@ -68,5 +68,8 @@
     "ingles" : "English",
 
 	"mensaje_descripcion_edicion_album" : "Modify the name and / or description of the album. You can indicate if it is public or not, in this way you can decide if you only see it or if anyone can see it.",
-	"mensaje_descripcion_crear_album" : "Create your photo album with a name and a description. You can indicate if it is public or not, in this way you can decide if only you see it or if anyone can see it. You can even restrict access to the album to certain users."
+	"mensaje_descripcion_crear_album" : "Create your photo album with a name and a description. You can indicate if it is public or not, in this way you can decide if only you see it or if anyone can see it. You can even restrict access to the album to certain users.",
+	"descripcion_permiso" : "Description permission",
+	"asignacion" : "Assignment",
+	"permisos_de" : "Permissions of "
 }

@@ -47,15 +47,8 @@ class UploadFileFacade {
                 var data = new FormData();
                 jQuery.each(
                     $("input[type=file]")[0].files,
-                    function(
-                        i,
-                        file
-                    ) {
-                        data.append(
-                            "file-" +
-                            i,
-                            file
-                        );
+                    function(i,file) {
+                        data.append("file-" + i,file);
                     }
                 );
 
