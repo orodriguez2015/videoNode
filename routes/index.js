@@ -8,8 +8,6 @@ var permissionsController = require('../controllers/permisosUsuarioController.js
 var videoController = require('../controllers/VideoController.js');
 var router = express.Router();
 
-/* GET home page. */
-//router.get('/', configController.comprobarInstalacion, function(req, res, next) {
 
 router.get('/', function(req, res, next) {
     res.redirect("/albums");
@@ -303,17 +301,22 @@ router.get("/config/installationFinished", configController.renderScreenInstalla
 router.get("/config/userAdmin", configController.renderScreenConfiguracionUsuarioAdministrador);
 
 
-/*********** nuevo config **************/
-/***************************************/
+/**
+ * GET /config/paso1
+ * Carga de la pantalla con el paso 1 de proceso de instalaciónse pSolicitud de validación de conexión a la BBDD desde el proceso de instalación
+ */
 router.get("/config/paso1", configController.renderPaso1);
 
-router.get("/config/paso2", configController.renderPaso2);
 
-//router.get("/config/paso3", configController.renderPaso3);
+/**
+ * GET /config/paso2
+ * Carga de la pantalla con el paso 2 de proceso de instalaciónse pSolicitud de validación de conexión a la BBDD desde el proceso de instalación
+ */
+router.get("/config/paso2", configController.renderPaso2);
 
 /**
  * GET /config/paso3
- * Desde esta pantalla se pSolicitud de validación de conexión a la BBDD desde el proceso de instalación
+ * Carga de la pantalla con el paso 3 de proceso de instalaciónse pSolicitud de validación de conexión a la BBDD desde el proceso de instalación
  */
 router.get("/config/paso3", configController.renderPaso3);
 
@@ -380,6 +383,13 @@ router.get("/videoteca/:idVideoteca(\\d+)",userController.isAuthenticatedUser,vi
  * Recupera el listado de vídeos que componen la videoteca
  */
 router.get("/videoteca/videos/:idVideoteca(\\d+)",userController.isAuthenticatedUser,videoController.showVideos);
+
+
+/**
+ * DELETE /videoteca/:idVideoteca
+ * Permite eliminar una determinada videoteca de la BBDD
+ */
+router.delete("/videoteca/:idVideoteca(\\d+)",userController.isAuthenticatedUser,videoController.deleteVideoteca);
 
 
 module.exports = router;

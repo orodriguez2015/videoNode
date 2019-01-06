@@ -26,6 +26,7 @@
 	"edicion_album_fotografico": "Photo album edition",
 	"fotografias_album": "Album photos",
 	"ir_album" : "Go to the album",
+	"ruta_disco": "Path on disk",
 	"nueva_videoteca": "New video library",
     "nombre_videoteca_obligatorio": "Video library name *",
     "carpeta_disco_videoteca_obligatorio": "Folder on disk that contains the videos *",

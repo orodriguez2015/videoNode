@@ -22,6 +22,10 @@ var messages = {
         sSortDescending: ": Activar para ordenar la columna de manera descendente"
     },
 
+
+    autenticacion : "Autenticación",
+    nombre_usuario : "Nombre de usuario",
+    contrasenha : "Contraseña",
     atencion_titulo_modal: "Atención",
     mensaje_eliminar_album_1: "¿ Deseas eliminar el álbum con #id",
     mensaje_eliminar_album_2: "y todas sus fotografías asociadas?",
@@ -29,12 +33,12 @@ var messages = {
     mensaje_confirmar_hacer_visible_foto_2    : " para todo el mundo?",
     boton_cancelar : "Cancelar",
     boton_confirmar : "Confirmar",
+    boton_aceptar : "Aceptar",
     mensaje_error_no_permiso_borrar_album : "No dispones de permiso para borrar un álbum. Contacta con el administrador",
     mensaje_error_comprobar_permiso_borrar_album : "Se ha producido un error al comprobar si dispone de permiso de borrado del álbum",
     mensaje_error_eliminar_album : "Se ha producido un error al eliminar el álbum",
     mensaje_error_grabar_album : "No se ha podido almacenar el álbum en base de datos",
     mensaje_error_editar_album : "No se ha podido editar el álbum en base de datos",
-    
     mensaje_eliminar_foto_1 : "¿ Deseas eliminar la fotografía con #id ",
     mensaje_eliminar_foto_2 : " del álbum ?",
     mensaje_error_cambiar_visibilidad_fotografia : "Se ha producido un error al cambiar la visibilidad de la fotografía seleccionada",

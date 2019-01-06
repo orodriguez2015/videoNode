@@ -292,4 +292,44 @@ exports.getVideotecasAdministracion = function(req, res, next) {
 
 
 
+/**
+ * Elimina una determinada videoteca de la base de datos y del disco
+ * @param req Objeto Request
+ * @param res Objeto Response
+ * @param req Objeto next
+ */
+exports.deleteVideoteca = function(req, res, next) {
+    console.log("deleteVideoteca init");
+
+    var db = new database.DatabaseMysql();
+    var videoteca = req.Videoteca;
+    var resultado = {};
+
+    /*
+     * Se cuenta el número total de videotecas del usuario
+     */
+    var sql = "DELETE FROM VIDEOTECA WHERE ID=" + videoteca.id;
+    console.log("sql =" + sql);
+
+    db.query(sql).then(resultado => {
+        console.log("Videoteca " + videoteca.id + " eliminada");
+        db.close();
+
+        resultado.status= 0;
+        resultado.descStatus = "OK";
+        httpUtil.devolverJSON(res,resultado);
+
+    }).catch(err => {
+        console.log("Error al eliminar videoteca de id = " + videoteca.id);
+        db.close();
+
+        resultado.status= 1;
+        resultado.descStatus = "Error al eliminar videoteca de id = " + videoteca.id;
+        httpUtil.devolverJSON(res,resultado);
+    });
+
+
+    console.log("deleteVideoteca end");
+
+};
 

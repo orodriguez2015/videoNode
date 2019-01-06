@@ -22,6 +22,9 @@ var messages = {
         "sSortDescending": ": Activate to order the column in descending order"
     },
 
+    autenticacion : "Authentication",
+    nombre_usuario : "Username",
+    contrasenha : "Password",
     atencion_titulo_modal: "Attention",
     mensaje_eliminar_album_1: "You want to delete the album with #id",
     mensaje_eliminar_album_2: "and all its associated pictures ?",
@@ -29,6 +32,7 @@ var messages = {
     mensaje_confirmar_hacer_visible_foto_2    : " for everyone ?",
     boton_cancelar : "Cancel",
     boton_confirmar : "Confirm",
+    boton_aceptar : "Accept",
     mensaje_error_no_permiso_borrar_album : "You do not have permission to delete an album. Contact the administrator",
     mensaje_error_comprobar_permiso_borrar_album : "There was an error checking if you have permission to delete the album",
     mensaje_error_eliminar_album : "There was an error deleting the album",

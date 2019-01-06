@@ -10,12 +10,18 @@ function LoginFacade() {
      * Muestra la ventana modal de autenticación
      */
     this.show = function() {
-        //$('#login').modal('show');
 
         $('.modal-dialog').load('/login/login.html', function() {
             $('#login').modal({ show: true });
-        });
 
+            // Etiquetas de texto de la modal de autenticación según el idioma seleccionado por el usuario
+            $('#tituloAutenticacion').text(messages.autenticacion);
+            $('#nombreUsuario').text(messages.nombre_usuario);
+            $('#passwordUsuario').text(messages.contrasenha);         
+            $('#btnModalAceptar').text(messages.boton_aceptar);         
+            $('#btnModalCancelar').text(messages.boton_cancelar);         
+            
+        });
     };
 
     /**
