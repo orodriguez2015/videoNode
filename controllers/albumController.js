@@ -347,8 +347,6 @@ exports.getAlbumesAdministracion = function(req, res, next) {
 exports.deleteAlbumTransactional = function(req, res, next) {
     var user = req.session.usuario;
     var idAlbum = req.Album.id;
-
-
     var db = new database.DatabaseMysql();
 
     db.beginTransaction().then(correcto => {
@@ -373,7 +371,6 @@ exports.deleteAlbumTransactional = function(req, res, next) {
                 console.log("dirPathAlbum: " + dirPathAlbum);
                 console.log("directorioUsuario: " + directorioUsuario);
 
-
                 try {
                     fileUtil.deleteFolderRecursive(dirPathAlbum);
                     console.log("album borrado en BBDD y disco correctamente");
@@ -389,8 +386,8 @@ exports.deleteAlbumTransactional = function(req, res, next) {
                         console.log("rollback transaccion: " + JSON.stringify(res));
                         httpUtil.devolverJSON(res, { status: 0, descStatus: "OK" });
                     }).catch(err => {
+                        console.log("error commit transaccion: " + err.message);
                         db.close();
-                        console.log("ERROR commit transaccion: " + err.message);
                         httpUtil.devolverJSON(res, { status: 0, descStatus: "OK" });
                     });
 

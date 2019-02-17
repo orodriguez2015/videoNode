@@ -66,6 +66,14 @@ var messages = {
     mensaje_error_no_permiso_deshabilitar_cuenta : "You do not have permission to disable a user's account. Contact the administrator",
     mensaje_error_comprobar_permiso_deshabilitar_cuenta : "There was an error verifying if you have permission to disable the user's account",
     mensaje_error_activar_desactivar_cuenta_usuario : "An error occurred when activating / deactivating the user's account",
+    mensaje_no_existe_directorio_servidor : "There is no folder on the server",
+    mensaje_carpeta_asociada_otra_videoteca: "The indicated folder is associated with another video library",
+    mensaje_comprobar_carpeta_bbdd: "Failed to check existence of the folder indicated in BBDD",
+    mensaje_eliminar_videoteca_1: "You want to delete the video library with #id",
+    mensaje_eliminar_videoteca_2: "and all its associated videos?",
+    mensaje_error_eliminar_videoteca: "There was an error removing the video library",
+    mensaje_error_eliminar_videoteca_confirmar_transaccion: "An error occurred while confirming the transaction when the video library was deleted",
+    mensaje_error_eliminar_videoteca_crear_transaccion: "It occurred when creating transaction to delete the video library",
     
 
    required: "This field is required.",

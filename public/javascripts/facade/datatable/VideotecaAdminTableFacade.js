@@ -39,7 +39,7 @@ class VideotecaAdminTableFacade extends TableFacade {
                 publico = "SI";
             }
             datos[i][3] = publico;
-            var opciones = videotecaAdminTablaFacade.imgAccessVideos(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgUploadPhoto(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgEditAlbum(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgDeleteAlbum(idVideoteca);
+            var opciones = videotecaAdminTablaFacade.imgAccessVideos(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgUploadPhoto(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgEditAlbum(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgDeleteVideoteca(idVideoteca);
             datos[i].push(opciones);
 
         } // for
@@ -77,10 +77,10 @@ class VideotecaAdminTableFacade extends TableFacade {
     };
 
     /**
-     * Devuelve el tag html para mostrar la imagen que permite eliminar un álbum de BBDD y disco
-     * @param idVideoteca Id del álbum
+     * Devuelve el tag html para mostrar la imagen que permite eliminar una videoteca de BBDD y disco
+     * @param idVideoteca Id de la videoteca
      */
-    imgDeleteAlbum(idVideoteca) {
-        return "<img src=\"/images/full_trash.png\" border=\"0\" width=\"20\" height=\"20\" title=\"Eliminar\" alt=\"Eliminar\" onclick=\"albumFacade.validateDeleteAlbum(" + idVideoteca + ",albumFacade.onSuccessDeleteAlbum,albumFacade.onErrorDeleteAlbum);\"/>";
+    imgDeleteVideoteca(idVideoteca) {
+        return "<img src=\"/images/full_trash.png\" border=\"0\" width=\"20\" height=\"20\" title=\"Eliminar\" alt=\"Eliminar\" onclick=\"videoFacade.deleteVideoteca(" + idVideoteca + ",videoFacade.onSuccessDeleteVideoteca,videoFacade.onErrorDeleteVideoteca);\"/>";
     };
 }

@@ -72,7 +72,7 @@ exports.load = function(req, res, next, idVideoteca) {
  * @param {request} req
  * @param {response} res
  * @param {next} next
- */
+ *
 exports.comprobarRutaVideoteca = function(req,res,next) {
     var carpeta = req.body.carpeta;
     var idUsuario = req.session.usuario.ID;
@@ -114,7 +114,87 @@ exports.comprobarRutaVideoteca = function(req,res,next) {
     // Se devuelve la respuesta en formato JSON
     httpUtil.devolverJSON(res,resultado);
 };
+*/
 
+
+
+/**
+ * Comprueba que exista la ruta Almacena una videoteca en base de datos
+ * @param {request} req
+ * @param {response} res
+ * @param {next} next
+ */
+exports.comprobarRutaVideoteca = function(req,res,next) {
+    var carpeta = req.body.carpeta;
+    var idUsuario = req.session.usuario.ID;
+    var db = new database.DatabaseMysql();
+    var resultado = {
+        status: 0,
+        descStatus: "OK"
+    };
+
+    console.log("comprobarRutaVideoteca carpeta = " + carpeta);
+
+    if(carpeta==null || carpeta==undefined) {
+        resultado.status = 2;
+        resultado.descStatus = "Es necesario indicar una ruta en la que alojar los vídeos";
+        // Se devuelve la respuesta en formato JSON
+        httpUtil.devolverJSON(res,resultado);
+    }else {
+        
+        var DIRECTORIO_VIDEO = constantes.DIRECTORIO_VIDEO;
+        console.log("comprobarRutaVideoteca DIRECTORIO_VIDEO = " + DIRECTORIO_VIDEO);
+
+        var CARPETA_VIDEOS = path.join(__dirname, constantes.FILE_SEPARATOR + ".." + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR 
+        + constantes.DIRECTORIO_VIDEO + constantes.FILE_SEPARATOR + idUsuario +  constantes.FILE_SEPARATOR+ carpeta);
+
+        console.log("comprobarRutaVideoteca CARPETA_VIDEOS = " + CARPETA_VIDEOS);
+
+        if(!fileUtil.existsFile(CARPETA_VIDEOS)) {
+            console.log("No existe el directorio " + carpeta + " en el servidor");
+            resultado.status = 3 ;
+            resultado.descStatus = "No existe el directorio en el servidor";
+            // Se devuelve la respuesta en formato JSON
+            httpUtil.devolverJSON(res,resultado);
+
+        } else {
+            /**
+             * Existe el directorio => Se comprueba si pertenece a la videoteca de otro usuario
+             */
+            var sql = "SELECT COUNT(*) AS NUM FROM VIDEOTECA WHERE RUTA ='" + CARPETA_VIDEOS + "'";
+            console.log(sql);
+
+            db.query(sql).then(numero=>{
+
+                db.close();
+
+                if(numero!=undefined && numero.length>=1 && numero[0].NUM>=1) {
+                    resultado.status = 1;
+                    resultado.descStatus = "El directorio está asociado a otra videoteca"; 
+                    // Se devuelve la respuesta en formato JSON
+                    httpUtil.devolverJSON(res,resultado);
+
+                } else {
+                    resultado.status = 0;
+                    resultado.descStatus = "OK"; 
+                    // Se devuelve la respuesta en formato JSON
+                    httpUtil.devolverJSON(res,resultado);
+                }
+
+            }).catch(err=>{
+                db.close();
+                console.log("Error al comprobar existencia de directorio videos de usuario en BBDD: " + err.message);
+                resultado.status = 2;
+                resultado.descStatus = "Error al comprobar existencia de directorio videos de usuario en BBDD: " + err.message;
+                // Se devuelve la respuesta en formato JSON
+                httpUtil.devolverJSON(res,resultado);
+
+            });
+        }
+    }
+
+   
+};
 
 /**
  * Almacena una videoteca en base de datos
@@ -160,10 +240,6 @@ exports.saveVideoteca = function(req,res,next) {
             }
         }
 
-       
-
-       
-        //fileUtil.mkdirSync(rutaCompleta);
 
         var sql = "INSERT INTO VIDEOTECA(nombre,ruta,idUsuario,publico) VALUES ('" + nombre + "','" + rutaDirectorioVideoteca + "'," + idUsuario + "," + publico +  ")";
         console.log("sql: " + sql);
@@ -212,13 +288,10 @@ exports.getVideotecasAdministracion = function(req, res, next) {
     var idColumnOrden;
     var tipoOrden;
 
-
-
     if (order != undefined && order.length == 1) {
         tipoOrden = order[0]['dir'];
         idColumnOrden = order[0]['column'];
     }
-
 
     /*
      * Se recuperan las videotecas del usuario
@@ -299,37 +372,73 @@ exports.getVideotecasAdministracion = function(req, res, next) {
  * @param req Objeto next
  */
 exports.deleteVideoteca = function(req, res, next) {
-    console.log("deleteVideoteca init");
-
     var db = new database.DatabaseMysql();
     var videoteca = req.Videoteca;
     var resultado = {};
 
-    /*
-     * Se cuenta el número total de videotecas del usuario
-     */
-    var sql = "DELETE FROM VIDEOTECA WHERE ID=" + videoteca.id;
-    console.log("sql =" + sql);
+    console.log("deleteVideoteca init");
 
-    db.query(sql).then(resultado => {
-        console.log("Videoteca " + videoteca.id + " eliminada");
-        db.close();
+    console.log("deleteVideoteca idVideoteca = " + videoteca.id);
 
-        resultado.status= 0;
-        resultado.descStatus = "OK";
-        httpUtil.devolverJSON(res,resultado);
+    // Se abre transacción
+    db.beginTransaction().then(correcto=>{
+        var ruta = videoteca.ruta;
+        console.log("Ruta videoteca a borrar en disco: " + ruta);
 
-    }).catch(err => {
-        console.log("Error al eliminar videoteca de id = " + videoteca.id);
-        db.close();
+       /*
+        * Se cuenta el número total de videotecas del usuario
+        */
+        var sql = "DELETE FROM VIDEOTECA WHERE ID=" + videoteca.id;
+        console.log("sql =" + sql);
+
+        db.query(sql).then(consulta => {
+           console.log("Videoteca " + videoteca.id + " eliminada de bbdd");
+
+           console.log("Se procede a borrar los videos de la ruta = " + ruta);
+           /*
+            * Se procede a borrar la carpeta de la videoteca de forma recursiva
+            */
+           fileUtil.deleteFolderRecursive(ruta);
+
+           console.log("Videoteca borrada de disco");
+        
+           db.commitTransaction().then(correcto =>{
+                db.close();
+                resultado.status= 0;
+                resultado.descStatus = "OK";
+                httpUtil.devolverJSON(res,resultado);
+
+            }).catch(err => {
+                console.log("Error al confirmar transacción de borrado de videoteca: " + err.message);
+
+                db.rollbackTransaction().then(correcto =>{
+                    db.close();
+                    resultado.status= 2;
+                    resultado.descStatus = "Error al confirmar transacción";
+                    httpUtil.devolverJSON(res, resultado);
+                });
+            });;
+            
+        }).catch(error=> {
+            console.log("Error al eliminar videoteca de id = " + videoteca.id + " de BBDD: " + error.message);
+
+            db.rollbackTransaction().then(correcto =>{
+                db.close();
+
+                resultado.status= 3;
+                resultado.descStatus = "Error al eliminar videoteca de id = " + videoteca.id + " de bbdd: " + error.message;
+                httpUtil.devolverJSON(res,resultado);
+                
+            });           
+        });
+
+    }).catch(err=>{
+        console.log("Error al abrir transacción para borrar una videoteca: " + err.message);
 
         resultado.status= 1;
-        resultado.descStatus = "Error al eliminar videoteca de id = " + videoteca.id;
+        resultado.descStatus = "Error al abrir transacción para borrar una videoteca: " + err.message;
         httpUtil.devolverJSON(res,resultado);
     });
-
-
-    console.log("deleteVideoteca end");
 
 };
 

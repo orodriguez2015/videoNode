@@ -39,6 +39,8 @@ function VideotecaValidationFacade() {
 
         videoFacade.saveVideoteca(videoteca,
             function(data) { // onSuccess
+
+                
                 switch(data.status) {
                     case 0: {    
                         window.location = "/videoteca";

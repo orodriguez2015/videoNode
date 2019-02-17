@@ -65,31 +65,19 @@ var messages = {
     mensaje_confirmacion_desactivar_cuenta_usuario : "¿ Deseas desactivar la cuenta del usuario con #id ",
     mensaje_confirmacion_activar_cuenta_usuario : "¿ Deseas activar la cuenta del usuario con #id ",
     mensaje_error_no_permiso_deshabilitar_cuenta : "No dispones de permiso para deshabilitar la cuenta de un usuario. Contacta con el administrador",
-
     mensaje_error_comprobar_permiso_deshabilitar_cuenta : "Se ha producido un error al verificar si dispones de permiso para deshabilitar la cuenta del usuario",
     mensaje_error_activar_desactivar_cuenta_usuario : "Se ha producido un error al activar/desactivar la cuenta del usuario",
-
-    
-
-
-
-    
-    
-
-    
-
-    
+    mensaje_no_existe_directorio_servidor : "No existe la carpeta en el servidor",
+    mensaje_carpeta_asociada_otra_videoteca: "La carpeta indicada está asociado a otra videoteca",
+    mensaje_comprobar_carpeta_bbdd: "Error al comprobar existencia de la carpeta indicada en BBDD",
+    mensaje_eliminar_videoteca_1: "¿ Deseas eliminar la videoteca con #id",
+    mensaje_eliminar_videoteca_2: "y todos sus vídeos asociados?",
+    mensaje_error_eliminar_videoteca: "Se ha producido un error al eliminar la videoteca",
+    mensaje_error_eliminar_videoteca_confirmar_transaccion: "Se ha producido un error al confirmar la transacción al eliminar la videoteca",
+    mensaje_error_eliminar_videoteca_crear_transaccion: "Se ha producido al crear transacción para eliminar la videoteca",
 
 
     
-
-    
-    
-
-    
-
-    
-
     
     /** etiquetas del plugin de jQuery validation */
     required: "Este campo es obligatorio.",

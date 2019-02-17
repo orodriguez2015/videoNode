@@ -15,7 +15,6 @@
        var resultado = videoFacade.existeRutaCarpetaUsuario(value, 
         function(data) { // onSuccess
 
-            console.log("data: " + JSON.stringify(data));
            switch (data.status) {
              
                case 0: {
@@ -23,21 +22,28 @@
                    break;
                }
 
-               case 1:{
-                    msg = "Ya existe una carpeta con el mismo nombre en su carpeta de usuario";
+                case 1:{                    
+                    msg = messages.mensaje_carpeta_asociada_otra_videoteca;
                     salida = false;
                     break;
                 }
 
                 case 2:{                    
-                    msg = "No ha llegado la carpeta introducida al servidor, escribala de nuevo";
+                    msg = messages.mensaje_comprobar_carpeta_bbdd;
                     salida = false;
+                    break;
+                }
+
+                case 3:{                    
+                    msg = messages.mensaje_no_existe_directorio_servidor;
+                    salida = true;
                     break;
                 }
            }// switch
 
        }, function(error) { // onError
-           msg = "Uppsss ... Se ha producido un error técnico. Intentalo de nuevo."
+           msg = messages.errorTecnicoCompleto;
+           //"Uppsss ... Se ha producido un error técnico. Intentalo de nuevo."
            salida = false;
        });
 
