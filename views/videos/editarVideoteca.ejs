@@ -19,12 +19,12 @@
                     <div class="row">
                         <div class="form-group">
                             <label for="nombre"><b>Nombre videoteca *</b></label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre" maxlength="155">
+                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre" maxlength="155" value="<%= videoteca.nombre %>">
                         </div>
 
                         <div class="form-group">
                             <label for="descripcion"><b>Carpeta en disco que contiene los vídeos *</b></label>
-                            <input type="text" class="form-control" id="carpeta" name="carpeta" placeholder="Carpeta" maxlength="225">
+                            <input type="text" class="form-control" id="carpeta" name="carpeta" placeholder="Carpeta" maxlength="225" value="<%= videoteca.ruta %>">
                         </div>
 
                         <div class="form-group">
@@ -37,7 +37,7 @@
                     <br>
                     <div class="row">
                         <button type="submit" class="btn btn-success">Enviar</button>
-                        <a href="/videoteca">
+                        <a href="/videotecas">
                             <button type="button" class="btn btn-danger">Cancelar</button>
                         </a>
                     </div>
@@ -49,13 +49,11 @@
 
 
     
-    <script type="text/javascript" src="/javascripts/vendor/jquery/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="/javascripts/vendor/jquery/additional-methods.js"></script>
-    <script type="text/javascript" src="/javascripts/vendor/jquery/messages_es.js"></script>
+    
     <script type="text/javascript" src="/javascripts/facade/video/VideoFacade.js"></script>
-    <script type="text/javascript" src="/javascripts/facade/validation/FormValidationFacade.js"></script>
     <script type="text/javascript" src="/javascripts/facade/validation/VideotecaValidationFacade.js"></script>
     <script type="text/javascript" src="/javascripts/facade/validation/ValidatorVideoteca.js"></script>
+    
 
 
     <script type="text/javascript">

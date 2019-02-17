@@ -34,6 +34,8 @@ var messages = {
     boton_cancelar : "Cancelar",
     boton_confirmar : "Confirmar",
     boton_aceptar : "Aceptar",
+    eliminar: "Eliminar",
+    editar: "Editar",
     mensaje_error_no_permiso_borrar_album : "No dispones de permiso para borrar un álbum. Contacta con el administrador",
     mensaje_error_comprobar_permiso_borrar_album : "Se ha producido un error al comprobar si dispone de permiso de borrado del álbum",
     mensaje_error_eliminar_album : "Se ha producido un error al eliminar el álbum",
@@ -75,6 +77,7 @@ var messages = {
     mensaje_error_eliminar_videoteca: "Se ha producido un error al eliminar la videoteca",
     mensaje_error_eliminar_videoteca_confirmar_transaccion: "Se ha producido un error al confirmar la transacción al eliminar la videoteca",
     mensaje_error_eliminar_videoteca_crear_transaccion: "Se ha producido al crear transacción para eliminar la videoteca",
+
 
 
     

@@ -39,7 +39,7 @@ class VideotecaAdminTableFacade extends TableFacade {
                 publico = "SI";
             }
             datos[i][3] = publico;
-            var opciones = videotecaAdminTablaFacade.imgAccessVideos(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgUploadPhoto(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgEditAlbum(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgDeleteVideoteca(idVideoteca);
+            var opciones = videotecaAdminTablaFacade.imgAccessVideos(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgUploadPhoto(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgEditVideoteca(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgDeleteVideoteca(idVideoteca);
             datos[i].push(opciones);
 
         } // for
@@ -69,11 +69,11 @@ class VideotecaAdminTableFacade extends TableFacade {
 
     /**
      * Devuelve el tag html para mostrar la imagen que permite acceder a la pantalla en la que se
-     * se permite editar el álbum
-     * @param idVideoteca Id del álbum
+     * se permite editar una videoteca
+     * @param idVideoteca Id de la videoteca
      */
-    imgEditAlbum(idVideoteca) {
-        return "<img src=\"/images/pencil2.png\" border=\"0\" width=\"20\" height=\"20\" title=\"Editar\" alt=\"Editar\" onclick=\"window.location.href='/album/" + idVideoteca + "'\"/>";
+    imgEditVideoteca(idVideoteca) {
+        return "<img src=\"/images/pencil2.png\" border=\"0\" width=\"20\" height=\"20\" title=\"" + messages.editar + "\" alt=\"" + messages.editar + "\" onclick=\"window.location.href='/videoteca/" + idVideoteca + "'\"/>";
     };
 
     /**
@@ -81,6 +81,6 @@ class VideotecaAdminTableFacade extends TableFacade {
      * @param idVideoteca Id de la videoteca
      */
     imgDeleteVideoteca(idVideoteca) {
-        return "<img src=\"/images/full_trash.png\" border=\"0\" width=\"20\" height=\"20\" title=\"Eliminar\" alt=\"Eliminar\" onclick=\"videoFacade.deleteVideoteca(" + idVideoteca + ",videoFacade.onSuccessDeleteVideoteca,videoFacade.onErrorDeleteVideoteca);\"/>";
+        return "<img src=\"/images/full_trash.png\" border=\"0\" width=\"20\" height=\"20\" title=\"" + messages.eliminar + "\" alt=\"" + messages.eliminar + "\" onclick=\"videoFacade.deleteVideoteca(" + idVideoteca + ",videoFacade.onSuccessDeleteVideoteca,videoFacade.onErrorDeleteVideoteca);\"/>";
     };
 }

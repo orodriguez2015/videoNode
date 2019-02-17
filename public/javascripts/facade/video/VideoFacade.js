@@ -106,7 +106,7 @@ class VideoFacade {
         if(resultado!=undefined) {
             switch(resultado.status) {
                 case 0: {
-                    window.location = "/videoteca";
+                    window.location = "/videotecas";
                     break;
                 }
 

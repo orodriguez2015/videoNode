@@ -33,6 +33,8 @@ var messages = {
     boton_cancelar : "Cancel",
     boton_confirmar : "Confirm",
     boton_aceptar : "Accept",
+    eliminar: "Delete",
+    editar: "Edit",
     mensaje_error_no_permiso_borrar_album : "You do not have permission to delete an album. Contact the administrator",
     mensaje_error_comprobar_permiso_borrar_album : "There was an error checking if you have permission to delete the album",
     mensaje_error_eliminar_album : "There was an error deleting the album",

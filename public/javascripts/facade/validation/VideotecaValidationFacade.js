@@ -43,7 +43,7 @@ function VideotecaValidationFacade() {
                 
                 switch(data.status) {
                     case 0: {    
-                        window.location = "/videoteca";
+                        window.location = "/videotecas";
                         break;
                     }
 

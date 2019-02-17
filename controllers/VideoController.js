@@ -40,6 +40,18 @@ exports.nuevaVideoteca = function(req,res,next) {
 
 
 /**
+ * Renderiza la pantalla de edición de una determinada videoteca
+ * @param {request} req
+ * @param {response} res
+ * @param {next} next
+ */
+exports.edicionVideoteca = function(req,res,next) {
+    var videoteca = req.Videoteca;
+    res.render("videos/editarVideoteca",{videoteca:videoteca,errors:{}});
+};
+
+
+/**
  * Función de autoload para cargar un álbum en la request.
  * También sirve para realizar un control de errores
  * @param req: Objeto request

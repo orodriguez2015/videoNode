@@ -343,7 +343,7 @@ router.post("/config/createTablesDatabase", configController.createTablesDatabas
 /**
  * Mostrar las videotecas del usuario
  */
-router.get("/videoteca",userController.isAuthenticatedUser,videoController.showVideotecas);
+router.get("/videotecas",userController.isAuthenticatedUser,videoController.showVideotecas);
 
 /** 
  * GET /videoteca/nueva . Carga la pagina de creación de una nueva videoteca
@@ -368,14 +368,14 @@ router.post("/videoteca/guardar",userController.isAuthenticatedUser,videoControl
  * GET /videoteca/administracion
  * Recupera las videotecas de un usuario
  */
-router.get("/videoteca/administracion",userController.isAuthenticatedUser,videoController.getVideotecasAdministracion);
+router.get("/videotecas/administracion",userController.isAuthenticatedUser,videoController.getVideotecasAdministracion);
 
 
 /**
  * GET /videoteca/:idVideoteca
  * Recupera los datos de una videoteca
  */
-router.get("/videoteca/:idVideoteca(\\d+)",userController.isAuthenticatedUser,videoController.getVideotecasAdministracion);
+router.get("/videotecas/:idVideoteca(\\d+)",userController.isAuthenticatedUser,videoController.getVideotecasAdministracion);
 
 
 /**
@@ -390,6 +390,13 @@ router.get("/videoteca/videos/:idVideoteca(\\d+)",userController.isAuthenticated
  * Permite eliminar una determinada videoteca de la BBDD
  */
 router.delete("/videoteca/:idVideoteca(\\d+)",userController.isAuthenticatedUser,videoController.deleteVideoteca);
+
+
+/**
+ * GET /videoteca/:idVideoteca
+ * Recupera la pantalla de edición de una videoteca
+ */
+router.get("/videoteca/:idVideoteca(\\d+)",userController.isAuthenticatedUser,videoController.edicionVideoteca);
 
 
 module.exports = router;
