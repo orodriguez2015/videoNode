@@ -78,9 +78,9 @@ var messages = {
     mensaje_error_eliminar_videoteca_confirmar_transaccion: "Se ha producido un error al confirmar la transacción al eliminar la videoteca",
     mensaje_error_eliminar_videoteca_crear_transaccion: "Se ha producido al crear transacción para eliminar la videoteca",
 
-
-
     
+
+
     
     /** etiquetas del plugin de jQuery validation */
     required: "Este campo es obligatorio.",

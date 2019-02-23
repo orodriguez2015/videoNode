@@ -259,3 +259,24 @@ exports.configBBDDFileAsString = function(config) {
 
     return salida;
 };
+
+
+
+/**
+ * De un string con una determinada ruta en disco, recupera sólo el nombre de la última carpeta/directorio
+ * @param ruta Ruta en disco
+ * @return Nombre de la carpeta final
+ */
+exports.getNombreCarpeta = function(ruta) {
+    var nombre = "";
+
+    if(ruta!=null && ruta!="") {
+        var index = ruta.lastIndexOf(constantes.FILE_SEPARATOR);
+        if(index!=-1) {
+            nombre = ruta.substring(index+1,ruta.length);
+        }
+        
+    }// if
+
+    return nombre;
+};

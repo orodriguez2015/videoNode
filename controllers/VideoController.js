@@ -68,7 +68,10 @@ exports.load = function(req, res, next, idVideoteca) {
 
     db.query(sql).then(resultado => {
         db.close();
-        req.Videoteca = resultado[0];
+
+        var dato = resultado[0];
+        dato.ruta =  fileUtil.getNombreCarpeta(dato.ruta);
+        req.Videoteca = dato;
         next();
     })
     .catch(err => {
@@ -77,56 +80,6 @@ exports.load = function(req, res, next, idVideoteca) {
         next(err);
     });
 };
-
-
-/**
- * Comprueba que exista la ruta Almacena una videoteca en base de datos
- * @param {request} req
- * @param {response} res
- * @param {next} next
- *
-exports.comprobarRutaVideoteca = function(req,res,next) {
-    var carpeta = req.body.carpeta;
-    var idUsuario = req.session.usuario.ID;
-    var resultado = {
-        status: 0,
-        descStatus: "OK"
-    };
-
-    console.log("comprobarRutaVideoteca");
-    console.log("idUsuario: " + idUsuario + ", carpeta: " + carpeta);
-
-
-    if(carpeta==null || carpeta==undefined) {
-        resultado.status = 2;
-        resultado.descStatus = "Es necesario indicar una ruta en la que alojar los vídeos";
-    }else {
-        console.log("dirActual: " + __dirname);
-
-        var rutaCompleta = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
-            + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO  + 
-            constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + carpeta);
-        
-            console.log("rutaCompleta: " + rutaCompleta);
-
-        if(!fileUtil.existsFile(rutaCompleta)) {
-            console.log("No existe el archivo " + rutaCompleta);
-            resultado.status = 0;
-            resultado.descStatus = "No existe la carpeta de usuario";
-
-           // fileUtil.mkdirSync(rutaCompleta);
-            console.log("se ha creado la carpeta : " + rutaCompleta);
-        } else {
-            console.log("Existe la carpeta: " + rutaCompleta);
-            resultado.status = 1;
-            resultado.descStatus = "Existe la carpeta de usuario. Se debe seleccionar otra";
-        }
-    }
-
-    // Se devuelve la respuesta en formato JSON
-    httpUtil.devolverJSON(res,resultado);
-};
-*/
 
 
 
