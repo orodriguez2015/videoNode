@@ -180,11 +180,12 @@ class VideoFacade {
 
     /**
      * Editar una videoteca
+     * @param {Integer} id Identificador de la videoteca
      * @param {Object} videoteca Objeto con los datos de la videoteca
      * @param {function} onSuccess Función invocada en caso de éxito
      * @param {function} onError Función invocada en caso de fallo
      */
-    editarVideoteca(videoteca,onSuccess,onError) {
+    editarVideoteca(id,videoteca,onSuccess,onError) {
         
         return $.ajax({
             async: false,
@@ -193,7 +194,7 @@ class VideoFacade {
             type: 'PUT',
             dataType: 'json',
             data: videoteca,
-            url: this.URL_VIDEOTECA,
+            url: this.URL_VIDEOTECA + "/" + id,
             success: onSuccess,
             error: onError
         });

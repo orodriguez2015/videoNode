@@ -469,6 +469,156 @@ exports.deleteVideoteca = function(req, res, next) {
         resultado.descStatus = "Error al abrir transacción para borrar una videoteca: " + err.message;
         httpUtil.devolverJSON(res,resultado);
     });
+}
+
+
+
+
+/**
+ * Almacena una videoteca en base de datos
+ * @param {request} req
+ * @param {response} res
+ * @param {next} next
+ */
+exports.editarVideoteca = function(req,res,next) {
+    var db = new database.DatabaseMysql();
+    var idVideoteca = req.body.idVideoteca;
+    var nombre = req.body.nombre;
+    var carpeta = req.body.carpeta;
+    var publico = req.body.publico;
+    var idUsuario = req.session.usuario.ID;
+
+    var videoteca = req.Videoteca;
+
+
+    console.log("editarVideoteca nombre =  " + nombre + ", carpeta = " + carpeta + ", publico = " + publico + ",idUsuario = " + idUsuario);
+    console.log("editarVideoteca idVideoteca =  " + videoteca.id);
+
+    console.log("publico: " + publico);
+
+    if(nombre!=undefined && carpeta!=undefined && nombre!='' && carpeta!='') {
+
+        var cambioCarpeta  = false;
+        if(carpeta!=videoteca.ruta) {
+            cambioCarpeta = true;
+        }
+
+        console.log("cambioCarpeta = " + cambioCarpeta);
+
+        /*
+        var rutaDirectorioVideosPadre = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
+            + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO  + 
+            constantes.FILE_SEPARATOR + idUsuario);
+
+        var rutaDirectorioVideoteca = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
+            + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO  + 
+            constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + carpeta);
+
+        console.log("rutaDirectorioVideosPadre = " + rutaDirectorioVideosPadre);
+        console.log("rutaDirectorioVideoteca = " + rutaDirectorioVideoteca);
+
+        if(!fileUtil.existsFile(rutaDirectorioVideosPadre)) {
+            console.log("No existe directorio: " + rutaDirectorioVideosPadre + ", se crea");
+            // Se crea el directorio padre
+            fileUtil.mkdirSync(rutaDirectorioVideosPadre);
+            fileUtil.mkdirSync(rutaDirectorioVideoteca);
+        }else {
+
+            console.log("Existe directorio: " + rutaDirectorioVideosPadre);
+
+            if(!fileUtil.existsFile(rutaDirectorioVideoteca)) {
+                console.log("No existe directorio: " + rutaDirectorioVideoteca + ", se crea");
+                // Se crea el directorio padre
+                fileUtil.mkdirSync(rutaDirectorioVideoteca);
+            }
+        }
+        */
+
+        try {
+
+        var ruta_nueva = '';
+        var ruta_original = videoteca.ruta_completa;
+        console.log("ruta_original = " + ruta_original);
+
+        var sql = "UPDATE VIDEOTECA SET NOMBRE='" + nombre + "'" ;
+        
+        if(cambioCarpeta) {
+
+
+            ruta_nueva = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
+                + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO  + 
+                constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + carpeta);
+    
+            /*
+             * Si hay cambio de carpeta, hay que recalcular la nueva ruta completa en disco
+            */
+            sql = sql  + ",RUTA='" + carpeta + "',RUTA_COMPLETA='" + ruta_nueva + "'";
+        }
+        
+        sql = sql + ",PUBLICO=" + publico + ",FECHAMODIFICACION=NOW() WHERE ID = " + videoteca.id;
+
+        console.log("sql: " + sql);''
+
+        db.beginTransaction().then(correcto => {
+            console.log("Iniciada transacción contra la BBDD");
+            if(correcto) {
+
+                /********************/ 
+                db.query(sql).then(resultado =>{
+
+                    if(cambioCarpeta) {
+                        fileUtil.renombrarDirectorio(ruta_original,ruta_nueva);
+                    }
+
+                    db.commitTransaction().then(obj=>{
+
+                        console.log("Confirmando transaccion");
+                        db.close();
+                        var resultado = {
+                            status: 0, descStatus: 'OK'
+                        };
+
+                        httpUtil.devolverJSON(res,resultado);
+                    });
+
+            
+
+                }) .catch(err => {
+                    console.log('Error al actualizar videoteca: ' + err.message);
+
+                    db.rollbackTransaction().then(obj=>{
+                        console.log("Abortando transaccion");
+                        db.close();
+                        var resultado = {
+                            status: 2, descStatus: 'Se ha producido un error'
+                        };
+
+                        httpUtil.devolverJSON(res,resultado);
+                    });
+                });
+
+                /********************/ 
+            }
+
+        }).catch(error=>{
+
+            db.close();
+            console.log("Se ha producido un error a iniciar la transacción contra la BBDD: " + error.message);
+            var resultado = {
+                status:1,
+                descStatus:''
+            }
+
+            httpUtil.devolverJSON(res,resultado);
+        });
+
+
+
+
+    }catch(err) {
+        console.log("error " + err.message);
+    }
+
+}
 
 };
-

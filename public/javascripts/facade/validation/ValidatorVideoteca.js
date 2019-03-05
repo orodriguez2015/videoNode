@@ -55,63 +55,59 @@
 
 
 
-
+   /**
+    * Función de validación de jQuery validation que comprueba si existe ya la carpeta indicada por el usuario ya
+    * existe entre otra de las videotecas del usuario
+    */
    jQuery.validator.addMethod("comprobarRutaVideotecaUsuario", function(value, element) {
+        var salida = false;
+        var idVideoteca = $('#idVideoteca').val();
     
-    var salida = false;
-    var idVideoteca = $('#idVideoteca').val();
+        if(idVideoteca!=undefined && value!=undefined && value!='') {
 
-    console.log("comprobarRutaVideotecaUsuario value = " + JSON.stringify(value));
-    console.log("idVideoteca = " + idVideoteca);
-    
-    if(idVideoteca!=undefined && value!=undefined && value!='') {
+            var parametro = {
+                idVideoteca: idVideoteca,
+                carpeta: value
+            };
 
-        var parametro = {
-            idVideoteca: idVideoteca,
-            carpeta: value
-        };
+            var resultado = videoFacade.existeRutaCarpetaOtraVideoteca(parametro, 
+                function(data) { // onSuccess
+                    switch (data.status) {
+                        
+                        case 0: {
+                            salida = true;
+                            break;
+                        }
+            
+                            case 1:{                    
+                                msg = messages.mensaje_carpeta_asociada_otra_videoteca;
+                                salida = false;
+                                break;
+                            }
+            
+                            case 2:{                    
+                                msg = messages.mensaje_error_comprobar_carpeta_idvideoteca;
+                                salida = false;
+                                break;
+                            }
+            
+                            case 3:{                    
+                                msg = messages.mensaje_error_comprobar_carpeta_videoteca;
+                                salida = true;
+                                break;
+                            }
+                    }// switch
+        
+            }, function(error) { // onError
+                msg = messages.errorTecnicoCompleto;
+                //"Uppsss ... Se ha producido un error técnico. Intentalo de nuevo."
+                salida = false;
+            });
 
-        var resultado = videoFacade.existeRutaCarpetaOtraVideoteca(parametro, 
-            function(data) { // onSuccess
-       
-                console.log("res= " + JSON.stringify(data));
+        }
 
-               switch (data.status) {
-                 
-                   case 0: {
-                     salida = true;
-                       break;
-                   }
-       
-                    case 1:{                    
-                        msg = messages.mensaje_carpeta_asociada_otra_videoteca;
-                        salida = false;
-                        break;
-                    }
-       
-                    case 2:{                    
-                        msg = messages.mensaje_error_comprobar_carpeta_idvideoteca;
-                        salida = false;
-                        break;
-                    }
-       
-                    case 3:{                    
-                        msg = messages.mensaje_error_comprobar_carpeta_videoteca;
-                        salida = true;
-                        break;
-                    }
-               }// switch
-       
-           }, function(error) { // onError
-               msg = messages.errorTecnicoCompleto;
-               //"Uppsss ... Se ha producido un error técnico. Intentalo de nuevo."
-               salida = false;
-           });
-
-    }
-
-    return salida;
-}, function(params, element) {
-    // Se devuelve el mensaje de error si lo hay
-    return msg;
-});
+        return salida;
+    }, function(params, element) {
+        // Se devuelve el mensaje de error si lo hay
+        return msg;
+    });

@@ -38,9 +38,6 @@ function VideotecaValidationFacade() {
         var carpetaVideoteca = $('#carpeta').val();
         var publico  = $('#publico').prop('checked');
 
-        console.log("nombrevideoteca: " + nombreVideoteca + ", carpeta: " + carpetaVideoteca);
-        console.log("publico: " + publico);
-
         var videoteca = {
             nombre: nombreVideoteca,
             carpeta : carpetaVideoteca,
@@ -58,13 +55,13 @@ function VideotecaValidationFacade() {
                     }
 
                     case 1: {
-                        messagesArea.showMessageError("Se ha producido un error al insertar la videoteca");
+                        messagesArea.showMessageError(messages.mensaje_error_insertar_videoteca);
                         break;
                     }
                 }
             },
             function(err){ // onError
-                messagesArea.showMessageError("Se ha producido un error al insertar la videoteca");
+                messagesArea.showMessageError(messages.mensaje_error_insertar_videoteca);
             }
         );
         
@@ -72,21 +69,19 @@ function VideotecaValidationFacade() {
 
 
     this.editarVideoteca = function() {
+        var idVideoteca = $('#idVideoteca').val();
         var nombreVideoteca  = $('#nombre').val();
         var carpetaVideoteca = $('#carpeta').val();
         var publico  = $('#publico').prop('checked');
 
-        console.log("nombrevideoteca: " + nombreVideoteca + ", carpeta: " + carpetaVideoteca);
-        console.log("publico: " + publico);
-
         var videoteca = {
+            id: idVideoteca,
             nombre: nombreVideoteca,
             carpeta : carpetaVideoteca,
             publico: (publico==true)?1:0
         }
-
         
-        videoFacade.editarVideoteca(videoteca,
+        videoFacade.editarVideoteca(idVideoteca,videoteca,
             function(data) { // onSuccess
 
                 
@@ -97,19 +92,16 @@ function VideotecaValidationFacade() {
                     }
 
                     case 1: {
-                        messagesArea.showMessageError("Se ha producido un error al insertar la videoteca");
+                        messagesArea.showMessageError(messages.mensaje_error_actualizar_videoteca);
                         break;
                     }
                 }
             },
             function(err){ // onError
-                messagesArea.showMessageError("Se ha producido un error al insertar la videoteca");
+                messagesArea.showMessageError(messages.mensaje_error_actualizar_videoteca);
             }
-        );
-        
+        );  
     };
-
-   
 }
 
 var videotecaValidation = new VideotecaValidationFacade();

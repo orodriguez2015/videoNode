@@ -399,13 +399,11 @@ router.delete("/videoteca/:idVideoteca(\\d+)",userController.isAuthenticatedUser
 router.get("/videoteca/:idVideoteca(\\d+)",userController.isAuthenticatedUser,videoController.edicionVideoteca);
 
 
-/*****************************************************/
-
 /**
- * PUT /videoteca
+ * PUT /videoteca/:idVideoteca
  * Editar una videoteca en BBDD
  */
-router.put("/videoteca",userController.isAuthenticatedUser,videoController.saveVideoteca);
+router.put("/videoteca/:idVideoteca(\\d+)",userController.isAuthenticatedUser,videoController.editarVideoteca);
 
 
 

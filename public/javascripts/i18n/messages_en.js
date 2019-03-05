@@ -78,6 +78,8 @@ var messages = {
     mensaje_error_eliminar_videoteca_crear_transaccion: "It occurred when creating transaction to delete the video library",
     mensaje_error_comprobar_carpeta_idvideoteca: "It is necessary to indicate the folder and the identifier of the video library",
     mensaje_error_comprobar_carpeta_videoteca: "Error checking the existence of the user's video library folder in BBDD",
+    mensaje_error_actualizar_videoteca: "An error occurred while updating the video library",
+    mensaje_error_insertar_videoteca: "An error occurred when registering the video library",
 
     
 

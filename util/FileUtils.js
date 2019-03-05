@@ -280,3 +280,18 @@ exports.getNombreCarpeta = function(ruta) {
 
     return nombre;
 };
+
+
+
+/**
+ * Renombrar un directorio
+ * @param {String} oldPath Ruta antigua
+ * @param {String} newPath Ruta nueva
+ */
+exports.renombrarDirectorio = function(oldPath,newPath) {
+
+    if(this.existsFile(oldPath) && (newPath!=undefined && newPath!='')) {
+        fs.renameSync(oldPath,newPath);
+    }
+
+};
