@@ -399,4 +399,23 @@ router.delete("/videoteca/:idVideoteca(\\d+)",userController.isAuthenticatedUser
 router.get("/videoteca/:idVideoteca(\\d+)",userController.isAuthenticatedUser,videoController.edicionVideoteca);
 
 
+/*****************************************************/
+
+/**
+ * PUT /videoteca
+ * Editar una videoteca en BBDD
+ */
+router.put("/videoteca",userController.isAuthenticatedUser,videoController.saveVideoteca);
+
+
+
+/**
+ * POST /videoteca/comprobarRutaOtraVideotecaUsuario
+ * Guardar videoteca en BBDD
+ */
+router.post("/videoteca/comprobarRutaOtraVideotecaUsuario",userController.isAuthenticatedUser,videoController.comprobarRutaOtraVideotecaUsuario);
+
+
+
+
 module.exports = router;

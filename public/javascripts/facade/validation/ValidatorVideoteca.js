@@ -52,3 +52,66 @@
        // Se devuelve el mensaje de error si lo hay
        return msg;
    });
+
+
+
+
+   jQuery.validator.addMethod("comprobarRutaVideotecaUsuario", function(value, element) {
+    
+    var salida = false;
+    var idVideoteca = $('#idVideoteca').val();
+
+    console.log("comprobarRutaVideotecaUsuario value = " + JSON.stringify(value));
+    console.log("idVideoteca = " + idVideoteca);
+    
+    if(idVideoteca!=undefined && value!=undefined && value!='') {
+
+        var parametro = {
+            idVideoteca: idVideoteca,
+            carpeta: value
+        };
+
+        var resultado = videoFacade.existeRutaCarpetaOtraVideoteca(parametro, 
+            function(data) { // onSuccess
+       
+                console.log("res= " + JSON.stringify(data));
+
+               switch (data.status) {
+                 
+                   case 0: {
+                     salida = true;
+                       break;
+                   }
+       
+                    case 1:{                    
+                        msg = messages.mensaje_carpeta_asociada_otra_videoteca;
+                        salida = false;
+                        break;
+                    }
+       
+                    case 2:{                    
+                        msg = messages.mensaje_error_comprobar_carpeta_idvideoteca;
+                        salida = false;
+                        break;
+                    }
+       
+                    case 3:{                    
+                        msg = messages.mensaje_error_comprobar_carpeta_videoteca;
+                        salida = true;
+                        break;
+                    }
+               }// switch
+       
+           }, function(error) { // onError
+               msg = messages.errorTecnicoCompleto;
+               //"Uppsss ... Se ha producido un error técnico. Intentalo de nuevo."
+               salida = false;
+           });
+
+    }
+
+    return salida;
+}, function(params, element) {
+    // Se devuelve el mensaje de error si lo hay
+    return msg;
+});

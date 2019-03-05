@@ -15,8 +15,9 @@
         <div class="span12" id="divMain" style="margin-left:30px;">
             <p>
 
-                <form method="POST" role="form" id="formAltaVideoteca" name="formAltaVideoteca" action="" novalidate>
+                <form method="POST" role="form" id="formEditVideoteca" name="formEditVideoteca" action="" novalidate>
                     <div class="row">
+                        <input type="hidden" name="idVideoteca" id="idVideoteca" value="<%=videoteca.id%>"/>
                         <div class="form-group">
                             <label for="nombre"><b><%= __ ('nombre_videoteca')%> *</b></label>
                             <input type="text" class="form-control" id="nombre" name="nombre" placeholder="<%= __ ('nombre')%>" maxlength="155" value="<%=videoteca.nombre%>">
@@ -29,7 +30,7 @@
 
                         <div class="form-group">
                             <label for="publico"><b><%= __ ('publico')%></b></label>
-                            <input class="form-control" type="checkbox" name="publico" id="publico" checked="true">
+                            <input class="form-control" type="checkbox" name="publico" id="publico" <% if(videoteca.publico ==1) { %> checked="true" <%}%>>
                         </div>
                     </div>
 
@@ -56,7 +57,7 @@
     <script type="text/javascript">
 
         videotecaValidation.init({
-            idForm: "formAltaVideoteca",
+            idForm: "formEditVideoteca",
             rules: {
                 nombre: {
                     required: true,
@@ -68,8 +69,8 @@
                     required: true,
                     minlength: 2,
                     maxlength: 200,
-                    comprobarRutaVideoteca:true
+                    comprobarRutaVideotecaUsuario:true
                 }
             }
-        });
+        },videotecaValidation.EDITAR_VIDEOTECA);
     </script>

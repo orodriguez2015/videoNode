@@ -77,7 +77,11 @@ var messages = {
     mensaje_error_eliminar_videoteca: "Se ha producido un error al eliminar la videoteca",
     mensaje_error_eliminar_videoteca_confirmar_transaccion: "Se ha producido un error al confirmar la transacción al eliminar la videoteca",
     mensaje_error_eliminar_videoteca_crear_transaccion: "Se ha producido al crear transacción para eliminar la videoteca",
+    mensaje_error_comprobar_carpeta_idvideoteca: "Es necesario indicar la carpeta y el identificador de la videoteca",
 
+    mensaje_error_comprobar_carpeta_videoteca: "Error al comprobar existencia de la carpeta de videoteca de usuario en BBDD",
+
+    
     
 
 

@@ -68,9 +68,7 @@ exports.load = function(req, res, next, idVideoteca) {
 
     db.query(sql).then(resultado => {
         db.close();
-
         var dato = resultado[0];
-        dato.ruta =  fileUtil.getNombreCarpeta(dato.ruta);
         req.Videoteca = dato;
         next();
     })
@@ -84,7 +82,7 @@ exports.load = function(req, res, next, idVideoteca) {
 
 
 /**
- * Comprueba que exista la ruta Almacena una videoteca en base de datos
+ * Comprueba si existe una videoteca del usuario asociado a una videoteca ya existenteAlmacena una videoteca en base de datos
  * @param {request} req
  * @param {response} res
  * @param {next} next
@@ -126,7 +124,7 @@ exports.comprobarRutaVideoteca = function(req,res,next) {
             /**
              * Existe el directorio => Se comprueba si pertenece a la videoteca de otro usuario
              */
-            var sql = "SELECT COUNT(*) AS NUM FROM VIDEOTECA WHERE RUTA ='" + CARPETA_VIDEOS + "'";
+            var sql = "SELECT COUNT(*) AS NUM FROM VIDEOTECA WHERE RUTA ='" + carpeta + "'";
             console.log(sql);
 
             db.query(sql).then(numero=>{
@@ -156,10 +154,77 @@ exports.comprobarRutaVideoteca = function(req,res,next) {
 
             });
         }
-    }
-
-   
+    }  
 };
+
+
+
+/**
+ * Comprueba si existe una videoteca del usuario con una determinada ruta asociada y que no tenga un
+ * determinado idVideoteca
+ * @param {request} req
+ * @param {response} res
+ * @param {next} next
+ */
+exports.comprobarRutaOtraVideotecaUsuario = function(req,res,next) {
+    var idVideoteca = req.body.idVideoteca;
+    var carpeta = req.body.carpeta; 
+    var idUsuario = req.session.usuario.ID;
+    var db = new database.DatabaseMysql();
+    var resultado = {
+        status: 0,
+        descStatus: "OK"
+    };
+
+    console.log("comprobarRutaOtraVideoteca idUsuario = " + idUsuario);
+    console.log("comprobarRutaOtraVideoteca idVideoteca = " + idVideoteca);
+    console.log("comprobarRutaOtraVideoteca carpeta = " + carpeta);
+
+    if(carpeta==null || carpeta==undefined || idVideoteca==null || idVideoteca==undefined) {
+        resultado.status = 2;
+        resultado.descStatus = "Es necesario indicar la carpeta y el idVideoteca en la que alojar los vídeos";
+        // Se devuelve la respuesta en formato JSON
+        httpUtil.devolverJSON(res,resultado);
+    }else {
+        
+            /**
+             * Existe el directorio => Se comprueba si pertenece a la videoteca de otro usuario
+             */
+            var sql = "SELECT COUNT(*) AS NUM FROM VIDEOTECA WHERE RUTA ='" + carpeta + "' AND ID!=" + idVideoteca;
+            console.log(sql);
+
+            db.query(sql).then(numero=>{
+
+                db.close();
+
+                if(numero!=undefined && numero.length>=1 && numero[0].NUM>=1) {
+                    resultado.status = 1;
+                    resultado.descStatus = "La carpeta está asociado a otra videoteca del usuario"; 
+                    // Se devuelve la respuesta en formato JSON
+                    httpUtil.devolverJSON(res,resultado);
+
+                } else {
+                    resultado.status = 0;
+                    resultado.descStatus = "OK"; 
+                    // Se devuelve la respuesta en formato JSON
+                    httpUtil.devolverJSON(res,resultado);
+                }
+
+            }).catch(err=>{
+                db.close();
+                console.log("Error al comprobar existencia de la carpeta de videoteca de usuario en BBDD: " + err.message);
+                resultado.status = 3;
+                resultado.descStatus = "Error al comprobar existencia de la carpeta de videoteca de usuario en BBDD: " + err.message;
+                // Se devuelve la respuesta en formato JSON
+                httpUtil.devolverJSON(res,resultado);
+
+            });
+    }
+      
+};
+
+
+
 
 /**
  * Almacena una videoteca en base de datos
@@ -206,7 +271,7 @@ exports.saveVideoteca = function(req,res,next) {
         }
 
 
-        var sql = "INSERT INTO VIDEOTECA(nombre,ruta,idUsuario,publico) VALUES ('" + nombre + "','" + rutaDirectorioVideoteca + "'," + idUsuario + "," + publico +  ")";
+        var sql = "INSERT INTO VIDEOTECA(nombre,ruta,ruta_completa,idUsuario,publico) VALUES ('" + nombre + "','" + carpeta + "','" +  rutaDirectorioVideoteca + "'," + idUsuario + "," + publico +  ")";
         console.log("sql: " + sql);
         db.query(sql).then(resultado =>{
     

@@ -1,5 +1,7 @@
 /**
- * Clase VideoFacade con operaciones de utilidad con 
+ * Clase VideoFacade con operaciones de utilidad para envio de peticiones al servidor
+ * para el trabajo con videoteca
+ * @author <a href="mailto:oscar.rodriguezbrea@gmail.com">Óscar Rodríguez</a>
  */
 class VideoFacade {
 
@@ -8,17 +10,18 @@ class VideoFacade {
      */
     constructor() {
         this.URL_COMPROBAR_RUTA_VIDEOTECA = "/videoteca/comprobarRutaCarpetaUsuario";
+        this.URL_COMPROBAR_RUTA_VIDEOTECA_USUARIO = "/videoteca/comprobarRutaOtraVideotecaUsuario";
         this.URL_GUARDAR_VIDEOTECA = "/videoteca/guardar";
         this.URL_VIDEOTECA = "/videoteca";
     };
 
-     /**
-     * Comprueba la existencia de un login en BBDD
-     * @param login: Login a verificar
-     * @param onSuccess: Función invocada en caso de éxito
-     * @param onError: Función invocada en caso de fallo
+    /**
+     * Comprueba si una carpeta de una videoteca ya está asociada a otra carpeta del usuario actual
+     * @param {String} carpeta Carpeta a comprobar
+     * @param {function} onSuccess Función invocada en caso de éxito
+     * @param {function} onError Función invocada en caso de fallo
      */
-    existeRutaCarpetaUsuario(ruta,onSuccess,onError) {
+    existeRutaCarpetaUsuario(carpeta,onSuccess,onError) {
         
         return $.ajax({
             async: false,
@@ -26,7 +29,7 @@ class VideoFacade {
             cache: false,
             type: 'POST',
             dataType: 'json',
-            data: {carpeta:ruta},
+            data: {carpeta:carpeta},
             url: this.URL_COMPROBAR_RUTA_VIDEOTECA,
             success: onSuccess,
             error: onError
@@ -101,8 +104,11 @@ class VideoFacade {
     };
 
 
+    /**
+     * Función invocada si la ejecución del borrado de una videoteca ha tenido éxito
+     * @param {Object} resultado 
+     */
     onSuccessDeleteVideoteca(resultado){
-        console.log("onSuccessDeleteVideoteca resultado = " + JSON.stringify(resultado));
         if(resultado!=undefined) {
             switch(resultado.status) {
                 case 0: {
@@ -146,6 +152,55 @@ class VideoFacade {
         messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca);
     }
 
-}
+
+
+    /**
+     * Comprueba si una carpeta ya está asociada a otra videoteca del usuario actual
+     * @param {Object} datos Objeto que contiene la ruta y el idVideoteca sobre la que se realiza
+     * @param {function} onSuccess Función invocada en caso de éxito
+     * @param {function} onError Función invocada en caso de fallo
+     */
+    existeRutaCarpetaOtraVideoteca(datos,onSuccess,onError) {
+        
+        return $.ajax({
+            async: false,
+            context: this,
+            cache: false,
+            type: 'POST',
+            dataType: 'json',
+            data: datos,
+            url: this.URL_COMPROBAR_RUTA_VIDEOTECA_USUARIO,
+            success: onSuccess,
+            error: onError
+        });
+    };
+
+
+
+
+    /**
+     * Editar una videoteca
+     * @param {Object} videoteca Objeto con los datos de la videoteca
+     * @param {function} onSuccess Función invocada en caso de éxito
+     * @param {function} onError Función invocada en caso de fallo
+     */
+    editarVideoteca(videoteca,onSuccess,onError) {
+        
+        return $.ajax({
+            async: false,
+            context: this,
+            cache: false,
+            type: 'PUT',
+            dataType: 'json',
+            data: videoteca,
+            url: this.URL_VIDEOTECA,
+            success: onSuccess,
+            error: onError
+        });
+    };
+
+
+
+}// VideoFacade
 
 var videoFacade = new VideoFacade();
