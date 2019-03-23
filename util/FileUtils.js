@@ -295,3 +295,48 @@ exports.renombrarDirectorio = function(oldPath,newPath) {
     }
 
 };
+
+
+/**
+ * Lee el contenido de un directorio para quedarse con la ruta en disco del mismo
+ * @param {videoteca} Objeto que representa un registro de la tabla videoteca
+ */
+exports.leerVideosVideoteca = function(videoteca) {
+    var lista = new Array();
+
+    if(videoteca!=undefined && videoteca!=null) {
+        var idUsuario = videoteca.idUsuario;
+
+        console.log("leerVideoCarpeta init") ;
+        console.log("leerVideoCarpeta path = " + path) ;
+        console.log("leerVideoCarpeta idUsuario videoteca = " + idUsuario) ;
+        
+        var rutaVideotecaRelativa = constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO + constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + videoteca.ruta;
+        var rutaVideotecaAbsoluta = videoteca.ruta_completa;
+
+    
+        if (fs.existsSync(rutaVideotecaAbsoluta) && fs.lstatSync(rutaVideotecaAbsoluta).isDirectory()) {
+            
+            fs.readdirSync(rutaVideotecaAbsoluta).forEach(function(file, index) {
+                var rutaCompleta = rutaVideotecaAbsoluta + constantes.FILE_SEPARATOR + file;
+                console.log("rutaCompleta = " + rutaCompleta);
+
+                if (fs.lstatSync(rutaCompleta).isDirectory() || fs.lstatSync(rutaCompleta).isFile()) {
+
+                    var extension = file.split(constantes.PUNTO, file.lastIndexOf(constantes.PUNTO));
+                    
+                    var video = {
+                        ruta: rutaVideotecaRelativa + constantes.FILE_SEPARATOR + file,
+                        nombre: file
+                    }
+
+                    lista.push(video);
+                }// if
+            });
+        }
+
+        console.log("leerVideoCarpeta lista = " + JSON.stringify(lista));
+    }// if
+    return lista;
+
+};

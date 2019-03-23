@@ -13,7 +13,15 @@ var database = require('../db/DatabaseMysql.js');
  */
 exports.showVideos = function(req,res,next) {
     var videoteca = req.Videoteca;
-    res.render("videos/videos",{videoteca:videoteca,errors:{}});
+
+    console.log("showvideos params = " + req.params);
+
+    var ruta_completa = videoteca.ruta_completa;
+    var lista = fileUtil.leerVideosVideoteca(videoteca);
+
+    console.log("lista = " + JSON.stringify(lista));
+
+    res.render("videos/videos",{videos:lista,videoteca:videoteca,errors:{}});
 };
 
 
@@ -505,35 +513,7 @@ exports.editarVideoteca = function(req,res,next) {
 
         console.log("cambioCarpeta = " + cambioCarpeta);
 
-        /*
-        var rutaDirectorioVideosPadre = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
-            + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO  + 
-            constantes.FILE_SEPARATOR + idUsuario);
-
-        var rutaDirectorioVideoteca = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
-            + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO  + 
-            constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + carpeta);
-
-        console.log("rutaDirectorioVideosPadre = " + rutaDirectorioVideosPadre);
-        console.log("rutaDirectorioVideoteca = " + rutaDirectorioVideoteca);
-
-        if(!fileUtil.existsFile(rutaDirectorioVideosPadre)) {
-            console.log("No existe directorio: " + rutaDirectorioVideosPadre + ", se crea");
-            // Se crea el directorio padre
-            fileUtil.mkdirSync(rutaDirectorioVideosPadre);
-            fileUtil.mkdirSync(rutaDirectorioVideoteca);
-        }else {
-
-            console.log("Existe directorio: " + rutaDirectorioVideosPadre);
-
-            if(!fileUtil.existsFile(rutaDirectorioVideoteca)) {
-                console.log("No existe directorio: " + rutaDirectorioVideoteca + ", se crea");
-                // Se crea el directorio padre
-                fileUtil.mkdirSync(rutaDirectorioVideoteca);
-            }
-        }
-        */
-
+       
         try {
 
         var ruta_nueva = '';
@@ -597,7 +577,6 @@ exports.editarVideoteca = function(req,res,next) {
                     });
                 });
 
-                /********************/ 
             }
 
         }).catch(error=>{

@@ -25,42 +25,31 @@
 <br>
 
 <div class="row-fluid">
-    <div style="border: 0px solid blueviolet;float:left;">
-      
-      <div class="video-js-box vim-css">
-        <video class="video-js" width="310" height="185" preload="auto" controls>
-          <source src="/videos/nirvana_bastiagueiro.mp4" type="video/mp4">
-          
-          <p style="display: none;">You need an HTML5 video compatible browser to view these skins.</p>
-        </video>
-        <ul class="vjs-controls" style="display: none; top: 229px;"><li class="vjs-play-control vjs-play"><span></span></li><li class="vjs-progress-control"><ul class="vjs-progress-holder"><li class="vjs-load-progress" style="width: 123.622px;"></li><li class="vjs-play-progress" style="width: 0px;"></li></ul></li><li class="vjs-time-control"><span class="vjs-current-time-display">00:00</span><span> / </span><span class="vjs-duration-display">00:47</span></li><li class="vjs-volume-control"><ul><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li></li><li></li></ul></li><li class="vjs-fullscreen-control"><ul><li></li><li></li><li></li><li></li></ul></li></ul>
-      </div>
-    </div>
 
-    <div style="border: 0px solid red;float:left;margin-left:45px;">
+  <% for(var i=0;videos!=undefined && i<videos.length;i++) { %>
+     
+
+
+     <div style="border: 0px solid blueviolet;float:left;margin-left:45px;">
       
-      <div class="video-js-box vim-css">
-        <video class="video-js" width="310" height="185" preload="auto" controls>
-          <source src="/videos/Probando_camara.MP4" type="video/mp4">
-          
-          <p style="display: none;">You need an HTML5 video compatible browser to view these skins.</p>
-        </video>
-        <ul class="vjs-controls" style="display: none; top: 229px;"><li class="vjs-play-control vjs-play"><span></span></li><li class="vjs-progress-control"><ul class="vjs-progress-holder"><li class="vjs-load-progress" style="width: 123.622px;"></li><li class="vjs-play-progress" style="width: 0px;"></li></ul></li><li class="vjs-time-control"><span class="vjs-current-time-display">00:00</span><span> / </span><span class="vjs-duration-display">00:47</span></li><li class="vjs-volume-control"><ul><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li></li><li></li></ul></li><li class="vjs-fullscreen-control"><ul><li></li><li></li><li></li><li></li></ul></li></ul>
+        <div class="video-js-box vim-css">
+          <video class="video-js" width="310" height="185" preload="auto" controls>
+            <source src="<%=videos[i].ruta%>" type="video/mp4">
+            
+            <p style="display: none;">You need an HTML5 video compatible browser to view these skins.</p>
+          </video>
+          <ul class="vjs-controls" style="display: none; top: 229px;"><li class="vjs-play-control vjs-play"><span></span></li><li class="vjs-progress-control"><ul class="vjs-progress-holder"><li class="vjs-load-progress" style="width: 123.622px;"></li><li class="vjs-play-progress" style="width: 0px;"></li></ul></li><li class="vjs-time-control"><span class="vjs-current-time-display">00:00</span><span> / </span><span class="vjs-duration-display">00:47</span></li><li class="vjs-volume-control"><ul><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li></li><li></li></ul></li><li class="vjs-fullscreen-control"><ul><li></li><li></li><li></li><li></li></ul></li></ul>
+        </div>
+
+        <p><%=videos[i].nombre%></p>
       </div>
 
-    </div>
 
-    <div style="border: 0px solid blue;float:left;margin-left:45px;">
-      
-      <div class="video-js-box vim-css">
-        <video class="video-js" width="310" height="185" preload="auto" controls>
-          <source src="/videos/WINTER_JOB.mp4" type="video/mp4">
-          
-          <p style="display: none;">You need an HTML5 video compatible browser to view these skins.</p>
-        </video>
-        <ul class="vjs-controls" style="display: none; top: 229px;"><li class="vjs-play-control vjs-play"><span></span></li><li class="vjs-progress-control"><ul class="vjs-progress-holder"><li class="vjs-load-progress" style="width: 123.622px;"></li><li class="vjs-play-progress" style="width: 0px;"></li></ul></li><li class="vjs-time-control"><span class="vjs-current-time-display">00:00</span><span> / </span><span class="vjs-duration-display">00:47</span></li><li class="vjs-volume-control"><ul><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li></li><li></li></ul></li><li class="vjs-fullscreen-control"><ul><li></li><li></li><li></li><li></li></ul></li></ul>
-      </div>
-    </div>
+
+  <% }//for %>  
+
+
+   
 
 
 </div>
