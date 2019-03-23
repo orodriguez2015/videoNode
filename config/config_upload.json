@@ -1,6 +1,9 @@
 {
     "path_upload_photo": "/public/store/photo/",
     "relative_path_show_photo": "/store/photo/",
-    "num_max_files_upload": "20"
+    "num_max_files_upload": "20",
+
+    "path_upload_video": "/public/videos/",
+    "relative_path_show_video": "/videos/"
 
 }

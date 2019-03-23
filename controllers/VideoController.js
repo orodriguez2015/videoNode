@@ -60,6 +60,19 @@ exports.edicionVideoteca = function(req,res,next) {
 
 
 /**
+ * Renderiza la vista de selección de imágenes para el nuevo albúm fotográfico
+ * @param req: Objeto Request
+ * @param res: Objeto Response
+ * @param req: Objeto next
+ */
+exports.uploadVideoScreen = function(req, res, next) {
+    var videoteca = req.Videoteca;
+    console.log("uploadVideoScreen videoteca = " + JSON.stringify(videoteca));
+    res.render("videos/uploadVideos", { videoteca:videoteca,errors: {} });
+};
+
+
+/**
  * Función de autoload para cargar un álbum en la request.
  * También sirve para realizar un control de errores
  * @param req: Objeto request

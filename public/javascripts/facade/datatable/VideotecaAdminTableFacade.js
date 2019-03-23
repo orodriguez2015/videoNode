@@ -39,7 +39,7 @@ class VideotecaAdminTableFacade extends TableFacade {
                 publico = "SI";
             }
             datos[i][3] = publico;
-            var opciones = videotecaAdminTablaFacade.imgAccessVideos(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgUploadPhoto(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgEditVideoteca(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgDeleteVideoteca(idVideoteca);
+            var opciones = videotecaAdminTablaFacade.imgAccessVideos(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgUploadVideo(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgEditVideoteca(idVideoteca) + "&nbsp;" + videotecaAdminTablaFacade.imgDeleteVideoteca(idVideoteca);
             datos[i].push(opciones);
 
         } // for
@@ -51,20 +51,20 @@ class VideotecaAdminTableFacade extends TableFacade {
 
     /**
      * Devuelve el tag html para mostrar la imagen que permite acceder a la pantalla en la que se
-     * muestran las fotografías del álbum
+     * muestran los vídeos de la videoteca
      * @param idVideoteca Id del álbum
      */
     imgAccessVideos(idVideoteca) {
-        return "<img src=\"/images/camara.png\" border=\"0\" width=\"20\" height=\"20\" title=\"Fotografías\" alt=\"Fotografías\" onclick=\"window.location.href='/videoteca/videos/" + idVideoteca + "'\"/>";
+        return "<img src=\"/images/camara.png\" border=\"0\" width=\"20\" height=\"20\" title=\"" + messages.titulo_videos + "\" alt=\"" + messages.titulo_videos + "\" onclick=\"window.location.href='/videoteca/videos/" + idVideoteca + "'\"/>";
     };
 
     /**
      * Devuelve el tag html para mostrar la imagen que permite acceder a la pantalla en la que se
-     * se permite adjuntar fotografías al álbum
-     * @param idVideoteca Id del álbum
+     * se permite adjuntar vídeos a la videoteca
+     * @param idVideoteca Id de la videoteca
      */
-    imgUploadPhoto(idVideoteca) {
-        return "<img src=\"/images/backup.jpeg\" border=\"0\" width=\"20\" height=\"20\" title=\"Incluir fotografías\" alt=\"Incluir fotografías\" onclick=\"window.location.href='/album/upload/" + idVideoteca + "'\"/>";
+    imgUploadVideo(idVideoteca) {
+        return "<img src=\"/images/backup.jpeg\" border=\"0\" width=\"20\" height=\"20\" title=\"" + messages.titulo_anadir_videos + "\" alt=\"" + messages.titulo_anadir_videos + "\" onclick=\"window.location.href='/videoteca/upload/" + idVideoteca + "'\"/>";
     };
 
     /**

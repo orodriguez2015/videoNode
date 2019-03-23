@@ -1,0 +1,121 @@
+<% include ../breadcrumbs/uploadImage %>
+
+    <style type="text/css">
+        .btn-file {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-file input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            /*filter: alpha(opacity=0);*/
+            opacity: 0;
+            /* outline: none;*/
+            /*background: rgb(254, 251, 251);*/
+            cursor: inherit;
+            display: block;
+        }
+    </style>
+
+    <!--
+    <link href="/stylesheets/styleUploadFile.css" rel="stylesheet" />
+    -->
+    <div class="row-fluid">
+        <!--Edit Main Content Area here-->
+        <div class="span12" id="divMain">
+
+            <h1><%= __('adjuntar_fotografias_album') %> 
+                <%=videoteca.nombre%>
+            </h1>
+
+        </div>
+    </div>
+
+
+
+    <!-- MENÚ -->
+    <div class="row-fluid">
+
+        <nav class="navbar navbar-default">
+
+            <ul class="nav navbar-nav">
+
+                <li>
+                    <a href="/album/admin "><%= __('inicio')%></a>
+                </li>
+
+                <li>
+                    <a href="/album/<%=album.id%>"><%= __('editar_album')%></a>
+                </li>
+
+                <li>
+                    <a href="javascript:albumFacade.validateDeleteAlbum(<%=videoteca.id%>,albumFacade.onSuccessDeleteAlbum,albumFacade.onErrorDeleteAlbum);">
+                        <%= __('eliminar_album')%>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/album/photo/<%=videoteca.id%>">
+                        <%= __('ir_album')%>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+
+    </div>
+    <!-- MENÚ -->
+
+
+
+    <div class="row-fluid">
+        <div class="span12" id="divMain" style="margin-left:30px;">
+            <p>
+
+                <form id="upload" method="POST" action="/upload?idAlbum=<%=videoteca.id%>" enctype="multipart/form-data">
+                    <input type="hidden" name="idAlbum" id="idAlbum" value="<%=videoteca.id%>" />
+
+                    <span class="btn btn-default btn-file">
+                        <%= __('seleccionar') %> <input type="file" name="upl[]" id="upl" multiple/>
+                        </span>
+
+                    <br>
+                    <br>
+                    <p>
+                        <input type='submit' id='botonEnviar' value='<%= __('enviar_ficheros') %>' class="btn btn-success">
+                    </p>
+
+                </form>
+            </p>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="alert alert-danger" role="alert" id="msgErrorUpload" style="display: none;"></div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="alert alert-success" role="alert" id="msgSuccessUpload" style="display: none;"></div>
+    </div>
+
+
+
+    <script type="text/javascript" src="/javascripts/facade/progress/ProgressFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/upload/UploadFileFacade.js"></script>
+
+    <script type="text/javascript">
+        $('#botonEnviar').on('click', function(e) {
+            e.preventDefault(); // De momento anulamos el envío del formulario 
+
+            uploadFileFacade.uploadFiles({
+                idAlbum: '<%=videoteca.id %>'
+
+            });
+        });
+    </script>

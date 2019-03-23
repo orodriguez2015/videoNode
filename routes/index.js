@@ -6,6 +6,7 @@ var fotoController = require('../controllers/fotoController.js');
 var configController = require('../controllers/ConfigController.js');
 var permissionsController = require('../controllers/permisosUsuarioController.js');
 var videoController = require('../controllers/VideoController.js');
+var uploadVideoController = require('../controllers/UploadVideoController.js');
 var router = express.Router();
 
 
@@ -414,6 +415,11 @@ router.put("/videoteca/:idVideoteca(\\d+)",userController.isAuthenticatedUser,vi
 router.post("/videoteca/comprobarRutaOtraVideotecaUsuario",userController.isAuthenticatedUser,videoController.comprobarRutaOtraVideotecaUsuario);
 
 
+/**
+ * GET /videoteca/upload.
+ * Permite subir videos al servidor
+ */
+router.get("/videoteca/upload/:idVideoteca(\\d+)", userController.isAuthenticatedUser, videoController.uploadVideoScreen);
 
 
 module.exports = router;

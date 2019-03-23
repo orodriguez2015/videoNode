@@ -15,5 +15,6 @@
     "DIRECTORIO_VIDEO": "videos",
     "PUNTO": ".",
     "THUMB": "_thumb",
-    "IDIOMA_DEFECTO": "es"
+    "IDIOMA_DEFECTO": "es",
+    "EXTENSION_VIDEO_ACEPTADAS":"mp4,avi,mpeg,wmv,mkv"
 }

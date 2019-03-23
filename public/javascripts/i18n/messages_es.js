@@ -82,6 +82,8 @@ var messages = {
     mensaje_error_comprobar_carpeta_videoteca: "Error al comprobar existencia de la carpeta de videoteca de usuario en BBDD",
     mensaje_error_actualizar_videoteca: "Se ha producido un error al actualizar la videoteca",
     mensaje_error_insertar_videoteca: "Se ha producido un error al dar de alta la videoteca",
+    titulo_anadir_videos : "Añadir vídeos",
+    titulo_videos: "Vídeos",
 
     
     

@@ -80,6 +80,8 @@ var messages = {
     mensaje_error_comprobar_carpeta_videoteca: "Error checking the existence of the user's video library folder in BBDD",
     mensaje_error_actualizar_videoteca: "An error occurred while updating the video library",
     mensaje_error_insertar_videoteca: "An error occurred when registering the video library",
+    titulo_anadir_videos : "Add videos",
+    titulo_videos: "Vídeos",
 
     
 

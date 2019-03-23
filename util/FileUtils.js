@@ -306,15 +306,10 @@ exports.leerVideosVideoteca = function(videoteca) {
 
     if(videoteca!=undefined && videoteca!=null) {
         var idUsuario = videoteca.idUsuario;
-
-        console.log("leerVideoCarpeta init") ;
-        console.log("leerVideoCarpeta path = " + path) ;
-        console.log("leerVideoCarpeta idUsuario videoteca = " + idUsuario) ;
-        
+    
         var rutaVideotecaRelativa = constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO + constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + videoteca.ruta;
         var rutaVideotecaAbsoluta = videoteca.ruta_completa;
 
-    
         if (fs.existsSync(rutaVideotecaAbsoluta) && fs.lstatSync(rutaVideotecaAbsoluta).isDirectory()) {
             
             fs.readdirSync(rutaVideotecaAbsoluta).forEach(function(file, index) {
@@ -323,20 +318,56 @@ exports.leerVideosVideoteca = function(videoteca) {
 
                 if (fs.lstatSync(rutaCompleta).isDirectory() || fs.lstatSync(rutaCompleta).isFile()) {
 
-                    var extension = file.split(constantes.PUNTO, file.lastIndexOf(constantes.PUNTO));
-                    
-                    var video = {
-                        ruta: rutaVideotecaRelativa + constantes.FILE_SEPARATOR + file,
-                        nombre: file
-                    }
+                    var index = file.lastIndexOf(constantes.PUNTO);
+                    var extension = file.substring(index+1,file.length);
+                    console.log("index = " + index + ", extension = " + extension);
 
-                    lista.push(video);
+                    if(esExtensionVideo(extension)) {
+                    
+                        var video = {
+                            ruta: rutaVideotecaRelativa + constantes.FILE_SEPARATOR + file,
+                            nombre: file
+                        }
+
+                        lista.push(video);
+                        
+                    }// if
                 }// if
             });
-        }
+        }// if
 
         console.log("leerVideoCarpeta lista = " + JSON.stringify(lista));
     }// if
     return lista;
 
 };
+
+
+/**
+ * Comprueba si una cadena de caracteres representa una extensión de vídeo válida
+ * @param extension 
+ */
+function esExtensionVideo(extension) {
+    var salida = false;
+
+    console.log("esExtensionVideo extension  " + extension);
+    try {
+        if(extension!=undefined && extension!=null && extension!='') {
+
+            var extensionesAdmitidas = constantes.EXTENSION_VIDEO_ACEPTADAS;
+
+            if(extensionesAdmitidas!=undefined && extensionesAdmitidas!=null) {
+                var listaExtensiones = extensionesAdmitidas.split(",");
+                salida = listaExtensiones.includes(extension.toLowerCase());
+
+            }// if
+
+        }// if
+
+    }catch(err) {
+        console.log("Error al comprobar extensión de vídeo = " + err.message);
+    }
+
+    console.log("esExtensionVideo return  " + salida);
+    return salida;
+}
