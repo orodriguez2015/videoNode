@@ -71,6 +71,8 @@
 	"permisos_de": "Permisos de ",
 	"nombre_videoteca": "Nombre videoteca",
 	"mensaje_error_eliminar_videoteca_crear_transaccion": "mensaje_error_eliminar_videoteca_crear_transaccion",
-	"editar_videoteca": "Editar videoteca"
+	"editar_videoteca": "Editar videoteca",
+	"adjuntar_videos_videoteca": "Adjuntar vídeos a la videoteca"
+
 	
 }

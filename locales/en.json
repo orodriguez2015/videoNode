@@ -71,5 +71,6 @@
 	"asignacion": "Assignment",
 	"permisos_de": "Permissions of ",
 	"nombre_videoteca": "Name video library",
-	"editar_videoteca": "Edit video library"
+	"editar_videoteca": "Edit video library",
+	"adjuntar_videos_videoteca": "Attach videos to the video library"
 }

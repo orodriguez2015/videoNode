@@ -66,9 +66,8 @@ exports.edicionVideoteca = function(req,res,next) {
  * @param req: Objeto next
  */
 exports.uploadVideoScreen = function(req, res, next) {
-    var videoteca = req.Videoteca;
-    console.log("uploadVideoScreen videoteca = " + JSON.stringify(videoteca));
-    res.render("videos/uploadVideos", { videoteca:videoteca,errors: {} });
+    var videoteca = req.Videoteca;    
+    res.render("videos/uploadVideos",{videoteca:videoteca,errors:{}});
 };
 
 
