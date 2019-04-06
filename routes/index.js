@@ -419,7 +419,8 @@ router.post("/videoteca/comprobarRutaOtraVideotecaUsuario",userController.isAuth
  * GET /videoteca/upload.
  * Permite subir videos al servidor
  */
-router.get("/videoteca/upload/:idVideoteca(\\d+)", userController.isAuthenticatedUser, videoController.uploadVideoScreen);
+//router.get("/videoteca/upload/:idVideoteca(\\d+)", userController.isAuthenticatedUser, videoController.uploadVideoScreen);
+router.get("/videoteca/upload/:idVideoteca(\\d+)", videoController.uploadVideoScreen);
 
 
 module.exports = router;
