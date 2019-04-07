@@ -82,7 +82,7 @@ var messages = {
     mensaje_error_insertar_videoteca: "An error occurred when registering the video library",
     titulo_anadir_videos : "Add videos",
     titulo_videos: "Vídeos",
-    
+    archivos_seleccionados: "You have selected the following files:",
 
     
 

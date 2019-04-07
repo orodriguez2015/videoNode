@@ -84,6 +84,7 @@ var messages = {
     mensaje_error_insertar_videoteca: "Se ha producido un error al dar de alta la videoteca",
     titulo_anadir_videos : "Añadir vídeos",
     titulo_videos: "Vídeos",
+    archivos_seleccionados: "Has seleccionado los siguientes archivos:",
 
     
     

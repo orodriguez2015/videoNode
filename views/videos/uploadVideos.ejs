@@ -80,48 +80,29 @@
     </div>
 
 
+
+    <script type="text/javascript" src="/javascripts/facade/video/UploadVideoFacade.js"></script>
+
     <script type="text/javascript">
             
-        $("#upl").on("change", function(e) {
-            
-            //var cero = document.getElementById("upl").files[0];
-            var ficheros = $("input[type=file]")[0].files;
+            $("#upl").on("change", function(e) {
+                 console.log("Cambios en ficheros");
 
-            console.log("ficheros = " + ficheros);
+                ficheros = $("input[type=file]")[0].files;    
+                console.log("ficheros selecte= " + ficheros);
+                //this.procesarFicheros().bind(this);
 
-            if(ficheros!=null && ficheros!=undefined) {
-                var salida ="<p>Has Los ficheros seleccionados son:</p>";
-                for(var i=0;i<ficheros.length;i++) {
+                //procesarFicheros(ficheros).bind(this);
 
-                    var nombre = ficheros[0].name;
-                    var size   = ficheros[0].size;
-                    var type   = ficheros[0].type;
-
-                    salida = salida + "<li>" + nombre + "</li>";
-
-                }// for
-
-                $('#msgFicherosSeleccionados').html(salida);
-                $("#msgFicherosSeleccionados").css("display", "block");
-                $('#botonEnviar').attr("disabled", false);
-                $('#botonEnviar').css("display","block");
-                $('#botonCancelar').css("display","block");
-                $('#upl').css("display","block");
-
-                
-
-
-        }// if
-
+                uploadVideoFacade.procesarFicheros();
 
         });
-    
+       
     
     </script>
 
-
-    <script type="text/javascript" src="/javascripts/facade/video/VideoFacade.js"></script>
-    <script type="text/javascript" src="/javascripts/facade/validation/VideotecaValidationFacade.js"></script>
-    <script type="text/javascript" src="/javascripts/facade/validation/ValidatorVideoteca.js"></script>
+    
+    
+    
 
 
