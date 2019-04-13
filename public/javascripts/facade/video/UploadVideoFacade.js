@@ -13,7 +13,7 @@ class UploadVideoFacade {
          */
         this.DIV_MSG_FICHEROS_SELECCIONADOS ="msgFicherosSeleccionados";
         this.mostrarBotoneraVideo(false);
-
+        
     }// constructor
 
 
@@ -22,7 +22,6 @@ class UploadVideoFacade {
      * @param {ficheros} Colección con los objetos de tipo File seleccionados por el usuario
      */
     procesarFicheros() {
-        console.log("procesarFicheros")
         var ficheros = $("input[type=file]")[0].files;    
 
         if(ficheros!=null && ficheros!=undefined) {
@@ -31,11 +30,15 @@ class UploadVideoFacade {
             for(var i=0;i<ficheros.length;i++) {
                 var nombreFichero = ficheros[i].name;
                 var sizeFichero = ficheros[i].size;
+
+                var tipo = ficheros[i].type;
+                console.log("tipoFicheros = " + tipo);
                 nombres.push(nombreFichero);
 
             }// for
 
             this.mostrarFicherosSeleccionados(nombres);
+            this.mostrarBotoneraVideo(true);
         }// if
     };
 
@@ -80,7 +83,27 @@ class UploadVideoFacade {
     }
 
 
+
+    /**
+     * Permite mostrar o ocultar el área con los ficheros seleccionados
+     * @param {boolean} flag 
+     */
+    mostrarMensajeFicherosSeleccionados(flag) {
+        var valor = "none";
+        if(flag) {
+            valor = "block";
+        }
+        $('#' + this.DIV_MSG_FICHEROS_SELECCIONADOS).css("display",valor);
+    }
+
+    /**
+     * Valida que los tipos de los ficheros seleccionados se encuentren entre
+     * los admitidos
+     */
+    validarTiposMime() {
+
+    }
+
 }
 
 
-var uploadVideoFacade = new UploadVideoFacade();

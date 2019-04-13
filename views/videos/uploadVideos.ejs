@@ -85,17 +85,15 @@
 
     <script type="text/javascript">
             
-            $("#upl").on("change", function(e) {
-                 console.log("Cambios en ficheros");
+        var uploadVideoFacade = new UploadVideoFacade();
 
-                ficheros = $("input[type=file]")[0].files;    
-                console.log("ficheros selecte= " + ficheros);
-                //this.procesarFicheros().bind(this);
+        $("#upl").on("change", function(e) {    
+            uploadVideoFacade.procesarFicheros();
+        });
 
-                //procesarFicheros(ficheros).bind(this);
-
-                uploadVideoFacade.procesarFicheros();
-
+        $('#botonCancelar').on("click",function(e){
+            uploadVideoFacade.mostrarMensajeFicherosSeleccionados(false);
+            uploadVideoFacade.mostrarBotoneraVideo(false);
         });
        
     
