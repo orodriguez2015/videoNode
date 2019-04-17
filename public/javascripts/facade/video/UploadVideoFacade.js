@@ -12,56 +12,82 @@ class UploadVideoFacade {
          * por el usuario para realizar subida de los mismos al servidor
          */
         this.DIV_MSG_FICHEROS_SELECCIONADOS ="msgFicherosSeleccionados";
+        this.IMAGEN_VIDEO_CORRECTO = "/images/correcto.png";
+        this.IMAGEN_VIDEO_INCORRECTO = "/images/incorrecto.png";
         this.mostrarBotoneraVideo(false);
-        
+
+      
     }// constructor
 
 
     /**
      * Procesa los ficheros de tipo File seleccionados por el usuario
      * @param {ficheros} Colección con los objetos de tipo File seleccionados por el usuario
+     * @return Objeto con atributos:
+     *           nombresFicheros que representa un array con los nombres de los ficheros seleccionados
+     *           tiposFicheros que representa un array con los tipos de los ficheros seleccionados
      */
     procesarFicheros() {
         var ficheros = $("input[type=file]")[0].files;    
+        var datos = new Array();
 
         if(ficheros!=null && ficheros!=undefined) {
-            var nombres = new Array();
 
             for(var i=0;i<ficheros.length;i++) {
                 var nombreFichero = ficheros[i].name;
                 var sizeFichero = ficheros[i].size;
-
                 var tipo = ficheros[i].type;
-                console.log("tipoFicheros = " + tipo);
-                nombres.push(nombreFichero);
 
+                var dato = {};
+                dato.nombre = ficheros[i].name;
+                dato.mime   = ficheros[i].type;
+                dato.tamano = ficheros[i].size;
+
+                datos.push(dato);
             }// for
 
-            this.mostrarFicherosSeleccionados(nombres);
+            this.mostrarFicherosSeleccionados(datos);
             this.mostrarBotoneraVideo(true);
+
         }// if
+
+        return datos;
     };
 
     /**
      * Muestra la lista de ficheros seleccionados por el usuario para subir al servidor
      * @param {files} Colección con los ficheros seleccionados
      */
-    mostrarFicherosSeleccionados(ficheros) {
+    mostrarFicherosSeleccionados(resultado) {
         
-        if(ficheros!=null && ficheros!=undefined) {
+        var mime = (MIME_VIDEO_ACEPTADAS!=null)?MIME_VIDEO_ACEPTADAS:"";
+        var tiposMime = mime.split(",");
+       
+        if(resultado!=null && resultado!=undefined && resultado.length>0 ) {
 
             var salida = "<p>" + messages.archivos_seleccionados + "</p>";
-            for(var i=0;i<ficheros.length;i++) {
+            for(var i=0;i<resultado.length;i++) { 
+
+                var fichero  = resultado[i];
+                var imagen = window.location.origin + this.IMAGEN_VIDEO_CORRECTO;
+                var tooltip = messages.archivo_video_permitido_1 +  fichero.nombre + messages.archivo_video_permitido_2;
                 
-                salida = salida + "<li>" + ficheros[i] + "</li>";
+                if(!tiposMime.includes(fichero.mime)) {
+                    imagen = window.location.origin + this.IMAGEN_VIDEO_INCORRECTO;
+                    tooltip = messages.archivo_video_permitido_1 +  fichero.nombre + messages.archivo_video_no_permitido;
+                }
+                
+                salida = salida + "<li>" + fichero.nombre + "&nbsp;&nbsp;" + "<img width=20 height=20 title='" + tooltip + "' alt='" + tooltip + "' src='"  + imagen + "'></li>";
+
             }// for
 
             $('#' + this.DIV_MSG_FICHEROS_SELECCIONADOS).html(salida);
             $('#' + this.DIV_MSG_FICHEROS_SELECCIONADOS).css("display","block");
             
         }// if
-    }
+    }// mostrarFicherosSeleccionados
 
+    
 
     /**
      * Muestra la botonera de video

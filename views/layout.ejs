@@ -243,9 +243,10 @@
         var USER_ROOT = false;
         var NUM_MAX_FILES_UPLOAD = 0;
         var ID_USUARIO;
+        var MIME_VIDEO_ACEPTADAS = "<%= session.mimeVideoAceptadas %>";
+
         
         <% if(session.usuario!=undefined) { %>
-
             ID_USUARIO = <%=session.usuario.id%>
         <% } %>
 

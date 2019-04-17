@@ -121,6 +121,8 @@ app.use(function(req, res, next) {
         console.log("SESSION PATH: " + req.session.path);
     }
 
+    req.session.mimeVideoAceptadas = constantes.TIPOS_MIME_VIDEO_ACEPTADAS;
+
     // Hacer visible req.session en las vistas
     res.locals.session = req.session;
     next();
@@ -164,6 +166,9 @@ app.use(function(req, res, next) {
 });
 
 app.use('/', index);
+
+
+
 
 
 // catch 404 and forward to error handler

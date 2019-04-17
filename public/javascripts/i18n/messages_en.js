@@ -83,6 +83,9 @@ var messages = {
     titulo_anadir_videos : "Add videos",
     titulo_videos: "Vídeos",
     archivos_seleccionados: "You have selected the following files:",
+    archivo_video_permitido_1: "The file ",
+    archivo_video_permitido_2: " is from a valid video format",
+    archivo_video_no_permitido: " es de formato de video no válido",
 
     
 
