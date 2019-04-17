@@ -12,8 +12,10 @@ class UploadVideoFacade {
          * por el usuario para realizar subida de los mismos al servidor
          */
         this.DIV_MSG_FICHEROS_SELECCIONADOS ="msgFicherosSeleccionados";
+        this.DIV_MSG_ERROR_FICHEROS_SELECCIONADOS ="msgErrorFicherosSeleccionados";
         this.IMAGEN_VIDEO_CORRECTO = "/images/correcto.png";
         this.IMAGEN_VIDEO_INCORRECTO = "/images/incorrecto.png";
+        this.FICHEROS_FORMATO_VIDEO_NO_VALIDO = new Array();
         this.mostrarBotoneraVideo(false);
 
       
@@ -30,6 +32,13 @@ class UploadVideoFacade {
     procesarFicheros() {
         var ficheros = $("input[type=file]")[0].files;    
         var datos = new Array();
+        var mime = (MIME_VIDEO_ACEPTADAS!=null)?MIME_VIDEO_ACEPTADAS:"";
+        var tiposMime = mime.split(",");
+
+        /*
+         * Se inicializa el array con los nombres de archivos de vídeo no válido
+         */
+        this.inicializarVideosFormatoNoValido();
 
         if(ficheros!=null && ficheros!=undefined) {
 
@@ -44,10 +53,21 @@ class UploadVideoFacade {
                 dato.tamano = ficheros[i].size;
 
                 datos.push(dato);
+
+                if(!tiposMime.includes(tipo)) {
+                    this.FICHEROS_FORMATO_VIDEO_NO_VALIDO.push(nombreFichero);
+                }
+
             }// for
 
             this.mostrarFicherosSeleccionados(datos);
             this.mostrarBotoneraVideo(true);
+
+            if(this.FICHEROS_FORMATO_VIDEO_NO_VALIDO.length>0) {
+                this.deshabilitarBotonEnviar(true);
+                this.anadirMensajeErrorFicherosSeleccionados(messages.mensaje_seleccion_videos_no_validas);
+                this.mostrarMensajeErrorFicherosSeleccionados(true);
+            }
 
         }// if
 
@@ -62,7 +82,7 @@ class UploadVideoFacade {
         
         var mime = (MIME_VIDEO_ACEPTADAS!=null)?MIME_VIDEO_ACEPTADAS:"";
         var tiposMime = mime.split(",");
-       
+
         if(resultado!=null && resultado!=undefined && resultado.length>0 ) {
 
             var salida = "<p>" + messages.archivos_seleccionados + "</p>";
@@ -71,7 +91,7 @@ class UploadVideoFacade {
                 var fichero  = resultado[i];
                 var imagen = window.location.origin + this.IMAGEN_VIDEO_CORRECTO;
                 var tooltip = messages.archivo_video_permitido_1 +  fichero.nombre + messages.archivo_video_permitido_2;
-                
+
                 if(!tiposMime.includes(fichero.mime)) {
                     imagen = window.location.origin + this.IMAGEN_VIDEO_INCORRECTO;
                     tooltip = messages.archivo_video_permitido_1 +  fichero.nombre + messages.archivo_video_no_permitido;
@@ -87,7 +107,23 @@ class UploadVideoFacade {
         }// if
     }// mostrarFicherosSeleccionados
 
-    
+
+
+    /**
+     * Inicializa la lista de videos seleccionados por el usuario que no tiene un formato válido
+     */
+    inicializarVideosFormatoNoValido() {
+        this.FICHEROS_FORMATO_VIDEO_NO_VALIDO = new Array();
+    }
+
+    /**
+     * Devuelve la lista de videos seleccionados por el usuario que no tiene un formato válido
+     * @return Array
+     */
+    getVideosFormatoNoValido() {
+        return this.FICHEROS_FORMATO_VIDEO_NO_VALIDO;
+    }
+
 
     /**
      * Muestra la botonera de video
@@ -108,7 +144,16 @@ class UploadVideoFacade {
         $('#botonCancelar').css("display",value);
     }
 
-
+    /**
+     * Permite habilitar/deshabilitar el botón de envio del formulario
+     * @param {Boolean} flag 
+     */
+    deshabilitarBotonEnviar(flag) {
+        console.log("habilitar flag = " + flag);
+        if(flag !=undefined && flag!= null) {
+            $('#botonEnviar').attr('disabled',flag);
+        }
+    }
 
     /**
      * Permite mostrar o ocultar el área con los ficheros seleccionados
@@ -122,13 +167,43 @@ class UploadVideoFacade {
         $('#' + this.DIV_MSG_FICHEROS_SELECCIONADOS).css("display",valor);
     }
 
-    /**
-     * Valida que los tipos de los ficheros seleccionados se encuentren entre
-     * los admitidos
-     */
-    validarTiposMime() {
 
+     /**
+     * Permite mostrar o ocultar el área con los ficheros seleccionados
+     * @param {boolean} flag 
+     */
+    mostrarMensajeErrorFicherosSeleccionados(flag) {
+        var valor = "none";
+        if(flag) {
+            valor = "block";
+        }
+        $('#' + this.DIV_MSG_ERROR_FICHEROS_SELECCIONADOS).css("display",valor);
     }
+
+
+    anadirMensajeErrorFicherosSeleccionados(msg) {
+        $('#' + this.DIV_MSG_ERROR_FICHEROS_SELECCIONADOS).html(msg);
+        /*
+        * Se muestra  el área de mensaje de error
+        */
+        this.mostrarMensajeErrorFicherosSeleccionados(true);
+    }
+
+
+    /**
+     * Envia los ficheros al servidor, pero previamente se encarga de comprobar que 
+     * no haya sido seleccionado ningún fichero con formato de vídeo no válido
+     */
+    enviarFicheros() {
+        console.log("enviarFicheros")
+        var noValidos = this.getVideosFormatoNoValido();
+
+        return false;
+        
+    }
+
+
+   
 
 }
 

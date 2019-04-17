@@ -86,9 +86,10 @@ var messages = {
     titulo_videos: "Vídeos",
     archivos_seleccionados: "Has seleccionado los siguientes archivos:",
     archivo_video_permitido_1: "El archivo ",
-    archivo_video_permitido_2: " es de formato de video válido",
-    archivo_video_no_permitido: " has an invalid video format",
-
+    archivo_video_permitido_2: " tiene un formato de video válido",
+    archivo_video_no_permitido: " tiene un formato de vídeo no válido",
+    mensaje_error_videos_formato_no_valido : "Has seleccionado algún fichero con un formato de vídeo no válido",
+    mensaje_seleccion_videos_no_validas : "Entre la selección de archivos realizados hay algunos que no tienen formato de vídeo validos. Realiza una nueva selección",
     
     
 
