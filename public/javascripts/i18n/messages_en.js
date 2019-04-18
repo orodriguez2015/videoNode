@@ -87,9 +87,9 @@ var messages = {
     archivo_video_permitido_2: " has a valid video format",
     archivo_video_no_permitido: " has a invalid video format",
     mensaje_error_videos_formato_no_valido : "You have selected a file with an invalid video format",
-    mensaje_seleccion_videos_no_validas : "Among the selection of files made there are some that do not have valid video format. Make a new selection",
-
-    
+    mensaje_seleccion_videos_no_validas : "Among the selection of files made there are some that have an invalid video format. Make a new selection.",
+    procesando_carga_video : "Loading videos",
+    mensaje_error_upload_video : "There was an error uploading the video to the server. Please try again",
 
    required: "This field is required.",
    remote: "Please fill in this field.",

@@ -87,11 +87,15 @@
 
 
 
+    <script type="text/javascript" src="/javascripts/facade/progress/ProgressFacade.js"></script>
     <script type="text/javascript" src="/javascripts/facade/video/UploadVideoFacade.js"></script>
 
     <script type="text/javascript">
-            
-        var uploadVideoFacade = new UploadVideoFacade();
+        
+        var uploadVideoFacade = new UploadVideoFacade({
+            ID_VIDEOTECA: <%=videoteca.id%>,
+            UPLOAD_VIDEOS : true
+        } );
 
         $("#ficheros").on("change", function(e) {    
             uploadVideoFacade.procesarFicheros();

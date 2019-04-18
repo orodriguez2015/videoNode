@@ -6,7 +6,7 @@
  */
 class UploadVideoFacade {
 
-    constructor() {
+    constructor(config) {
         /*
          * ID del div que contiene la lista HTML con ficheros seleccionados
          * por el usuario para realizar subida de los mismos al servidor
@@ -15,7 +15,16 @@ class UploadVideoFacade {
         this.DIV_MSG_ERROR_FICHEROS_SELECCIONADOS ="msgErrorFicherosSeleccionados";
         this.IMAGEN_VIDEO_CORRECTO = "/images/correcto.png";
         this.IMAGEN_VIDEO_INCORRECTO = "/images/incorrecto.png";
+        this.UPLOAD_VIDEOS = ""
         this.FICHEROS_FORMATO_VIDEO_NO_VALIDO = new Array();
+        this.UPLOAD_VIDEO = false;
+        this.URL_VIDEO_UPLOAD = "/upload/video/";
+        
+        if(config!=null && config!=undefined && config.UPLOAD_VIDEOS==true && config.ID_VIDEOTECA!=null && config.ID_VIDEOTECA!=undefined) {
+            this.ID_VIDEOTECA = config.ID_VIDEOTECA;
+            this.UPLOAD_VIDEO = true;
+        }
+
         this.mostrarBotoneraVideo(false);
 
       
@@ -182,7 +191,12 @@ class UploadVideoFacade {
 
 
     anadirMensajeErrorFicherosSeleccionados(msg) {
+
+        // Se vacia el div de errores
+        $('#' + this.DIV_MSG_ERROR_FICHEROS_SELECCIONADOS).html("");
+        // Se muestra mensaje nuevo en div de errores
         $('#' + this.DIV_MSG_ERROR_FICHEROS_SELECCIONADOS).html(msg);
+
         /*
         * Se muestra  el área de mensaje de error
         */
@@ -195,15 +209,90 @@ class UploadVideoFacade {
      * no haya sido seleccionado ningún fichero con formato de vídeo no válido
      */
     enviarFicheros() {
+        var exito  =true;
         console.log("enviarFicheros")
         var noValidos = this.getVideosFormatoNoValido();
+        console.log("noValidos = " + JSON.stringify(noValidos));
+
+        if(noValidos!=null && noValidos!=undefined && noValidos.length>0) {
+            this.anadirMensajeErrorFicherosSeleccionados(messages.mensaje_seleccion_videos_no_validas);
+            return false;
+        } else {
+
+                /**
+                 * Se muestra la barra de progreso
+                 */
+                progressFacade.init({
+                    idProgressModal: this.PROCESSING_MODAL,
+                    txtModalHeader: messages.procesando_carga_video
+                });
+                progressFacade.show();
+
+                /**
+                 * Se crea el objeto FormData en el que se aloja cada fichero para
+                 * ser enviado por AJAX
+                 */
+                var data = new FormData();
+                jQuery.each(
+                    $("input[type=file]")[0].files,
+                    function(i,file) {
+                        data.append("file-" + i,file);
+                    }
+                );
+
+
+
+                /*
+                 * Se comprueba si lo que se está es subiendo un vídeo, en ese caso se carga
+                 * la url de upload de video 
+                 */
+
+                var urlSubida = "";
+
+                if(this.UPLOAD_VIDEO) {
+                    urlSubida = this.URL_VIDEO_UPLOAD + this.ID_VIDEOTECA
+                }
+
+
+                /**
+                 * Envío por POST de los archivos al servidor
+                 */
+                $.ajax({
+                    url: urlSubida,
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    type: "POST",
+                    success: this.onSuccessUploadFiles.bind(this), // Se hace el bind para asociar el objeto actual a esta función, sino no se puede llamar a métodos del mismo objeto
+                    error: this.onErrorUploadFiles.bind(this) // bind es necesario para que desde onErrorUploadFiles se pueda llamar a métodos de esta clase
+                });
+        }
 
         return false;
         
     }
+    
 
+    /**
+     * Método invocado cuando la subida del vídeo al servidor se ha realizado con éxito
+     * @param {*} data 
+     */
+    onSuccessUploadFiles(data) {
+        console.log("onSuccessUploadFiles data = " + JSON.stringify(data));
+    }
 
    
+    /**
+     * Método invocado cuando se produce un error al enviar los vídeos por petición 
+     * AJAX al servidor
+     * @param {err} err 
+     */
+    onErrorUploadFiles(err) {
+        progressFacade.hide();
+        messagesArea.showMessageError(messages.mensaje_error_upload_video);
+        
+    }
 
 }
 

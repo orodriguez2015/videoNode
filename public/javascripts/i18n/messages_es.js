@@ -89,8 +89,9 @@ var messages = {
     archivo_video_permitido_2: " tiene un formato de video válido",
     archivo_video_no_permitido: " tiene un formato de vídeo no válido",
     mensaje_error_videos_formato_no_valido : "Has seleccionado algún fichero con un formato de vídeo no válido",
-    mensaje_seleccion_videos_no_validas : "Entre la selección de archivos realizados hay algunos que no tienen formato de vídeo validos. Realiza una nueva selección",
-    
+    mensaje_seleccion_videos_no_validas : "Entre la selección de archivos realizados hay algunos que tienen un formato de vídeo no válido. Realiza una nueva selección.",
+    procesando_carga_video : "Cargando vídeos",
+    mensaje_error_upload_video : "Se ha producido un error al subir el vídeo al servidor. Por favor intentalo de nuevo",
     
 
 
