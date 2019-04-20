@@ -26,13 +26,17 @@ var thumb = require("node-thumbnail").thumb;
  */
 exports.uploadVideoFile = function(req, res, next) {
     var form = new formidable.IncomingForm();
-    var idVideoteca = req.query.idVideoteca;
-    var nombreCarpetaVideoteca = req.query.carpetaVideoteca;
+    var idVideoteca = req.params.idVideoteca;
+    var videoteca = req.Videoteca;
+    
 
-    console.log("idVideoteca subida: " + idVideoteca + ",nombreCarpetaVideoteca =  " + nombreCarpetaVideoteca);
+    console.log("idVideoteca subida: " + idVideoteca + ",Videoteca =  " + JSON.stringify(videoteca));
+    console.log("ruta completa: " + videoteca.ruta_completa);
     // Se indica cual es el directorio de destino
 
-    form.uploadDir = __dirname + constantes.FILE_SEPARATOR + constantes.PARENT_DIR + configUpload.path_upload_videos;
+    form.uploadDir = __dirname + constantes.FILE_SEPARATOR + constantes.PARENT_DIR + configUpload.path_upload_video;
+    console.log("form.uploadDir = " + form.uploadDir);
+
     form.parse(req);
     var nameFile;
     var pathFile;
@@ -73,13 +77,20 @@ exports.uploadVideoFile = function(req, res, next) {
         nameFile = file.name;
         mimeType = file.type;
 
-        if (file.name) {
+        var videoteca = req.Videoteca;
+        var idVideoteca = req.Videoteca.id;
+        var idUsuario = req.session.usuario.ID
+
+        console.log("fileBegin nameFile = " + nameFile + " mime: " + mimeType);
+        console.log("idVideoteca = " + idVideoteca);
+
+        if (file.name!=undefined) {
             var upload_dir = path.join(__dirname, ".." + configUpload.path_upload_videos);
             var name = file.name;
-            var idUsuario = req.session.usuario.ID
-            var carpetaUsuario = upload_dir + constantes.FILE_SEPARATOR + req.session.usuario.ID;
-            var carpetaVideoteca = upload_dir + req.session.usuario.ID + constantes.FILE_SEPARATOR + idVideoteca;
-            CARPETA_ALBUM = carpetaAlbum;
+            
+            var carpetaUsuario = upload_dir + constantes.FILE_SEPARATOR + idUsuario;
+            var carpetaVideoteca = upload_dir + idUsuario + constantes.FILE_SEPARATOR + idVideoteca;
+            
 
 
             try {
@@ -87,12 +98,9 @@ exports.uploadVideoFile = function(req, res, next) {
                 var carpetaVideos = path.join(__dirname + constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR +
                     constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO);
 
-                var carpetaUsuario = path.join(__dirname + constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR +
-                        constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO + constantes.FILE_SEPARATOR + idUsuario);
+                var carpetaVideoteca = videoteca.ruta_completa;
 
-                var carpetaVideoteca = path.join(__dirname + constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR +
-                            constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO + constantes.FILE_SEPARATOR + idUsuario
-                            + constantes.FILE_SEPARATOR + nombreCarpetaVideoteca);            
+                console.log("carpetaVideos = " + carpetaVideos + ", carpetaVideoteca = " + carpetaVideoteca);
 
 
                 var existsCarpetaVideos = fileUtils.existsFile(carpetaVideos);
@@ -106,21 +114,19 @@ exports.uploadVideoFile = function(req, res, next) {
                     fileUtils.mkdirSync(carpetaVideos);
                 }
 
-                /**
-                 * Se crea la carpeta del usuario en el caso de que no exista
-                 */
-                fileUtils.mkdirSync(carpetaUsuario);
 
-                /**
+                /*
                  * Se crea la carpeta del álbum dentro de la carpeta del usuario sino existe
                  */
-                fileUtils.mkdirSync(carpetaVideoteca);
+
+                if(!fileUtils.existsFile(carpetaVideoteca)) {
+                    fileUtils.mkdirSync(carpetaVideoteca);
+                }
 
 
             } catch (err) {
-                console.log("Error al crear las carpetas del álbum y/o usuario: " + err.message);
-
-                var err = new Error("Error al crear las carpetas del álbum y/o usuario: " + err.message);
+                console.log("Error al crear las carpetas de la videoteca: " + err.message);
+                var err = new Error("Error al crear las carpetas de la videoteca: " + err.message);
                 err.codError = 7;
                 form.emit('error', err);
             }
@@ -139,14 +145,15 @@ exports.uploadVideoFile = function(req, res, next) {
                 file.onErrorExisteFichero = "El fichero " + file.name + " ya existe en el servidor";
 
             } else
-            /**
-             * Se comprueba si el tipo mime del archivo se corresponde con el de alguna
-             * de las imágenes admitidas,sino es válido se lanza un error para que sea procesado
-             */
-            if (!fileUtils.isMimeTypeImage(mimeType)) {
-                file.onErrorTipoMimeImagen = "El tipo MIME " + file.name + " no válido. Sólo se admiten imágenes";
+            // /**
+            //  * Se comprueba si el tipo mime del archivo se corresponde con el de alguna
+            //  * de las imágenes admitidas,sino es válido se lanza un error para que sea procesado
+            //  */
+            // if (!fileUtils.isMimeTypeImage(mimeType)) {
+            //     file.onErrorTipoMimeImagen = "El tipo MIME " + file.name + " no válido. Sólo se admiten imágenes";
 
-            } else {
+            // } else 
+            {
                 // Ruta del fichero en disco
                 file.path = pathAux;
                 rutaRelativaArchivoServidor = configUpload.relative_path_show_video + req.session.usuario.ID + "/" + idVideoteca + "/" + nombreCarpetaVideoteca;
@@ -274,135 +281,6 @@ exports.uploadVideoFile = function(req, res, next) {
         } // for
 
 
-        /**
-         * Si hay ficheros se procede a insertar la información en BBDD y se generan las imágenes
-         * en miniatura
-         */
-        if (nombresFicheros.length == 0) {
-            httpResponse.devolverJSON(res, {
-                status: 0,
-                descStatus: "No hay ficheros",
-                proceso: resultadoFicherosProcesados
-            });
-
-        } else {
-            /**
-             * Se insertan los datos de las fotografias en BBDD
-             */
-            var sql = "INSERT INTO foto(nombre,ruta,rutaMiniatura,alto,ancho,tipomime,idAlbum,fechaAlta,idUsuario) VALUES ?";
-            console.log(sql);
-
-
-
-            db.beginTransaction().then(result=>{
-
-                generateThumbnails(nombresFicheros, CARPETA_ALBUM, function(err) {
-                    if (err) {
-                        /**
-                         * No se han generado las miniaturas => Se borran de disco las fotografías de disco
-                         */
-                        console.log("****** ERROR AL GENERAR MINIATURAS****");
-                        fileUtils.deleteFileList(nombresFicheros);
-                        fileUtils.deleteFileList(nombresFicherosMiniatura);
-
-                        connection.release();
-                        var salida = { status: -3, descStatus: "Error al generar las miniaturas de las imagenes en disco" };
-                        httpResponse.devolverJSON(res, salida);
-                    } else {
-                        /**
-                         * Si se han generado las miniaturas
-                         */
-
-                        db.query(sql,[registros]).then(data=>{
-                            console.log("Tras insert : " + JSON.stringify(data));
-                            db.commitTransaction();
-                            db.close();
-                            var salida = { status: 0, descStatus: "OK", proceso: resultadoFicherosProcesados };
-                            httpResponse.devolverJSON(res, salida);
-                        }).catch(err=>{
-                            console.log("Se ha producido un error al insertar fotos en BBDD: " + err.message);
-                            db.rollbackTransaction();
-                            db.close();
-
-                            // TODO: Eliminar todas las fotografías que se hayan subido
-                            fileUtils.deleteFileList(nombresFicheros);
-                            fileUtils.deleteFileList(nombresFicherosMiniatura);
-                            var salida = { status: -1, descStatus: "Error al insertar en BBDD los datos de las fotografías: " + err.message };
-                            httpResponse.devolverJSON(res, salida);
-
-                        });
-
-                    }
-                });
-
-
-            }).catch(err=>{
-                console.log("Se ha producido un error: " + err.message);
-                db.close();
-
-                // Se eliminan las imagenes subidas por el usuario de disco
-                fileUtils.deleteFileList(nombresFicheros);
-    
-                // Se devuelve un JSON con la respuesta al servidor
-                httpUtil.devolverJSON(res, {
-                    status: -4,
-                    descStatus: "Error al iniciar transacción a BBDD: " + err.message
-                });
-
-            });     
-        }
+       
     });
-};
-
-
-/**
- * Genera un thumbnail por cada una de las imagenes que se han subido al servidor
- * @param {images} Array con los nombres que tendrán los thumbnails 
- * @param {callback} Función callback que se invoca cuando 
- * @param {directoryImages} Directorio en el que se han almacenado las imagenes
- */
-async function generateThumbnails(images, directoryImages, callback) {
-    try {
-
-        var contador = 0;
-
-        for (i = 0; images != undefined && i < images.length; i++) {
-            var imageOriginal = images[i];
-            console.log("===> i: " + i);
-            await thumb({
-                    source: imageOriginal,
-                    destination: directoryImages,
-                    prefix: "",
-                    suffix: "_thumb",
-                    digest: false,
-                    hashingType: "sha1", // 'sha1', 'md5', 'sha256', 'sha512'
-                    width: 251,
-                    height: 188,
-                    concurrency: 10,
-                    quiet: false, // if set to 'true', console.log status messages will be supressed
-                    overwrite: false,
-                    basename: undefined, // basename of the thumbnail. If unset, the name of the source file is used as basename.
-                    ignore: false, // Ignore unsupported files in "dest"
-                    logger: function(message) {
-                        console.log(message);
-                    }
-                })
-                .then(function() {
-                    console.log("miniatura creada");
-                    contador++;
-                })
-                .catch(function(e) {
-                    console.log("Error thumb: " + e.message);
-                    callback(new Error("Error al generar la miniatura de la imagen"));
-                });
-        } // for
-
-        console.log("contador: " + contador);
-        if (contador == images.length) {
-            callback();
-        }
-    } catch (err) {
-        console.log("generateThumbnails error: " + err.message);
-        callback(new Error("Error al generar la miniatura de la imagen"));
-    }
 };

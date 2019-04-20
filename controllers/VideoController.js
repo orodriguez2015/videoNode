@@ -14,12 +14,8 @@ var database = require('../db/DatabaseMysql.js');
 exports.showVideos = function(req,res,next) {
     var videoteca = req.Videoteca;
 
-    console.log("showvideos params = " + req.params);
-
     var ruta_completa = videoteca.ruta_completa;
     var lista = fileUtil.leerVideosVideoteca(videoteca);
-
-    console.log("lista = " + JSON.stringify(lista));
 
     res.render("videos/videos",{videos:lista,videoteca:videoteca,errors:{}});
 };
