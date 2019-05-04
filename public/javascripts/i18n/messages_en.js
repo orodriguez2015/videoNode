@@ -90,6 +90,8 @@ var messages = {
     mensaje_seleccion_videos_no_validas : "Among the selection of files made there are some that have an invalid video format. Make a new selection.",
     procesando_carga_video : "Loading videos",
     mensaje_error_upload_video : "There was an error uploading the video to the server. Please try again",
+    mensaje_error_upload_video_excede_tamano: "The selected file exceed the maximum allowed size of ",
+    mensaje_bytes: "bytes",
 
    required: "This field is required.",
    remote: "Please fill in this field.",

@@ -240,8 +240,6 @@ class UploadVideoFacade {
                     }
                 );
 
-
-
                 /*
                  * Se comprueba si lo que se está es subiendo un vídeo, en ese caso se carga
                  * la url de upload de video 
@@ -290,7 +288,33 @@ class UploadVideoFacade {
      */
     onErrorUploadFiles(err) {
         progressFacade.hide();
-        messagesArea.showMessageError(messages.mensaje_error_upload_video);
+        
+        // Mensaje por defecto
+        var mensaje = messages.mensaje_error_upload_video;
+
+        console.log("Error = " + JSON.stringify(err));
+        // Si se envia otro tipo de respuesta en err.responseText
+        if(err.responseText!=undefined && err.responseText!=null && err.responseText.length>0 && err.responseText!='') {
+
+            // La respuesta de err.responseText viene en formato JSON
+            var respuesta = JSON.parse(err.responseText);
+            console.log("status = " + respuesta.status);
+
+            switch(respuesta.status) {
+                case 100: {
+                    mensaje = messages.mensaje_error_upload_video_excede_tamano + " " + respuesta.limite + " " + messages.mensaje_bytes;
+                    break;
+                }
+
+                default: {
+                    mensaje = messages.mensaje_error_upload_video;
+                    break;
+                }
+
+            }
+        }// if
+        
+        messagesArea.showMessageError(mensaje);
         
     }
 

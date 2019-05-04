@@ -74,6 +74,16 @@ exports.uploadVideoFile = function(req, res, next) {
      * @param file Fichero
      */
     form.on('fileBegin', function(field, file) {
+
+
+        console.log("Tamaño maximo archivo a subir al servidor = " + form.maxFileSize);
+        /**
+         * SE MODIFICA EL TAMAÑO MÁXIMO DE ARCHIVO A SUBIR AL SERVIDOR MULTIPLICANDO POR 10 EL VALOR POR DEFECTO
+         */
+        form.maxFileSize = form.maxFileSize * 10;
+
+        console.log("Tamaño maximo archivo a subir al servidor modificado = " + form.maxFileSize);
+
         nameFile = file.name;
         mimeType = file.type;
 
@@ -84,6 +94,12 @@ exports.uploadVideoFile = function(req, res, next) {
         console.log("fileBegin nameFile = " + nameFile + " mime: " + mimeType);
         console.log("idVideoteca = " + idVideoteca);
 
+        console.log("form.maxFileSize original =  " + form.maxFileSize);
+
+       
+
+        
+
         if (file.name!=undefined) {
             var upload_dir = path.join(__dirname, ".." + configUpload.path_upload_videos);
             var name = file.name;
@@ -91,7 +107,6 @@ exports.uploadVideoFile = function(req, res, next) {
             var carpetaUsuario = upload_dir + constantes.FILE_SEPARATOR + idUsuario;
             var carpetaVideoteca = upload_dir + idUsuario + constantes.FILE_SEPARATOR + idVideoteca;
             
-
 
             try {
                 // Se comprueba si existe primero la carpeta store dentro de la carpeta public, sino existe hay que crearlo
@@ -143,20 +158,11 @@ exports.uploadVideoFile = function(req, res, next) {
              */
             if (fileUtils.existsFile(pathAux)) {
                 file.onErrorExisteFichero = "El fichero " + file.name + " ya existe en el servidor";
-
             } else
-            // /**
-            //  * Se comprueba si el tipo mime del archivo se corresponde con el de alguna
-            //  * de las imágenes admitidas,sino es válido se lanza un error para que sea procesado
-            //  */
-            // if (!fileUtils.isMimeTypeImage(mimeType)) {
-            //     file.onErrorTipoMimeImagen = "El tipo MIME " + file.name + " no válido. Sólo se admiten imágenes";
-
-            // } else 
             {
                 // Ruta del fichero en disco
                 file.path = pathAux;
-                rutaRelativaArchivoServidor = configUpload.relative_path_show_video + req.session.usuario.ID + "/" + idVideoteca + "/" + nombreCarpetaVideoteca;
+                rutaRelativaArchivoServidor = configUpload.relative_path_show_video + req.session.usuario.ID + "/" + idVideoteca + "/" + carpetaVideoteca;
                 rutaAbsolutaArchivoServidor = file.path;
             }
         }
@@ -168,9 +174,8 @@ exports.uploadVideoFile = function(req, res, next) {
      */
     function devolverError(err) {
         res.header('Connection', 'close');
-        res.status = 500;
         res.writeHead(500, { "Content-Type": "application/json" });
-        res.write(JSON.stringify({ status: err.codError, descStatus: err.message }));
+        res.write(JSON.stringify(err));
         res.end();
     };
 
@@ -181,8 +186,8 @@ exports.uploadVideoFile = function(req, res, next) {
     form.on('error', function(err) {
         // Se almacena el error lanzado en el objeto error, para manejarlo
         // en el evento "end" de formidable
-        error = err;
-        console.log("error ===>");
+        console.log("error ===> : " + err.message);
+        devolverError({status:100,descStatus:'Se ha excedido el tamaño máximo de archivo',limite:form.maxFileSize});
     });
 
 

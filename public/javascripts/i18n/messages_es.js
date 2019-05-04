@@ -92,6 +92,8 @@ var messages = {
     mensaje_seleccion_videos_no_validas : "Entre la selección de archivos realizados hay algunos que tienen un formato de vídeo no válido. Realiza una nueva selección.",
     procesando_carga_video : "Cargando vídeos",
     mensaje_error_upload_video : "Se ha producido un error al subir el vídeo al servidor. Por favor intentalo de nuevo",
+    mensaje_error_upload_video_excede_tamano: "El archivo seleccionado excede el tamaño máximo permitido de ",
+    mensaje_bytes: "bytes",
     
 
 

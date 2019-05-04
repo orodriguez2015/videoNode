@@ -75,6 +75,10 @@ i18n.configure({
 
 app.use(i18n.init);
 
+
+/**
+ * COMPROBACIÓN DEL PARÁMETRO LANG en la request para que se cargue un idioma u otro
+ */
 app.use(function(req, res, next) {
     // Se obtiene el parámetro "lang" que pueda ir en la url por GET
     var lang = req.query.lang;
