@@ -31,12 +31,12 @@ exports.uploadVideoFile = function(req, res, next) {
     /**
      * CONFIGURACION PROPIEDADES DEL MIDDLEWARE FORMIDABLE
      * 
-     * 1. Se modifica la propiedad form.maxFileSize para incrementar en 10 el tamaño máximo 
+     * 1. Se modifica la propiedad form.maxFileSize para establecer el tamaño máximo del archivos a subir al servidor
      *    de un archivo a subir al servidorSE MODIFICA EL TAMAÑO MÁXIMO DE ARCHIVO A SUBIR AL SERVIDOR MULTIPLICANDO POR 10 EL VALOR POR DEFECTO 
      * 
      * 2. Se modifica la propiedad form.uploadDir para establecer la ruta del directorio en que se alojará el archivo subido al servidor
      */
-    form.maxFileSize = form.maxFileSize * 10;
+    form.maxFileSize =  5097152000;
     form.uploadDir = __dirname + constantes.FILE_SEPARATOR + constantes.PARENT_DIR + configUpload.path_upload_video;
     form.parse(req);
 
@@ -56,7 +56,6 @@ exports.uploadVideoFile = function(req, res, next) {
     var rutaAbsolutaArchivoServidor;
     var error; // Almacena el error que se desea devolver en caso de error
 
-    var CARPETA_ALBUM;
 
     // Contiene
     var ficheros = new Array();
@@ -178,7 +177,7 @@ exports.uploadVideoFile = function(req, res, next) {
     form.on('error', function(err) {
         // Se almacena el error lanzado en el objeto error, para manejarlo
         // en el evento "end" de formidable
-        console.log("error ===> : " + err.message);
+        console.log("error =  " + err.message);
         devolverError({status:100,descStatus:'Se ha excedido el tamaño máximo de archivo',limite:form.maxFileSize});
     });
 
@@ -236,13 +235,7 @@ exports.uploadVideoFile = function(req, res, next) {
 
                 console.log("resultadoFicherosPRroceso = " + JSON.stringify(resultadoFicherosProcesados));
                 httpResponse.devolverJSON(res,resultadoProceso);
-
-                /**
-                 * Se borra el fichero subido al servidor, para que no quede alojado en el disco ya que o no es una imagen, o ya 
-                 * existe en el servidor
-                 */
-//                fileUtils.deleteFile(fichero.path);
-                
+  
             }
         } // for
 

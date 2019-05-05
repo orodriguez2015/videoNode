@@ -274,7 +274,7 @@ class UploadVideoFacade {
 
     /**
      * Método invocado cuando la subida del vídeo al servidor se ha realizado con éxito
-     * @param {*} data 
+     * @param {Object} data 
      */
     onSuccessUploadFiles(data) {
         console.log("onSuccessUploadFiles data = " + JSON.stringify(data));
@@ -310,7 +310,6 @@ class UploadVideoFacade {
      */
     onErrorUploadFiles(err) {
         progressFacade.hide();
-        
         // Mensaje por defecto
         var mensaje = messages.mensaje_error_upload_video;
 
@@ -320,8 +319,7 @@ class UploadVideoFacade {
 
             // La respuesta de err.responseText viene en formato JSON
             var respuesta = JSON.parse(err.responseText);
-            console.log("status = " + respuesta.status);
-
+        
             switch(respuesta.status) {
                 case 100: {
                     mensaje = messages.mensaje_error_upload_video_excede_tamano + " " + respuesta.limite + " " + messages.mensaje_bytes;
@@ -332,13 +330,12 @@ class UploadVideoFacade {
                     mensaje = messages.mensaje_error_upload_video;
                     break;
                 }
+            }// switch
 
-            }
         }// if
-        
         messagesArea.showMessageError(mensaje);
         
-    }
+    }// onErrorUploadFiles
 
 }
 
