@@ -14,8 +14,7 @@ var httpResponse = require('../util/HttpResponseUtil.js');
 // Middleware path
 var path = require('path');
 var fs = require("fs");
-// Generación de un thumbnail
-var thumb = require("node-thumbnail").thumb;
+
 
 
 /**
@@ -29,15 +28,25 @@ exports.uploadVideoFile = function(req, res, next) {
     var idVideoteca = req.params.idVideoteca;
     var videoteca = req.Videoteca;
     
+    /**
+     * CONFIGURACION PROPIEDADES DEL MIDDLEWARE FORMIDABLE
+     * 
+     * 1. Se modifica la propiedad form.maxFileSize para incrementar en 10 el tamaño máximo 
+     *    de un archivo a subir al servidorSE MODIFICA EL TAMAÑO MÁXIMO DE ARCHIVO A SUBIR AL SERVIDOR MULTIPLICANDO POR 10 EL VALOR POR DEFECTO 
+     * 
+     * 2. Se modifica la propiedad form.uploadDir para establecer la ruta del directorio en que se alojará el archivo subido al servidor
+     */
+    form.maxFileSize = form.maxFileSize * 10;
+    form.uploadDir = __dirname + constantes.FILE_SEPARATOR + constantes.PARENT_DIR + configUpload.path_upload_video;
+    form.parse(req);
 
+    console.log("Tamaño maximo archivo a subir al servidor = " + form.maxFileSize + " bytes");
+    console.log("Directorio de alojamiento de archivos     = " + form.uploadDir);
+    
     console.log("idVideoteca subida: " + idVideoteca + ",Videoteca =  " + JSON.stringify(videoteca));
     console.log("ruta completa: " + videoteca.ruta_completa);
-    // Se indica cual es el directorio de destino
 
-    form.uploadDir = __dirname + constantes.FILE_SEPARATOR + constantes.PARENT_DIR + configUpload.path_upload_video;
-    console.log("form.uploadDir = " + form.uploadDir);
-
-    form.parse(req);
+    
     var nameFile;
     var pathFile;
     var mimeType;
@@ -60,9 +69,7 @@ exports.uploadVideoFile = function(req, res, next) {
      * @param file Fichero
      */
     form.on('file', function(field, file) {
-        console.log("file");
         console.log("Archivo" + file.name + " recibido");
-
         ficheros.push(file);
     });
 
@@ -74,16 +81,6 @@ exports.uploadVideoFile = function(req, res, next) {
      * @param file Fichero
      */
     form.on('fileBegin', function(field, file) {
-
-
-        console.log("Tamaño maximo archivo a subir al servidor = " + form.maxFileSize);
-        /**
-         * SE MODIFICA EL TAMAÑO MÁXIMO DE ARCHIVO A SUBIR AL SERVIDOR MULTIPLICANDO POR 10 EL VALOR POR DEFECTO
-         */
-        form.maxFileSize = form.maxFileSize * 10;
-
-        console.log("Tamaño maximo archivo a subir al servidor modificado = " + form.maxFileSize);
-
         nameFile = file.name;
         mimeType = file.type;
 
@@ -93,13 +90,8 @@ exports.uploadVideoFile = function(req, res, next) {
 
         console.log("fileBegin nameFile = " + nameFile + " mime: " + mimeType);
         console.log("idVideoteca = " + idVideoteca);
-
-        console.log("form.maxFileSize original =  " + form.maxFileSize);
-
-       
-
+        console.log("field = " + field);
         
-
         if (file.name!=undefined) {
             var upload_dir = path.join(__dirname, ".." + configUpload.path_upload_videos);
             var name = file.name;
@@ -201,10 +193,8 @@ exports.uploadVideoFile = function(req, res, next) {
         var contador = 0;
         var registros = new Array();
         var nombresFicheros = new Array();
-        var nombresFicherosMiniatura = new Array();
         var resultadoFicherosProcesados = new Array();
         var db = new database.DatabaseMysql();
-
 
         /*
          * Se genera el array con los valores de las fotografías que se pasan en la query de inserción
@@ -231,57 +221,28 @@ exports.uploadVideoFile = function(req, res, next) {
                  */
                 if (ERROR_EXISTE_FICHERO) {
                     resultadoProceso.status = 1;
-                    resultadoProceso.descStatus = "Ya existe la imagen en el álbum";
+                    resultadoProceso.descStatus = "Ya existe el archivo en el servidor";
                 } else
                 /**
                  * Si el tipo mime del fichero no es una imagen
                  */
                 if (ERROR_TIPO_MIME_FICHERO) {
                     resultadoProceso.status = 2;
-                    resultadoProceso.descStatus = "El fichero " + fichero.name + " no es una imagen";
+                    resultadoProceso.descStatus = "El fichero " + fichero.name + " no es de un tipo de archivo válido";
                 }
 
                 resultadoProceso.name = fichero.name;
                 resultadoFicherosProcesados.push(resultadoProceso);
 
+                console.log("resultadoFicherosPRroceso = " + JSON.stringify(resultadoFicherosProcesados));
+                httpResponse.devolverJSON(res,resultadoProceso);
 
                 /**
-                 * Si el fichero es una imagen y no existe se añade en los arrays correspondientes para su proceso
+                 * Se borra el fichero subido al servidor, para que no quede alojado en el disco ya que o no es una imagen, o ya 
+                 * existe en el servidor
                  */
-                if (resultadoProceso.status == 0) {
-
-                    var RUTA_RELATIVA_ARCHIVO_SERVIDOR = CARPETA_ALBUM + constantes.FILE_SEPARATOR + fichero.name;
-                    var PATH_RELATIVO_ARCHIVO = configUpload.relative_path_show_photo + req.session.usuario.ID + constantes.FILE_SEPARATOR + idAlbum + constantes.FILE_SEPARATOR + fichero.name;
-                    var mimeType = fichero.type;
-                    var dimensions = sizeOf(RUTA_RELATIVA_ARCHIVO_SERVIDOR);
-                    var widthFile = dimensions.width;
-                    var heightFile = dimensions.height;
-
-                    /**
-                     * Thumbnail
-                     */
-                    var datos = fileUtils.extraerNombreExtension(fichero.name);
-                    var NOMBRE_MINIATURA = datos[0] + constantes.THUMB + constantes.PUNTO + datos[1];
-
-                    var RUTA_RELATIVA_MINIATURA_SERVIDOR = CARPETA_ALBUM + constantes.FILE_SEPARATOR + NOMBRE_MINIATURA;
-                    var PATH_RELATIVO_MINIATURA = configUpload.relative_path_show_photo + req.session.usuario.ID + constantes.FILE_SEPARATOR + idAlbum + constantes.FILE_SEPARATOR + NOMBRE_MINIATURA;
-
-                    // Los campos de tipo datetime no pueden tomar el valor now() de mysql, se almacena en dicho campo el valor new Date()
-                    var registro = [fichero.name, PATH_RELATIVO_ARCHIVO, PATH_RELATIVO_MINIATURA, heightFile, widthFile, mimeType, idAlbum, new Date(), idUsuario];
-                    registros.push(registro);
-
-                    // Nombres de los ficheros
-                    nombresFicheros.push(RUTA_RELATIVA_ARCHIVO_SERVIDOR);
-                    nombresFicherosMiniatura.push(RUTA_RELATIVA_MINIATURA_SERVIDOR);
-                } else {
-                    /**
-                     * Se borra el fichero subido al servidor, para que no quede alojado en el disco ya que o no es una imagen, o ya 
-                     * existe en el servidor
-                     */
-                    fileUtils.deleteFile(fichero.path);
-                }
-
-
+//                fileUtils.deleteFile(fichero.path);
+                
             }
         } // for
 

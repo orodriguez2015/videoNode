@@ -92,6 +92,9 @@ var messages = {
     mensaje_error_upload_video : "There was an error uploading the video to the server. Please try again",
     mensaje_error_upload_video_excede_tamano: "The selected file exceed the maximum allowed size of ",
     mensaje_bytes: "bytes",
+    mensaje_exito_subida_video: "The video file has been stored in the video library correctly",
+    mensaje_error_existe_video: "The video already exists in the video library",
+    mensaje_error_video_formato_no_valido: "The video file sent is of an invalid video format",
 
    required: "This field is required.",
    remote: "Please fill in this field.",

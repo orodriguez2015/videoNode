@@ -278,7 +278,29 @@ class UploadVideoFacade {
      */
     onSuccessUploadFiles(data) {
         console.log("onSuccessUploadFiles data = " + JSON.stringify(data));
-    }
+        
+        if(data!=undefined && data!=null) {
+            progressFacade.hide();
+
+            switch(data.status) {
+                case 0: {
+                    messagesArea.showMessageSuccess(messages.mensaje_exito_subida_video);
+                    break;
+                }
+
+                case 1: {
+                    messagesArea.showMessageError(messages.mensaje_error_existe_video);
+                    break;
+                }
+
+                case 2: {
+                    messagesArea.showMessageError(messages.mensaje_error_video_formato_no_valido);
+                    break;
+                }
+
+            } // switch
+        }// if
+    }// onSucccessUploadFiles
 
    
     /**

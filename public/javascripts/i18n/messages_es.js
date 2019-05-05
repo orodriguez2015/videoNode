@@ -94,7 +94,9 @@ var messages = {
     mensaje_error_upload_video : "Se ha producido un error al subir el vídeo al servidor. Por favor intentalo de nuevo",
     mensaje_error_upload_video_excede_tamano: "El archivo seleccionado excede el tamaño máximo permitido de ",
     mensaje_bytes: "bytes",
-    
+    mensaje_exito_subida_video: "El archivo de vídeo ha sido almacenado en la videoteca correctamente",
+    mensaje_error_existe_video: "Ya existe el vídeo en la videoteca",
+    mensaje_error_video_formato_no_valido: "El archivo de vídeo enviado es de un formato de vídeo no válido",
 
 
     
