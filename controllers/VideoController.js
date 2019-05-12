@@ -4,6 +4,7 @@ var fileUtil = require('../util/FileUtils.js');
 var constantes = require('../config/constantes.json');
 var config = fileUtil.getContentConfigBBDDFile();
 var database = require('../db/DatabaseMysql.js');
+var stringUtil = require('../util/StringUtil.js');
 
 /**
  * Renderiza la pantalla que muestra un listado de los vídeos
@@ -606,6 +607,87 @@ exports.editarVideoteca = function(req,res,next) {
         console.log("error " + err.message);
     }
 
-}
+    }
 
 };
+
+
+
+/**
+ * Almacena los datos del video asociados a la videoteca en BBDD
+ * @param {video} nombreFichero 
+ * @param {Integer} tamanoFichero 
+ * @param {Integer} idVideoteca
+ */
+exports.saveVideo = function(video) {
+    
+    if(video!=null && video!=undefined) {
+        var nombre = video.nombre;
+        var extension = video.extension;
+        var idVideoteca = video.idVideoteca;
+        var idUsuario = video.idUsuario;
+        var publico = video.publico;
+
+        if(!stringUtil.isEmpty(nombre) && !stringUtil.isEmpty(extension) && stringUtil.isNumber(idVideoteca) && stringUtil.isNumber(idUsuario)
+            && stringUtil.isNumber(publico)) {
+
+            var db = new database.DatabaseMysql();
+            db.beginTransaction().then(correcto=>{
+
+                //var sql = "INSERT INTO VIDEO(NOMBRE,EXTENSION,ID_USUARIO,PUBLICO,ID_VIDEOTECA,FECHA_ALTA) VALUES(?)";
+
+
+                /*
+                var sql = "INSERT INTO VIDEO(NOMBRE,EXTENSION,ID_USUARIO,PUBLICO,ID_VIDEOTECA) VALUES('" + nombre + "','" + extension + "',"
+                          + idUsuario + "," + publico + "," + idVideoteca + ")";
+                */
+
+               var sql = "INSERT INTO VIDEO(NOMBRE,EXTENSION,ID_USUARIO,PUBLICO,ID_VIDEOTECA) VALUES(?)";
+            
+                console.log(sql);
+
+                var registro = [nombre,extension,idUsuario,publico,idVideoteca];
+                var registros = new Array();
+                registros.push(registro);
+                console.log("registro a insertar = " + JSON.stringify(registro));
+
+                db.query(sql,registros).then(resultado=>{
+                    console.log("Se ha insertado el vídeo en BBDD = " + resultado);
+                    
+
+                    db.commitTransaction().then(resultado=>{
+                        db.close();
+                        return 0;
+                    }).catch(err=>{
+                        console.log("Error al confirmar transacción = " + err.message);
+                        db.close();
+                    });
+                    
+                }).catch(errSql =>{
+                    console.log("Se ha producido un error al insertar video en BBDD = " + errSql.message);
+                    
+                    db.rollbackTransaction().then(resultado=>{
+                        db.close();
+                        return -1;
+                    }).catch(err=>{
+                        console.log("Se ha producido un error al realizar rollback = " + err.message);
+                        db.close();
+                        return -1;
+                    });
+                });
+
+            }).catch(err=>{
+                console.log("Se ha producido un error al iniciar la transacción = " + err.message);
+                return -2;
+                db.close();
+            });
+
+        }// if
+
+
+    }// if
+    
+};
+
+
+

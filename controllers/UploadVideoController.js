@@ -15,6 +15,8 @@ var httpResponse = require('../util/HttpResponseUtil.js');
 var path = require('path');
 var fs = require("fs");
 
+var videoController = require('../controllers/VideoController.js');
+
 
 
 /**
@@ -48,12 +50,13 @@ exports.uploadVideoFile = function(req, res, next) {
 
     
     var nameFile;
-    var pathFile;
+    var extension;
+    var rutaFichero;
     var mimeType;
-    var widthFile;
-    var heightFile;
-    var rutaRelativaArchivoServidor;
-    var rutaAbsolutaArchivoServidor;
+    var tamanoFile;
+    
+    
+    
     var error; // Almacena el error que se desea devolver en caso de error
 
 
@@ -82,12 +85,19 @@ exports.uploadVideoFile = function(req, res, next) {
     form.on('fileBegin', function(field, file) {
         nameFile = file.name;
         mimeType = file.type;
+        tamanoFile = file.size;
+
+        var datosFicheros = fileUtils.extraerNombreExtension(nameFile);
+    
+        if(datosFicheros!=null && datosFicheros.length>0) {
+            extension = datosFicheros[1];
+        }
 
         var videoteca = req.Videoteca;
         var idVideoteca = req.Videoteca.id;
         var idUsuario = req.session.usuario.ID
 
-        console.log("fileBegin nameFile = " + nameFile + " mime: " + mimeType);
+        console.log("fileBegin nameFile = " + nameFile + " mime: " + mimeType + ", extension = " + extension + ", tamaño = " + tamanoFile);
         console.log("idVideoteca = " + idVideoteca);
         console.log("field = " + field);
         
@@ -124,7 +134,6 @@ exports.uploadVideoFile = function(req, res, next) {
                 /*
                  * Se crea la carpeta del álbum dentro de la carpeta del usuario sino existe
                  */
-
                 if(!fileUtils.existsFile(carpetaVideoteca)) {
                     fileUtils.mkdirSync(carpetaVideoteca);
                 }
@@ -149,12 +158,11 @@ exports.uploadVideoFile = function(req, res, next) {
              */
             if (fileUtils.existsFile(pathAux)) {
                 file.onErrorExisteFichero = "El fichero " + file.name + " ya existe en el servidor";
-            } else
-            {
+            } else{
                 // Ruta del fichero en disco
                 file.path = pathAux;
-                rutaRelativaArchivoServidor = configUpload.relative_path_show_video + req.session.usuario.ID + "/" + idVideoteca + "/" + carpetaVideoteca;
-                rutaAbsolutaArchivoServidor = file.path;
+                rutaFichero = file.path;
+            
             }
         }
     });
@@ -183,7 +191,7 @@ exports.uploadVideoFile = function(req, res, next) {
 
 
     /**
-     * Se dispara cuando el archivo se ha guarda en disco
+     * Se dispara cuando el archivo se ha guardado en disco
      */
     form.on('end', function() {
         // Si hay error, se devuelve un HTTP 500 con el código de error, ya que no funciona
@@ -193,53 +201,83 @@ exports.uploadVideoFile = function(req, res, next) {
         var registros = new Array();
         var nombresFicheros = new Array();
         var resultadoFicherosProcesados = new Array();
-        var db = new database.DatabaseMysql();
 
-        /*
-         * Se genera el array con los valores de las fotografías que se pasan en la query de inserción
-         */
-        for (i = 0; ficheros != undefined && i < ficheros.length; i++) {
-            var fichero = ficheros[i];
 
-            if (fichero != undefined) {
+        try {
+         
+            /*
+            * Se genera el array con los valores de las fotografías que se pasan en la query de inserción
+            */
+            for (i = 0; ficheros != undefined && i < ficheros.length; i++) {
+                var fichero = ficheros[i];
 
-                /**
-                 * Si el fichero subido al servidor existe o no es una imagen
-                 */
-                var ERROR_EXISTE_FICHERO = (fichero.onErrorExisteFichero != undefined && fichero.onErrorExisteFichero.length > 0) ? true : false;
-                var ERROR_TIPO_MIME_FICHERO = (fichero.onErrorTipoMimeImagen != undefined && fichero.onErrorTipoMimeImagen.length > 0) ? true : false;
+                if (fichero != undefined) {
 
-                console.log("nombre fichero: " + fichero.name);
-                console.log("ERROR_EXISTE_FICHERO: " + ERROR_EXISTE_FICHERO);
-                console.log("ERROR_TIPO_MIME_FICHERO: " + ERROR_TIPO_MIME_FICHERO);
+                    /**
+                     * Si el fichero subido al servidor existe o no es una imagen
+                     */
+                    var ERROR_EXISTE_FICHERO = (fichero.onErrorExisteFichero != undefined && fichero.onErrorExisteFichero.length > 0) ? true : false;
+                    var ERROR_TIPO_MIME_FICHERO = (fichero.onErrorTipoMimeImagen != undefined && fichero.onErrorTipoMimeImagen.length > 0) ? true : false;
 
-                var resultadoProceso = { status: 0, descStatus: "OK" };
+                    console.log("nombre fichero: " + fichero.name);
+                    console.log("ERROR_EXISTE_FICHERO: " + ERROR_EXISTE_FICHERO);
+                    console.log("ERROR_TIPO_MIME_FICHERO: " + ERROR_TIPO_MIME_FICHERO);
 
-                /**
-                 * Si existe el fichero
-                 */
-                if (ERROR_EXISTE_FICHERO) {
-                    resultadoProceso.status = 1;
-                    resultadoProceso.descStatus = "Ya existe el archivo en el servidor";
-                } else
-                /**
-                 * Si el tipo mime del fichero no es una imagen
-                 */
-                if (ERROR_TIPO_MIME_FICHERO) {
-                    resultadoProceso.status = 2;
-                    resultadoProceso.descStatus = "El fichero " + fichero.name + " no es de un tipo de archivo válido";
+                    var resultadoProceso = { status: 0, descStatus: "OK" };
+                    var correcto  = true;
+                    /**
+                     * Si existe el fichero
+                     */
+                    if (ERROR_EXISTE_FICHERO) {
+                        resultadoProceso.status = 1;
+                        resultadoProceso.descStatus = "Ya existe el archivo en el servidor";
+                        correcto  = false;
+                    } else
+                    if (ERROR_TIPO_MIME_FICHERO) {
+
+                        /**
+                          * Si el tipo mime del fichero no es una imagen
+                          */
+                        resultadoProceso.status = 2;
+                        resultadoProceso.descStatus = "El fichero " + fichero.name + " no es de un tipo de archivo válido";
+                        correcto  = false;
+                    } else {
+
+                        resultadoProceso.name = fichero.name;
+                        resultadoFicherosProcesados.push(resultadoProceso);
+
+                        /**
+                         * Se inserta los datos del video en base de datos
+                         */
+                        var video = {
+                            nombre: nameFile,
+                            extension: extension,
+                            tamano: tamanoFile,
+                            idUsuario: req.session.usuario.ID,
+                            idVideoteca: req.Videoteca.id,
+                            publico: 1
+                        };
+
+                        console.log("idVideotea = " + req.Videoteca.id + ", idUsuario = " + req.session.usuario.ID);
+                        console.log("video modificado = " + JSON.stringify(video));
+                        // Se procede a grabar vídeo en BBDD
+                        var salida = videoController.saveVideo(video);
+                        console.log("salida = " + salida);
+                        
+                        
+
+                        console.log("resultadoFicherosPRroceso = " + JSON.stringify(resultadoFicherosProcesados));
+                        httpResponse.devolverJSON(res,resultadoProceso);
+
+                    }// if
+
                 }
+            } // for
 
-                resultadoProceso.name = fichero.name;
-                resultadoFicherosProcesados.push(resultadoProceso);
-
-                console.log("resultadoFicherosPRroceso = " + JSON.stringify(resultadoFicherosProcesados));
-                httpResponse.devolverJSON(res,resultadoProceso);
-  
-            }
-        } // for
-
-
+    }catch(err) {
+        console.log("form.end - Error al procesar video " + err.message);
+    }
        
     });
 };
+
