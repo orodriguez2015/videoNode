@@ -16,6 +16,7 @@ var path = require('path');
 var fs = require("fs");
 
 var videoController = require('../controllers/VideoController.js');
+var stringUtil = require('../util/StringUtil.js');
 
 
 
@@ -146,20 +147,27 @@ exports.uploadVideoFile = function(req, res, next) {
                 form.emit('error', err);
             }
 
-
             // Ruta en el que se alojará el archivo
             var pathAux = carpetaVideoteca + constantes.FILE_SEPARATOR + file.name;
-            var datos = fileUtils.extraerNombreExtension(file.name);
-            
-
+         
             /**
              * Se comprueba si existe ya un fichero con el mismo nombre.
              * En ese caso, se lanza un error para que sea procesado
              */
             if (fileUtils.existsFile(pathAux)) {
-                file.onErrorExisteFichero = "El fichero " + file.name + " ya existe en el servidor";
+                console.log("======> Existe el fichero " + pathAux + " en el servidor");
+
+                /**
+                 * Existe el fichero en el servidor, pero no se puede borrar en form.on('fileBegin') del disco hasta que haya finalizado
+                 * la subida del fichero al servidor en form.on('end')
+                 */
+                file.existeEnServidor = true;
+            
             } else{
-                // Ruta del fichero en disco
+                /*
+                 * El fichero no existe en la videoteca, por tanto se establece la nueva ruta del fichero en disco asignado
+                 * el valor adecuado en la propiedad file.path
+                 */
                 file.path = pathAux;
                 rutaFichero = file.path;
             
@@ -185,7 +193,9 @@ exports.uploadVideoFile = function(req, res, next) {
     form.on('error', function(err) {
         // Se almacena el error lanzado en el objeto error, para manejarlo
         // en el evento "end" de formidable
-        console.log("error =  " + err.message);
+        console.log("==========> obj error = " + JSON.stringify(err));
+       
+        console.log(" ===========> error =  " + err.message);
         devolverError({status:100,descStatus:'Se ha excedido el tamaño máximo de archivo',limite:form.maxFileSize});
     });
 
@@ -197,12 +207,8 @@ exports.uploadVideoFile = function(req, res, next) {
         // Si hay error, se devuelve un HTTP 500 con el código de error, ya que no funciona
         // el evento 'error' del middleware formidable
         var idUsuario = req.session.usuario.ID;
-        var contador = 0;
         var registros = new Array();
-        var nombresFicheros = new Array();
-        var resultadoFicherosProcesados = new Array();
-
-
+        
         try {
          
             /*
@@ -216,7 +222,7 @@ exports.uploadVideoFile = function(req, res, next) {
                     /**
                      * Si el fichero subido al servidor existe o no es una imagen
                      */
-                    var ERROR_EXISTE_FICHERO = (fichero.onErrorExisteFichero != undefined && fichero.onErrorExisteFichero.length > 0) ? true : false;
+                    var ERROR_EXISTE_FICHERO = (fichero.existeEnServidor != undefined && fichero.existeEnServidor) ? true : false;
                     var ERROR_TIPO_MIME_FICHERO = (fichero.onErrorTipoMimeImagen != undefined && fichero.onErrorTipoMimeImagen.length > 0) ? true : false;
 
                     console.log("nombre fichero: " + fichero.name);
@@ -224,14 +230,20 @@ exports.uploadVideoFile = function(req, res, next) {
                     console.log("ERROR_TIPO_MIME_FICHERO: " + ERROR_TIPO_MIME_FICHERO);
 
                     var resultadoProceso = { status: 0, descStatus: "OK" };
-                    var correcto  = true;
+                    
                     /**
                      * Si existe el fichero
                      */
                     if (ERROR_EXISTE_FICHERO) {
                         resultadoProceso.status = 1;
                         resultadoProceso.descStatus = "Ya existe el archivo en el servidor";
-                        correcto  = false;
+                    
+                        console.log("Borrando ficheros[0].path =  " + ficheros[0].path);
+                        /**
+                         * Se borra el archivo subido al servidor puesto que ya existe
+                         */
+                        fileUtils.deleteFile(ficheros[0].path);
+                        httpResponse.devolverJSON(res,resultadoProceso);
                     } else
                     if (ERROR_TIPO_MIME_FICHERO) {
 
@@ -240,44 +252,160 @@ exports.uploadVideoFile = function(req, res, next) {
                           */
                         resultadoProceso.status = 2;
                         resultadoProceso.descStatus = "El fichero " + fichero.name + " no es de un tipo de archivo válido";
-                        correcto  = false;
+                         /**
+                         * Se borra el archivo subido al servidor puesto que ya existe
+                         */
+                        fileUtils.deleteFile(ficheros[0].path);
+                        httpResponse.devolverJSON(res,resultadoProceso);
                     } else {
 
-                        resultadoProceso.name = fichero.name;
-                        resultadoFicherosProcesados.push(resultadoProceso);
+                        try {
 
-                        /**
-                         * Se inserta los datos del video en base de datos
-                         */
-                        var video = {
-                            nombre: nameFile,
-                            extension: extension,
-                            tamano: tamanoFile,
-                            idUsuario: req.session.usuario.ID,
-                            idVideoteca: req.Videoteca.id,
-                            publico: 1
-                        };
+                            /**
+                             * Se inserta los datos del video en base de datos
+                             */
+                            var video = {
+                                nombre: nameFile,
+                                extension: extension,
+                                tamano: tamanoFile,
+                                idUsuario: req.session.usuario.ID,
+                                idVideoteca: req.Videoteca.id,
+                                publico: 1,
+                                fichero: ficheros[0]
+                            };
 
-                        console.log("idVideotea = " + req.Videoteca.id + ", idUsuario = " + req.session.usuario.ID);
-                        console.log("video modificado = " + JSON.stringify(video));
-                        // Se procede a grabar vídeo en BBDD
-                        var salida = videoController.saveVideo(video);
-                        console.log("salida = " + salida);
-                        
-                        
+                            /*
+                             * Guardar vídeo en BBDD y redirigir a la salida
+                             */
+                            saveVideo(video,res);
+                            
 
-                        console.log("resultadoFicherosPRroceso = " + JSON.stringify(resultadoFicherosProcesados));
-                        httpResponse.devolverJSON(res,resultadoProceso);
+                        } catch(err) {
+                            console.log(" Error al alojar el video " + rutaFichero + " en el servidor: " + err.message);
+                            // Si se ha producido un error se borra el fichero del servidor
+                            fileUtils.deleteFile(ficheros[0].path);
+                        }
 
                     }// if
 
+                } else {
+                    console.log(" Se procede a borrar el fichero " + ficheros[i].path);
+                    fileUtils.deleteFile(ficheros[i].path);
                 }
             } // for
 
     }catch(err) {
         console.log("form.end - Error al procesar video " + err.message);
+        fileUtils.deleteFile(rutaFichero);
     }
        
     });
 };
 
+
+/**
+ * Función invocada para guardar un video en BBDD
+ * @param {Object} video
+ * @param {Response} response
+ */
+function saveVideo(video,response) {
+
+    if(video!=null && video!=undefined) {
+        var nombre = video.nombre;
+        var extension = video.extension;
+        var idVideoteca = video.idVideoteca;
+        var idUsuario = video.idUsuario;
+        var publico = video.publico;
+        var fichero = video.fichero;
+
+        if(!stringUtil.isEmpty(nombre) && !stringUtil.isEmpty(extension) && stringUtil.isNumber(idVideoteca) 
+            && stringUtil.isNumber(idUsuario) && stringUtil.isNumber(publico)) {
+
+            var db = new database.DatabaseMysql();
+
+            db.beginTransaction().then(correcto=>{
+
+                var sql = "INSERT INTO VIDEO(NOMBRE,EXTENSION,ID_USUARIO,PUBLICO,ID_VIDEOTECA,FECHA_ALTA) VALUES(?)";
+                console.log(sql);
+
+                var registro = [nombre,extension,idUsuario,publico,idVideoteca,new Date()];
+                var registros = new Array();
+                registros.push(registro);
+                console.log("registro a insertar = " + JSON.stringify(registro));
+
+                db.query(sql,registros).then(resultado=>{
+                    console.log("Se ha insertado el vídeo en BBDD " + JSON.stringify(resultado));
+                    
+                    db.commitTransaction().then(res=>{
+                        db.close();
+
+                        devolverSalida(0,"OK",response);
+    
+                    }).catch(error=>{
+                        console.log("Error al insertar el vídeo en BBDD " + error.messsage);
+
+                        db.rollbackTransaction().then(res1=>{
+                            db.close();
+                            // Se elimina el fichero ya que se ha producido un error al insertar en BBDD
+                            fileUtils.deleteFile(fichero.path);
+
+                            devolverSalida(3,"Error al insertar video en BBDD",response);
+
+                        }).catch(err2=>{
+                            console.log("Error al realizar rollback = " + err2.message);
+                        });
+                    });
+                    
+                }).catch(errSql =>{
+                    console.log("Se ha producido un error al insertar video en BBDD = " + errSql.message);
+                    
+                    db.rollbackTransaction().then(resultado=>{
+                        db.close();
+                        
+                        // Se elimina el fichero ya que se ha producido un error al insertar en BBDD
+                        fileUtils.deleteFile(fichero.path);
+
+                        devolverSalida(3,"Error al insertar video en BBDD",response);
+
+                    }).catch(err=>{
+                        console.log("Se ha producido un error al realizar rollback = " + err.message);
+                        db.close();
+
+                        // Se elimina el fichero ya que se ha producido un error al insertar en BBDD
+                        fileUtils.deleteFile(fichero.path);
+
+                        devolverSalida(3,"Error al insertar video en BBDD",response);
+                        
+                    });
+                });
+
+            }).catch(err=>{
+                console.log("Se ha producido un error al iniciar la transacción = " + err.message);
+                db.close();
+
+                // Se elimina el fichero ya que se ha producido un error al insertar en BBDD
+                fileUtils.deleteFile(fichero.path);
+
+                devolverSalida(3,"Error al insertar video en BBDD",response);
+
+            });
+
+        }// if
+
+
+    }// if
+}// saveVideo
+
+
+/**
+ * Devuelve la salida en formato JSON
+ * @param {Integer} codStatus Código de estado
+ * @param {String} descStatus Descripción de estado
+ * @param {Response} response Response
+ */
+function devolverSalida(codStatus,descStatus,response) {
+    var resultadoProceso = {};
+    resultadoProceso.status = codStatus;
+    resultadoProceso.descStatus = descStatus;
+    httpResponse.devolverJSON(response,resultadoProceso);
+}

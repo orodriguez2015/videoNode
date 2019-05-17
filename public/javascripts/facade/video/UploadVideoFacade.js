@@ -298,6 +298,11 @@ class UploadVideoFacade {
                     break;
                 }
 
+                case 3: {
+                    messagesArea.showMessageError(messages.mensaje_error_video_insertar_bbdd);
+                    break;
+                }
+
             } // switch
         }// if
     }// onSucccessUploadFiles
@@ -321,6 +326,7 @@ class UploadVideoFacade {
             var respuesta = JSON.parse(err.responseText);
         
             switch(respuesta.status) {
+
                 case 100: {
                     mensaje = messages.mensaje_error_upload_video_excede_tamano + " " + respuesta.limite + " " + messages.mensaje_bytes;
                     break;

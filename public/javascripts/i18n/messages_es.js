@@ -97,6 +97,7 @@ var messages = {
     mensaje_exito_subida_video: "El archivo de vídeo ha sido almacenado en la videoteca correctamente",
     mensaje_error_existe_video: "Ya existe el vídeo en la videoteca",
     mensaje_error_video_formato_no_valido: "El archivo de vídeo enviado es de un formato de vídeo no válido",
+    mensaje_error_video_insertar_bbdd: "Se ha producido un error al insertar el vídeo en base de datos",
 
 
     

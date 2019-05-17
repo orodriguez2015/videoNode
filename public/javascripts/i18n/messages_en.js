@@ -95,6 +95,7 @@ var messages = {
     mensaje_exito_subida_video: "The video file has been stored in the video library correctly",
     mensaje_error_existe_video: "The video already exists in the video library",
     mensaje_error_video_formato_no_valido: "The video file sent is of an invalid video format",
+    mensaje_error_video_insertar_bbdd: "An error occurred while inserting the video in database",
 
    required: "This field is required.",
    remote: "Please fill in this field.",
