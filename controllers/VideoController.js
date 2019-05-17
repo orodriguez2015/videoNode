@@ -614,79 +614,37 @@ exports.editarVideoteca = function(req,res,next) {
 
 
 /**
- * Almacena los datos del video asociados a la videoteca en BBDD
- * @param {video} nombreFichero 
- * @param {Integer} tamanoFichero 
- * @param {Integer} idVideoteca
+ * Comprueba si existe un video asociado a una videoteca tanto en BBDD como en video
+ * @param {request} req
+ * @param {response} res
+ * @param {next} next
  */
-exports.saveVideo = function(video) {
-    
-    if(video!=null && video!=undefined) {
-        var nombre = video.nombre;
-        var extension = video.extension;
-        var idVideoteca = video.idVideoteca;
-        var idUsuario = video.idUsuario;
-        var publico = video.publico;
+exports.existeVideo = function(req,res,next) {
 
-        if(!stringUtil.isEmpty(nombre) && !stringUtil.isEmpty(extension) && stringUtil.isNumber(idVideoteca) && stringUtil.isNumber(idUsuario)
-            && stringUtil.isNumber(publico)) {
+    var db = new database.DatabaseMysql();
+    var idVideoteca = req.body.idVideoteca;
+    var nombre = req.body.nombre;
+    var idUsuario = req.session.usuario.ID
+    var videoteca = req.Videoteca;
 
-            var db = new database.DatabaseMysql();
-            db.beginTransaction().then(correcto=>{
+    if(idVideoteca!=null && nombre!=null && nombre.length>0) {
 
-                //var sql = "INSERT INTO VIDEO(NOMBRE,EXTENSION,ID_USUARIO,PUBLICO,ID_VIDEOTECA,FECHA_ALTA) VALUES(?)";
+        var sql = "SELECT COUNT(*) AS NUM FROM VIDEO WHERE ID_VIDEOTECA=" + idVideoteca + " AND NOMBRE='" + nombre + "'";
 
+        db.query(sql).then(resultado=>{
 
-                /*
-                var sql = "INSERT INTO VIDEO(NOMBRE,EXTENSION,ID_USUARIO,PUBLICO,ID_VIDEOTECA) VALUES('" + nombre + "','" + extension + "',"
-                          + idUsuario + "," + publico + "," + idVideoteca + ")";
-                */
+            if(resultado[0].NUM>=1) {
+                // Existe en base de datos
 
-               var sql = "INSERT INTO VIDEO(NOMBRE,EXTENSION,ID_USUARIO,PUBLICO,ID_VIDEOTECA) VALUES(?)";
-            
-                console.log(sql);
+            }
 
-                var registro = [nombre,extension,idUsuario,publico,idVideoteca];
-                var registros = new Array();
-                registros.push(registro);
-                console.log("registro a insertar = " + JSON.stringify(registro));
-
-                db.query(sql,registros).then(resultado=>{
-                    console.log("Se ha insertado el vídeo en BBDD = " + resultado);
-                    
-
-                    db.commitTransaction().then(resultado=>{
-                        db.close();
-                        return 0;
-                    }).catch(err=>{
-                        console.log("Error al confirmar transacción = " + err.message);
-                        db.close();
-                    });
-                    
-                }).catch(errSql =>{
-                    console.log("Se ha producido un error al insertar video en BBDD = " + errSql.message);
-                    
-                    db.rollbackTransaction().then(resultado=>{
-                        db.close();
-                        return -1;
-                    }).catch(err=>{
-                        console.log("Se ha producido un error al realizar rollback = " + err.message);
-                        db.close();
-                        return -1;
-                    });
-                });
-
-            }).catch(err=>{
-                console.log("Se ha producido un error al iniciar la transacción = " + err.message);
-                return -2;
-                db.close();
-            });
-
-        }// if
-
+        }).catch(error=>{
+            console.log("Error al comprobar si existe el video = "  + error.messsage);
+            db.close();
+        });
 
     }// if
-    
+
 };
 
 

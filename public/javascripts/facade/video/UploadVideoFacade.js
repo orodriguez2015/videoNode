@@ -219,56 +219,55 @@ class UploadVideoFacade {
             return false;
         } else {
 
-                /**
-                 * Se muestra la barra de progreso
-                 */
-                progressFacade.init({
-                    idProgressModal: this.PROCESSING_MODAL,
-                    txtModalHeader: messages.procesando_carga_video
-                });
-                progressFacade.show();
+            /**
+             * Se muestra la barra de progreso
+             */
+            progressFacade.init({
+                idProgressModal: this.PROCESSING_MODAL,
+                txtModalHeader: messages.procesando_carga_video
+            });
+            progressFacade.show();
 
-                /**
-                 * Se crea el objeto FormData en el que se aloja cada fichero para
-                 * ser enviado por AJAX
-                 */
-                var data = new FormData();
-                jQuery.each(
-                    $("input[type=file]")[0].files,
-                    function(i,file) {
-                        data.append("file-" + i,file);
-                    }
-                );
-
-                /*
-                 * Se comprueba si lo que se está es subiendo un vídeo, en ese caso se carga
-                 * la url de upload de video 
-                 */
-
-                var urlSubida = "";
-
-                if(this.UPLOAD_VIDEO) {
-                    urlSubida = this.URL_VIDEO_UPLOAD + this.ID_VIDEOTECA
+            /**
+             * Se crea el objeto FormData en el que se aloja cada fichero para
+             * ser enviado por AJAX
+             */
+            var data = new FormData();
+            jQuery.each(
+                $("input[type=file]")[0].files,
+                function(i,file) {
+                    data.append("file-" + i,file);
                 }
+            );
+
+            /*
+                * Se comprueba si lo que se está es subiendo un vídeo, en ese caso se carga
+                * la url de upload de video 
+                */
+
+            var urlSubida = "";
+
+            if(this.UPLOAD_VIDEO) {
+                urlSubida = this.URL_VIDEO_UPLOAD + this.ID_VIDEOTECA
+            }
 
 
-                /**
-                 * Envío por POST de los archivos al servidor
-                 */
-                $.ajax({
-                    url: urlSubida,
-                    data: data,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    type: "POST",
-                    success: this.onSuccessUploadFiles.bind(this), // Se hace el bind para asociar el objeto actual a esta función, sino no se puede llamar a métodos del mismo objeto
-                    error: this.onErrorUploadFiles.bind(this) // bind es necesario para que desde onErrorUploadFiles se pueda llamar a métodos de esta clase
-                });
+            /**
+             * Envío por POST de los archivos al servidor
+             */
+            $.ajax({
+                url: urlSubida,
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                type: "POST",
+                success: this.onSuccessUploadFiles.bind(this), // Se hace el bind para asociar el objeto actual a esta función, sino no se puede llamar a métodos del mismo objeto
+                error: this.onErrorUploadFiles.bind(this) // bind es necesario para que desde onErrorUploadFiles se pueda llamar a métodos de esta clase
+            });
         }
 
-        return false;
-        
+        return false;  
     }
     
 
