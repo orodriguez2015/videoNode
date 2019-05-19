@@ -16,6 +16,7 @@
     "PUNTO": ".",
     "THUMB": "_thumb",
     "IDIOMA_DEFECTO": "es",
-    "TIPOS_MIME_VIDEO_ACEPTADAS":"video/mp4"
+    "TIPOS_MIME_VIDEO_ACEPTADAS":"video/mp4",
+    "EXTENSION_VIDEO_ACEPTADAS" : "MP4"
 
 }

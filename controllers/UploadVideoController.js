@@ -268,12 +268,12 @@ exports.uploadVideoFile = function(req, res, next) {
                             idUsuario: req.session.usuario.ID,
                             idVideoteca: req.Videoteca.id,
                             publico: 1,
-                            fichero: ficheros[0]
+                            ruta: ficheros[i].path
                         };
 
                         /*
-                            * Guardar vídeo en BBDD y redirigir a la salida
-                            */
+                        * Guardar vídeo en BBDD y redirigir a la salida
+                        */
                         saveVideo(video,res);
                         
 
@@ -308,19 +308,21 @@ function saveVideo(video,response) {
         var idVideoteca = video.idVideoteca;
         var idUsuario = video.idUsuario;
         var publico = video.publico;
-        var fichero = video.fichero;
+        var ruta = video.ruta;
+
+        console.log("saveVideo video = " + JSON.stringify(video));
 
         if(!stringUtil.isEmpty(nombre) && !stringUtil.isEmpty(extension) && stringUtil.isNumber(idVideoteca) 
-            && stringUtil.isNumber(idUsuario) && stringUtil.isNumber(publico)) {
+            && stringUtil.isNumber(idUsuario) && stringUtil.isNumber(publico) && !stringUtil.isEmpty(ruta)) {
 
             var db = new database.DatabaseMysql();
 
             db.beginTransaction().then(correcto=>{
 
-                var sql = "INSERT INTO VIDEO(NOMBRE,EXTENSION,ID_USUARIO,PUBLICO,ID_VIDEOTECA,FECHA_ALTA) VALUES(?)";
+                var sql = "INSERT INTO VIDEO(NOMBRE,EXTENSION,ID_USUARIO,PUBLICO,ID_VIDEOTECA,FECHA_ALTA,RUTA) VALUES(?)";
                 console.log(sql);
 
-                var registro = [nombre,extension,idUsuario,publico,idVideoteca,new Date()];
+                var registro = [nombre,extension,idUsuario,publico,idVideoteca,new Date(),ruta];
                 var registros = new Array();
                 registros.push(registro);
                 console.log("registro a insertar = " + JSON.stringify(registro));
@@ -339,7 +341,7 @@ function saveVideo(video,response) {
                         db.rollbackTransaction().then(res1=>{
                             db.close();
                             // Se elimina el fichero ya que se ha producido un error al insertar en BBDD
-                            fileUtils.deleteFile(fichero.path);
+                            fileUtils.deleteFile(ruta);
 
                             devolverSalida(3,"Error al insertar video en BBDD",response);
 
@@ -353,9 +355,8 @@ function saveVideo(video,response) {
                     
                     db.rollbackTransaction().then(resultado=>{
                         db.close();
-                        
                         // Se elimina el fichero ya que se ha producido un error al insertar en BBDD
-                        fileUtils.deleteFile(fichero.path);
+                        fileUtils.deleteFile(ruta);
 
                         devolverSalida(3,"Error al insertar video en BBDD",response);
 
@@ -364,8 +365,7 @@ function saveVideo(video,response) {
                         db.close();
 
                         // Se elimina el fichero ya que se ha producido un error al insertar en BBDD
-                        fileUtils.deleteFile(fichero.path);
-
+                        fileUtils.deleteFile(ruta);
                         devolverSalida(3,"Error al insertar video en BBDD",response);
                         
                     });
@@ -376,7 +376,8 @@ function saveVideo(video,response) {
                 db.close();
 
                 // Se elimina el fichero ya que se ha producido un error al insertar en BBDD
-                fileUtils.deleteFile(fichero.path);
+                //fileUtils.deleteFile(fichero.path);
+                fileUtils.deleteFile(ruta);
 
                 devolverSalida(3,"Error al insertar video en BBDD",response);
 

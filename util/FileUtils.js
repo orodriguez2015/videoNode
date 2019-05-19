@@ -355,10 +355,10 @@ function esExtensionVideo(extension) {
         if(extension!=undefined && extension!=null && extension!='') {
 
             var extensionesAdmitidas = constantes.EXTENSION_VIDEO_ACEPTADAS;
-
+            console.log("extensionesAdmitidas = " + extensionesAdmitidas);
             if(extensionesAdmitidas!=undefined && extensionesAdmitidas!=null) {
                 var listaExtensiones = extensionesAdmitidas.split(",");
-                salida = listaExtensiones.includes(extension.toLowerCase());
+                salida = listaExtensiones.includes(extension.toUpperCase());
 
             }// if
 

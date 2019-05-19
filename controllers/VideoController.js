@@ -12,14 +12,60 @@ var stringUtil = require('../util/StringUtil.js');
  * @param {response} res
  * @param {next} next
  */
+// exports.showVideos = function(req,res,next) {
+//     var videoteca = req.Videoteca;
+
+//     var ruta_completa = videoteca.ruta_completa;
+//     var lista = fileUtil.leerVideosVideoteca(videoteca);
+
+//     res.render("videos/videos",{videos:lista,videoteca:videoteca,errors:{}});
+// };
+
+
+
+
+/**
+ * Renderiza la pantalla que muestra un listado de los vídeos
+ * @param {request} req
+ * @param {response} res
+ * @param {next} next
+ */
 exports.showVideos = function(req,res,next) {
     var videoteca = req.Videoteca;
+    var db = new database.DatabaseMysql();
+    var idUsuario = req.session.usuario.ID;
 
-    var ruta_completa = videoteca.ruta_completa;
-    var lista = fileUtil.leerVideosVideoteca(videoteca);
+    if(videoteca!=null && videoteca!=undefined && stringUtil.isNumber(idUsuario)) {
+        var rutaVideotecaRelativa = constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO + constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + videoteca.ruta;
 
-    res.render("videos/videos",{videos:lista,videoteca:videoteca,errors:{}});
+        var sql = "select id,nombre,extension from video where id_videoteca=" + videoteca.id;
+        console.log("sql: " + sql);
+
+        db.query(sql).then(resultado => {
+            db.close();
+            console.log("resultado = " + JSON.stringify(resultado));
+
+
+            for(var i=0;resultado!=null && i<resultado.length;i++) {
+                resultado[i].ruta = rutaVideotecaRelativa + constantes.FILE_SEPARATOR + resultado[i].nombre;
+            }
+
+            res.render("videos/videos",{videos:resultado,videoteca:videoteca,errors:{}});
+
+        })
+        .catch(err => {
+            console.log("Error al recuperar videos de la videoteca de id " + videoteca.id + ": " + err.message);
+            db.close();
+            next(err);
+        });
+
+
+        // var ruta_completa = videoteca.ruta_completa;
+        // var lista = fileUtil.leerVideosVideoteca(videoteca);
+    }
+   
 };
+
 
 
 /**
