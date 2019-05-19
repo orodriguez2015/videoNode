@@ -36,32 +36,19 @@ exports.showVideos = function(req,res,next) {
     var idUsuario = req.session.usuario.ID;
 
     if(videoteca!=null && videoteca!=undefined && stringUtil.isNumber(idUsuario)) {
-        var rutaVideotecaRelativa = constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO + constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + videoteca.ruta;
-
-        var sql = "select id,nombre,extension from video where id_videoteca=" + videoteca.id;
-        console.log("sql: " + sql);
+        
+        var sql = "select id,nombre,extension,ruta_relativa from video where id_videoteca=" + videoteca.id;
+        console.log(sql);
 
         db.query(sql).then(resultado => {
             db.close();
-            console.log("resultado = " + JSON.stringify(resultado));
-
-
-            for(var i=0;resultado!=null && i<resultado.length;i++) {
-                resultado[i].ruta = rutaVideotecaRelativa + constantes.FILE_SEPARATOR + resultado[i].nombre;
-            }
-
             res.render("videos/videos",{videos:resultado,videoteca:videoteca,errors:{}});
-
         })
         .catch(err => {
             console.log("Error al recuperar videos de la videoteca de id " + videoteca.id + ": " + err.message);
             db.close();
             next(err);
         });
-
-
-        // var ruta_completa = videoteca.ruta_completa;
-        // var lista = fileUtil.leerVideosVideoteca(videoteca);
     }
    
 };

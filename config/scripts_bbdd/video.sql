@@ -6,10 +6,11 @@ CREATE TABLE `video` (
   `id_videoteca` int(11) NOT NULL,
   `id_usuario` int(11) NOT NULL,
   `fecha_alta` datetime NOT NULL,
-  `ruta` varchar(225) NOT NULL,
+  `ruta_absoluta` varchar(225) NOT NULL,
+  `ruta_relativa` varchar(225) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_usuario_idx` (`id_usuario`),
   KEY `id_videoteca_idx` (`id_videoteca`),
   CONSTRAINT `id_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `Users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `id_videoteca` FOREIGN KEY (`id_videoteca`) REFERENCES `videoteca` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=UTF8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=UTF8;

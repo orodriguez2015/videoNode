@@ -258,6 +258,10 @@ exports.uploadVideoFile = function(req, res, next) {
 
                     try {
 
+                        // Variable que contiene la ruta relativa del video en el servidor que se utiliza para poder visualizar el vídeo
+                        var rutaVideoRelativa = constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO + constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + req.Videoteca.ruta + constantes.FILE_SEPARATOR + nameFile;
+                        console.log("rutaVideoRelativa = " + rutaVideoRelativa);
+
                         /**
                          * Se inserta los datos del video en base de datos
                          */
@@ -268,7 +272,8 @@ exports.uploadVideoFile = function(req, res, next) {
                             idUsuario: req.session.usuario.ID,
                             idVideoteca: req.Videoteca.id,
                             publico: 1,
-                            ruta: ficheros[i].path
+                            ruta_absoluta: ficheros[i].path,
+                            ruta_relativa: rutaVideoRelativa
                         };
 
                         /*
@@ -303,26 +308,28 @@ exports.uploadVideoFile = function(req, res, next) {
 function saveVideo(video,response) {
 
     if(video!=null && video!=undefined) {
-        var nombre = video.nombre;
-        var extension = video.extension;
-        var idVideoteca = video.idVideoteca;
-        var idUsuario = video.idUsuario;
-        var publico = video.publico;
-        var ruta = video.ruta;
+        var nombre        = video.nombre;
+        var extension     = video.extension;
+        var idVideoteca   = video.idVideoteca;
+        var idUsuario     = video.idUsuario;
+        var publico       = video.publico;
+        var ruta_absoluta = video.ruta_absoluta;
+        var ruta_relativa = video.ruta_relativa
 
         console.log("saveVideo video = " + JSON.stringify(video));
 
         if(!stringUtil.isEmpty(nombre) && !stringUtil.isEmpty(extension) && stringUtil.isNumber(idVideoteca) 
-            && stringUtil.isNumber(idUsuario) && stringUtil.isNumber(publico) && !stringUtil.isEmpty(ruta)) {
+            && stringUtil.isNumber(idUsuario) && stringUtil.isNumber(publico) && !stringUtil.isEmpty(ruta_absoluta)
+            && !stringUtil.isEmpty(ruta_relativa)) {
 
             var db = new database.DatabaseMysql();
 
             db.beginTransaction().then(correcto=>{
 
-                var sql = "INSERT INTO VIDEO(NOMBRE,EXTENSION,ID_USUARIO,PUBLICO,ID_VIDEOTECA,FECHA_ALTA,RUTA) VALUES(?)";
+                var sql = "INSERT INTO VIDEO(NOMBRE,EXTENSION,ID_USUARIO,PUBLICO,ID_VIDEOTECA,FECHA_ALTA,RUTA_ABSOLUTA,RUTA_RELATIVA) VALUES(?)";
                 console.log(sql);
 
-                var registro = [nombre,extension,idUsuario,publico,idVideoteca,new Date(),ruta];
+                var registro = [nombre,extension,idUsuario,publico,idVideoteca,new Date(),ruta_absoluta,ruta_relativa];
                 var registros = new Array();
                 registros.push(registro);
                 console.log("registro a insertar = " + JSON.stringify(registro));
