@@ -98,6 +98,10 @@ var messages = {
     mensaje_error_video_insertar_bbdd: "An error occurred while inserting the video in database",
     mensaje_desea_eliminar_video_1: "You want to delete the video with #id ",
     mensaje_desea_eliminar_video_2: " selected ?",
+    mensaje_error_eliminar_video_crear_transaccion: "Occurred when creating transaction to remove the video",
+    mensaje_error_eliminar_video_confirmar_transaccion: "An error occurred while confirming the transaction when the video was deleted",
+    mensaje_error_eliminar_video: "There was an error removing the video",
+
 
    required: "This field is required.",
    remote: "Please fill in this field.",

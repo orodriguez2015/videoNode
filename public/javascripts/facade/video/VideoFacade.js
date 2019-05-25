@@ -243,10 +243,13 @@ class VideoFacade {
         });       
     }
 
-    onSuccessEliminarVideo(data) {
-        console.log("onSuccessEliminarVideo ====>");
-        console.log("data = " + JSON.stringify(data));
 
+    /**
+     * Método a invocar en caso de éxito al eliminar un vídeo de BBDD
+     * @param {data} data 
+     */
+    onSuccessEliminarVideo(data) {
+    
         if(data!=null && data!=undefined) {
             switch(data.status) {
                 
@@ -256,37 +259,36 @@ class VideoFacade {
                 }
 
                 case 1: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca_crear_transaccion);
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video_crear_transaccion);
                     break;
                 }
 
                 case 2: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca_confirmar_transaccion);
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video_confirmar_transaccion);
                     break;
                 }
 
                 case 3: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca);
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video);
                     break;
                 }
-
 
                 default: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca);
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video);
                     break;
                 }
-
-
             }// switch
         }
     }// onSuccessEliminarVideo
 
 
 
+    /**
+     * Método a invocar en caso de error al eliminar un vídeo de BBDD
+     * @param {data} data 
+     */
     onErrorEliminarVideo(data) {
-        console.log("onErrorEliminarVideo ====>");
-        console.log("data = " + JSON.stringify(data));
-
+    
         if(data!=null && data!=undefined) {
             switch(data.status) {
                 
@@ -296,23 +298,23 @@ class VideoFacade {
                 }
 
                 case 1: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca_crear_transaccion);
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video_crear_transaccion);
                     break;
                 }
 
                 case 2: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca_confirmar_transaccion);
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video_confirmar_transaccion);
                     break;
                 }
 
                 case 3: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca);
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video);
                     break;
                 }
 
 
                 default: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca);
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video);
                     break;
                 }
 

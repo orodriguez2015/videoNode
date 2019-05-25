@@ -100,6 +100,9 @@ var messages = {
     mensaje_error_video_insertar_bbdd: "Se ha producido un error al insertar el vídeo en base de datos",
     mensaje_desea_eliminar_video_1: "¿ Deseas eliminar el vídeo con #id ",
     mensaje_desea_eliminar_video_2: " seleccionado ?",
+    mensaje_error_eliminar_video_crear_transaccion: "Se ha producido al crear transacción para eliminar el vídeo",
+    mensaje_error_eliminar_video_confirmar_transaccion: "Se ha producido un error al confirmar la transacción al eliminar el vídeo",
+    mensaje_error_eliminar_video: "Se ha producido un error al eliminar el video",
 
 
 
