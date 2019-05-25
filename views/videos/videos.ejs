@@ -41,15 +41,20 @@
           <ul class="vjs-controls" style="display: none; top: 229px;"><li class="vjs-play-control vjs-play"><span></span></li><li class="vjs-progress-control"><ul class="vjs-progress-holder"><li class="vjs-load-progress" style="width: 123.622px;"></li><li class="vjs-play-progress" style="width: 0px;"></li></ul></li><li class="vjs-time-control"><span class="vjs-current-time-display">00:00</span><span> / </span><span class="vjs-duration-display">00:47</span></li><li class="vjs-volume-control"><ul><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li></li><li></li></ul></li><li class="vjs-fullscreen-control"><ul><li></li><li></li><li></li><li></li></ul></li></ul>
         </div>
 
-        <p><%=videos[i].nombre%></p>
+        <h3><%=videos[i].nombre%></h3>
+        <p>
+          ID #
+          <%=videos[i].id %>
+        </p>
+        <img src="/images/ojo_abierto.png" id="imgPublico" border="0" width="26" height="26" title="" alt="" onclick="" />
+        <img src="/images/full_trash.png" border="0" width="20" height="20" title="Eliminar" alt="Eliminar" onclick="videoFacade.eliminarVideo(<%=videos[i].id %>,videoFacade.onSuccessEliminarVideo,videoFacade.onErrorEliminarVideo);" />
+        <input type="hidden" id="publico<%=videos[i].id %>" name="publico<%=videos[i].id %>" value="<%=videos[i].publico %>" />
+
       </div>
-
-
 
   <% }//for %>  
 
-
-   
-
-
 </div>
+
+<script type="text/javascript" src="/javascripts/vendor/bootbox/bootbox.js"></script>
+<script type="text/javascript" src="/javascripts/facade/video/VideoFacade.js"></script>

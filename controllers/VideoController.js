@@ -107,7 +107,7 @@ exports.uploadVideoScreen = function(req, res, next) {
  * @param req: Objeto request
  * @param res: Objeto response
  * @param next: Objeto next
- * @param idAlbum: Identificador del álbum
+ * @param idVideoteca: Id de la videoteca
  */
 exports.load = function(req, res, next, idVideoteca) {
     var idUsuario = req.session.usuario.ID;
@@ -124,6 +124,34 @@ exports.load = function(req, res, next, idVideoteca) {
     })
     .catch(err => {
         console.log("Error al recuperar la videoteca de id " + idVideoteca + " de la BBDD: " + err.message);
+        db.close();
+        next(err);
+    });
+};
+
+
+/**
+ * Función de autoload para cargar un vídeo en la request.
+ * @param req: Objeto request
+ * @param res: Objeto response
+ * @param next: Objeto next
+ * @param idVideo: Id del vídeo
+ */
+exports.loadVideo = function(req, res, next, idVideo) {
+    var idUsuario = req.session.usuario.ID;
+    var db = new database.DatabaseMysql();
+
+    var sql = "select * from video where id=" + idVideo + " and id_usuario=" + idUsuario;
+    console.log("loadVideo sql: " + sql);
+
+    db.query(sql).then(resultado => {
+        db.close();
+        var dato = resultado[0];
+        req.Video = dato;
+        next();
+    })
+    .catch(err => {
+        console.log("Error al recuperar el vídeo de id " + idVideo + " de la BBDD: " + err.message);
         db.close();
         next(err);
     });
@@ -680,5 +708,81 @@ exports.existeVideo = function(req,res,next) {
 
 };
 
+
+
+
+/**
+ * Elimina un video de la base de datos y del disco
+ * @param req Objeto Request
+ * @param res Objeto Response
+ * @param req Objeto next
+ */
+exports.deleteVideo = function(req, res, next) {
+    var db = new database.DatabaseMysql();
+    var video = req.Video;
+    var resultado = {};
+
+    console.log("deleteVideo init");
+
+    // Se abre transacción
+    db.beginTransaction().then(correcto=>{
+        var ruta = video.ruta_absoluta;
+        console.log("Ruta video a borrar en disco: " + ruta);
+
+       /*
+        * Se cuenta el número total de videotecas del usuario
+        */
+        var sql = "DELETE FROM VIDEO WHERE ID=" + video.id;
+        console.log("sql =" + sql);
+
+        db.query(sql).then(consulta => {
+           console.log("Video " + video.id + " eliminado de bbdd");
+
+           console.log("Se procede a borrar los videos de la ruta = " + ruta);
+           /*
+            * Se procede a borrar la carpeta de la videoteca de forma recursiva
+            */
+           fileUtil.deleteFile(ruta);
+        
+           console.log("Video borrada de disco");
+        
+           db.commitTransaction().then(correcto =>{
+                db.close();
+                resultado.status= 0;
+                resultado.descStatus = "OK";
+                httpUtil.devolverJSON(res,resultado);
+
+            }).catch(err => {
+                console.log("Error al confirmar transacción de borrado de video: " + err.message);
+
+                db.rollbackTransaction().then(correcto =>{
+                    db.close();
+                    resultado.status= 2;
+                    resultado.descStatus = "Error al confirmar transacción";
+                    httpUtil.devolverJSON(res, resultado);
+                });
+            });;
+            
+        }).catch(error=> {
+            console.log("Error al eliminar video de id = " + video.id + " de BBDD: " + error.message);
+
+            db.rollbackTransaction().then(correcto =>{
+                db.close();
+
+                resultado.status= 3;
+                resultado.descStatus = "Error al eliminar video de id = " + videoteca.id + " de bbdd: " + error.message;
+                httpUtil.devolverJSON(res,resultado);
+                
+            });           
+        });
+
+    }).catch(err=>{
+        console.log("Error al abrir transacción para borrar una video: " + err.message);
+
+        resultado.status= 1;
+        resultado.descStatus = "Error al abrir transacción para borrar una video: " + err.message;
+        httpUtil.devolverJSON(res,resultado);
+    });
+}
 
 

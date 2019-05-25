@@ -50,9 +50,14 @@ router.param('idPhoto', fotoController.load);
 router.param('idUsuario', userController.load);
 
 /**
- * Autoload para la carga de una foto en la request
+ * Autoload para la carga de una videoteca en la request
  */
 router.param('idVideoteca', videoController.load);
+
+/**
+ * Autoload para la carga de una video en la request
+ */
+router.param('idVideo', videoController.loadVideo);
 
 /**
  * GET /album/create.
@@ -427,6 +432,13 @@ router.get("/videoteca/upload/:idVideoteca(\\d+)", userController.isAuthenticate
  * Permite subir videos al servidor
  */
 router.post("/upload/video/:idVideoteca(\\d+)", userController.isAuthenticatedUser, uploadVideoController.uploadVideoFile);
+
+
+/**
+ * DELETE /video/:idVideo
+ * Permite eliminar un determinado videoteca de la BBDD
+ */
+router.delete("/video/:idVideo(\\d+)",userController.isAuthenticatedUser,videoController.deleteVideo);
 
 
 

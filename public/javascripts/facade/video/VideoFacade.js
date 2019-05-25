@@ -202,6 +202,126 @@ class VideoFacade {
 
 
 
+    /**
+     * Elimina un vídeo del servidor
+     * @param {Integer} id Identificador de la videoteca
+     * @param {function} onSuccess Función invocada en caso de éxito
+     * @param {function} onError Función invocada en caso de fallo
+     */
+    eliminarVideo(id,onSuccess,onError) {
+
+        bootbox.confirm({
+            title: messages.atencion_titulo_modal,
+            message: messages.mensaje_desea_eliminar_video_1 + " " +  id + " " +  messages.mensaje_desea_eliminar_video_2,
+            buttons: {
+                cancel: {
+                    label: messages.boton_cancelar,
+                    className: 'btn btn-danger'
+                },
+                confirm: {
+                    label: messages.boton_confirmar,
+                    className: 'btn btn-success'
+                }
+            },
+            callback: function(result) {
+                
+                if (result) {
+                    return $.ajax({
+                        async: false,
+                        context: this,
+                        cache: false,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: null,
+                        url: "/video/" + id +  '?_method=DELETE',
+                        success: onSuccess,
+                        error: onError
+                    });
+
+                } // if
+            }// callback
+        });       
+    }
+
+    onSuccessEliminarVideo(data) {
+        console.log("onSuccessEliminarVideo ====>");
+        console.log("data = " + JSON.stringify(data));
+
+        if(data!=null && data!=undefined) {
+            switch(data.status) {
+                
+                case 0: {
+                    window.location = window.location.href;
+                    break;
+                }
+
+                case 1: {
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca_crear_transaccion);
+                    break;
+                }
+
+                case 2: {
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca_confirmar_transaccion);
+                    break;
+                }
+
+                case 3: {
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca);
+                    break;
+                }
+
+
+                default: {
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca);
+                    break;
+                }
+
+
+            }// switch
+        }
+    }// onSuccessEliminarVideo
+
+
+
+    onErrorEliminarVideo(data) {
+        console.log("onErrorEliminarVideo ====>");
+        console.log("data = " + JSON.stringify(data));
+
+        if(data!=null && data!=undefined) {
+            switch(data.status) {
+                
+                case 0: {
+                    window.location = "/videotecas";
+                    break;
+                }
+
+                case 1: {
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca_crear_transaccion);
+                    break;
+                }
+
+                case 2: {
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca_confirmar_transaccion);
+                    break;
+                }
+
+                case 3: {
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca);
+                    break;
+                }
+
+
+                default: {
+                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca);
+                    break;
+                }
+
+
+            }// switch
+        }
+    }// onErrorEliminarVideo
+
+
 }// VideoFacade
 
 var videoFacade = new VideoFacade();

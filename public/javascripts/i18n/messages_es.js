@@ -98,6 +98,9 @@ var messages = {
     mensaje_error_existe_video: "Ya existe el vídeo en la videoteca",
     mensaje_error_video_formato_no_valido: "El archivo de vídeo enviado es de un formato de vídeo no válido",
     mensaje_error_video_insertar_bbdd: "Se ha producido un error al insertar el vídeo en base de datos",
+    mensaje_desea_eliminar_video_1: "¿ Deseas eliminar el vídeo con #id ",
+    mensaje_desea_eliminar_video_2: " seleccionado ?",
+
 
 
     

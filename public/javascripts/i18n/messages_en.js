@@ -96,6 +96,8 @@ var messages = {
     mensaje_error_existe_video: "The video already exists in the video library",
     mensaje_error_video_formato_no_valido: "The video file sent is of an invalid video format",
     mensaje_error_video_insertar_bbdd: "An error occurred while inserting the video in database",
+    mensaje_desea_eliminar_video_1: "You want to delete the video with #id ",
+    mensaje_desea_eliminar_video_2: " selected ?",
 
    required: "This field is required.",
    remote: "Please fill in this field.",
