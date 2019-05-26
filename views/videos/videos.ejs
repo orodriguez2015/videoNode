@@ -26,10 +26,12 @@
 
 <div class="row-fluid">
 
-  <% for(var i=0;videos!=undefined && i<videos.length;i++) { %>
+  <% for(var i=0;videos!=undefined && i<videos.length;i++) { 
+    
+        var imagePublico = (videos[i].publico==1)?"/images/ojo_abierto.png":"/images/ojo_cerrado.png";
+    
+    %>
      
-
-
      <div style="border: 0px solid blueviolet;float:left;margin-left:45px;">
       
         <div class="video-js-box vim-css">
@@ -46,7 +48,7 @@
           ID #
           <%=videos[i].id %>
         </p>
-        <img src="/images/ojo_abierto.png" id="imgPublico" border="0" width="26" height="26" title="" alt="" onclick="" />
+        <img src="<%= imagePublico %>" id="imgPublico<%=videos[i].id %>" border="0" width="26" height="26" title="" alt="" onclick="videoFacade.publicarVideo(<%=videos[i].id %>,videoFacade.onSuccessPublicarVideo,videoFacade.onErrorPublicaVideo);" />
         <img src="/images/full_trash.png" border="0" width="20" height="20" title="Eliminar" alt="Eliminar" onclick="videoFacade.eliminarVideo(<%=videos[i].id %>,videoFacade.onSuccessEliminarVideo,videoFacade.onErrorEliminarVideo);" />
         <input type="hidden" id="publico<%=videos[i].id %>" name="publico<%=videos[i].id %>" value="<%=videos[i].publico %>" />
 

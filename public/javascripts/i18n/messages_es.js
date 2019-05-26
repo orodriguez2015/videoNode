@@ -104,6 +104,10 @@ var messages = {
     mensaje_error_eliminar_video_confirmar_transaccion: "Se ha producido un error al confirmar la transacción al eliminar el vídeo",
     mensaje_error_eliminar_video: "Se ha producido un error al eliminar el video",
 
+    mensaje_ocultar_video: "¿Deseas ocultar el vídeo?",
+    mensaje_mostrar_video: "¿Deseas hacer vísible el vídeo?",
+    mensaje_error_cambiar_visibidad_video: "Se ha producido un error al cambiar la visibilidad del vídeo",
+
 
 
     

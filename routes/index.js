@@ -441,5 +441,12 @@ router.post("/upload/video/:idVideoteca(\\d+)", userController.isAuthenticatedUs
 router.delete("/video/:idVideo(\\d+)",userController.isAuthenticatedUser,videoController.deleteVideo);
 
 
+/**
+ * POST /video/publicar/:idVideo
+ * Permite cambiar la visibilidad de un vídeo 
+ */
+router.post("/video/publicar/:idVideo(\\d+)",userController.isAuthenticatedUser,videoController.publicarVideo);
+
+
 
 module.exports = router;

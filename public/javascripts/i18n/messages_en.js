@@ -102,6 +102,10 @@ var messages = {
     mensaje_error_eliminar_video_confirmar_transaccion: "An error occurred while confirming the transaction when the video was deleted",
     mensaje_error_eliminar_video: "There was an error removing the video",
 
+    mensaje_ocultar_video: "Do you want to hide the video ?",
+    mensaje_mostrar_video: "Do you want to make the video visible ?",
+    mensaje_error_cambiar_visibidad_video: "There was an error changing the visibility of the video",
+
 
    required: "This field is required.",
    remote: "Please fill in this field.",

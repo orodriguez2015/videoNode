@@ -288,41 +288,101 @@ class VideoFacade {
      * @param {data} data 
      */
     onErrorEliminarVideo(data) {
-    
+        messagesArea.showMessageError(messages.mensaje_error_eliminar_video);
+    }
+
+
+
+    /**
+     * Cambia el estado de visibilidad de un vídeo
+     * @param {Integer} id: Id del vídeo
+     * @param {Function} onSuccess: Función onSuccess
+     * @param {Function} onError: Función onError
+     */
+    publicarVideo(id,onSuccess,onError) {
+        if(id!=null && id!=undefined) {
+            var publico = $('#publico' + id).val();
+        
+            if(publico!=null && publico!=undefined) {
+
+                var res = (publico==1) ? 0:1;
+                var mensaje = (publico==1)?messages.mensaje_ocultar_video:messages.mensaje_mostrar_video;
+
+                bootbox.confirm({
+                    title: messages.atencion_titulo_modal,
+                    message: mensaje,
+                    buttons: {
+                        cancel: {
+                            label: messages.boton_cancelar,
+                            className: 'btn btn-danger'
+                        },
+                        confirm: {
+                            label: messages.boton_confirmar,
+                            className: 'btn btn-success'
+                        }
+                    },
+                    callback: function(result) {
+                        
+                        
+                        if (result) {
+                            return $.ajax({
+                                async: false,
+                                context: this,
+                                cache: false,
+                                type: 'POST',
+                                dataType: 'json',
+                                data: {publico:res},
+                                url: "/video/publicar/" + id,
+                                success: onSuccess,
+                                error: onError
+                            });
+        
+                        } // if
+                        
+                    }// callback
+                });       
+
+            }// if
+
+        }// if
+    };
+
+
+    /**
+     * Método invocado en caso de éxito en la llamada a cambiar la visibilidad de un vídeo
+     * @param {Object} data : Respuesta del servidor
+     */
+    onSuccessPublicarVideo(data) {
+        
         if(data!=null && data!=undefined) {
+
             switch(data.status) {
-                
+
                 case 0: {
-                    window.location = "/videotecas";
+                    var pathImage = (data.publico == 1)?"/images/ojo_abierto.png":"/images/ojo_cerrado.png";
+                    $('#publico' + data.id).val(data.publico);
+                    $('#imgPublico' + data.id).attr("src", pathImage);
                     break;
                 }
 
                 case 1: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video_crear_transaccion);
+                    messagesArea.showMessageError(messages.mensaje_error_cambiar_visibidad_video);
                     break;
                 }
-
-                case 2: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video_confirmar_transaccion);
-                    break;
-                }
-
-                case 3: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video);
-                    break;
-                }
-
-
-                default: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video);
-                    break;
-                }
-
 
             }// switch
-        }
-    }// onErrorEliminarVideo
 
+        }
+    };
+
+
+    /**
+     * Método invocado en caso de error en la llamada a cambiar la visibilidad de un vídeo
+     * @param {Object} data : Respuesta del servidor
+     */
+    onErrorPublicarVideo(data) {
+        messagesArea.showMessageError(messages.mensaje_error_cambiar_visibidad_video);
+    }
 
 }// VideoFacade
 

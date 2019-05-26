@@ -6,22 +6,6 @@ var config = fileUtil.getContentConfigBBDDFile();
 var database = require('../db/DatabaseMysql.js');
 var stringUtil = require('../util/StringUtil.js');
 
-/**
- * Renderiza la pantalla que muestra un listado de los vídeos
- * @param {request} req
- * @param {response} res
- * @param {next} next
- */
-// exports.showVideos = function(req,res,next) {
-//     var videoteca = req.Videoteca;
-
-//     var ruta_completa = videoteca.ruta_completa;
-//     var lista = fileUtil.leerVideosVideoteca(videoteca);
-
-//     res.render("videos/videos",{videos:lista,videoteca:videoteca,errors:{}});
-// };
-
-
 
 
 /**
@@ -37,7 +21,7 @@ exports.showVideos = function(req,res,next) {
 
     if(videoteca!=null && videoteca!=undefined && stringUtil.isNumber(idUsuario)) {
         
-        var sql = "select id,nombre,extension,ruta_relativa from video where id_videoteca=" + videoteca.id;
+        var sql = "select id,nombre,extension,ruta_relativa,publico from video where id_videoteca=" + videoteca.id;
         console.log(sql);
 
         db.query(sql).then(resultado => {
@@ -49,8 +33,7 @@ exports.showVideos = function(req,res,next) {
             db.close();
             next(err);
         });
-    }
-   
+    }   
 };
 
 
@@ -783,6 +766,46 @@ exports.deleteVideo = function(req, res, next) {
         resultado.descStatus = "Error al abrir transacción para borrar una video: " + err.message;
         httpUtil.devolverJSON(res,resultado);
     });
-}
+};
+
+
+
+
+/**
+ * Permite indicar si un vídeo es o no público
+ * @param req: Objeto request
+ * @param res: Objeto response
+ * @param next: Objeto next
+ */
+exports.publicarVideo = function(req, res, next) {
+    var video = req.Video;
+    var user = req.session.usuario;
+    var publico = req.body.publico;
+
+    console.log("publicarVideo publico: " + publico);
+
+
+    if (video != undefined && user != undefined && publico != undefined) {
+        var db = new database.DatabaseMysql();
+
+        var sql = "UPDATE video SET PUBLICO=" + publico + " WHERE ID=" + video.id;
+        console.log(sql);
+
+        db.query(sql).then(results => {
+            console.log('Se ha cambiado la visibilidad del vídeo');
+            db.close();
+            httpUtil.devolverJSON(res, { status: 0, descStatus: "OK", id: video.id, publico: publico });
+
+        }).catch(err => {
+            db.close();
+            console.log("Se ha producido un error al establecer la visibilidad del vídeo: " + err.message);
+            httpUtil.devolverJSON(res, { status: 1, descStatus: "Se ha producido un error al establecer la visibilidad del vídeo: " + err.message });
+        });
+
+    } // if
+
+
+};
+
 
 
