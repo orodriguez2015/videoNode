@@ -141,7 +141,7 @@ app.use(function(req, res, next) {
  * @param req Request
  * @param res Response 
  * @param next next
- */
+ *
 app.use(function(req, res, next) {
     console.log("COMPROBAR INSTALACION INIT");
 
@@ -168,6 +168,7 @@ app.use(function(req, res, next) {
         console.log("COMPROBAR INSTALACION END");
     });
 });
+*/
 
 app.use('/', index);
 

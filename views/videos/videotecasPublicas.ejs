@@ -1,0 +1,29 @@
+<div class="row-fluid">
+    <!--Edit Main Content Area here-->
+    <div class="span12" id="divMain">
+
+        <h1><%= __('videotecas_publicas')%></h1>
+        <hr>
+        <p>
+            <%= __('mensaje_pantalla_bienvenida_videotecas')%>
+            
+            <br>
+
+            <% for(var i=0;i<videotecas.length;i++) { %>
+
+                <a href="/videos/<%=videotecas[i].id%>">
+                    <h2><strong><%=videotecas[i].nombre %></strong></h2>
+                </a>     
+                
+                <p><%= __('dado_de_alta') %>
+                    <%=videotecas[i].fechaAlta %> <%= __('por') %>
+                    <%=videotecas[i].nombreUsuario %>&nbsp;
+                    <%=videotecas[i].apellidoUsuario1 %>
+                </p>
+
+            <% } %>
+        </p>
+
+    </div>
+    <!--End Main Content here-->
+</div>

@@ -7,6 +7,9 @@ var configController = require('../controllers/ConfigController.js');
 var permissionsController = require('../controllers/permisosUsuarioController.js');
 var videoController = require('../controllers/VideoController.js');
 var uploadVideoController = require('../controllers/UploadVideoController.js');
+var tareasController = require('../controllers/TareasController.js');
+var cors = require('cors');
+
 var router = express.Router();
 
 
@@ -428,6 +431,14 @@ router.get("/videoteca/upload/:idVideoteca(\\d+)", userController.isAuthenticate
 
 
 /**
+ * GET /videos/:idVideoteca
+ * Recupera el listado de vídeos de una determinada videoteca
+ */
+router.get("/videos/:idVideoteca(\\d+)",videoController.showVideos);
+
+
+
+/**
  * POST /upload/video/:idVideoteca
  * Permite subir videos al servidor
  */
@@ -440,12 +451,28 @@ router.post("/upload/video/:idVideoteca(\\d+)", userController.isAuthenticatedUs
  */
 router.delete("/video/:idVideo(\\d+)",userController.isAuthenticatedUser,videoController.deleteVideo);
 
-
 /**
  * POST /video/publicar/:idVideo
  * Permite cambiar la visibilidad de un vídeo 
  */
 router.post("/video/publicar/:idVideo(\\d+)",userController.isAuthenticatedUser,videoController.publicarVideo);
+
+
+/**
+ * GET /videos
+ * Recupera las videotecas públicas de los usuarios
+ */
+router.get("/videos",videoController.showVideotecasPublicas);
+
+
+
+/**
+ * Servicio REST que devuelve un JSON sólo para hacer pruebas
+ */
+router.get("/tareas",cors({origin:'*',credentials:true,optionsSuccessStatus: 200}),tareasController.getTareas);
+//router.get("/tareas",cors(),tareasController.getTareas);
+
+
 
 
 

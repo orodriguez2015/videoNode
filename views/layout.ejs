@@ -86,6 +86,10 @@
                             <div class="nav-collapse collapse">
                                 <ul class="nav nav-pills ddmenu">
                                     <li><a href="/"><%= __ ('inicio')%></a></li>
+
+                                    <% if(session.usuario==undefined) { %>
+                                        <li><a href="/videos"><%= __ ('videos')%></a></li>
+                                    <% } %>
                                 
                                     <%
                                     if(session.usuario!=undefined) {

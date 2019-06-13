@@ -72,5 +72,7 @@
 	"permisos_de": "Permissions of ",
 	"nombre_videoteca": "Name video library",
 	"editar_videoteca": "Edit video library",
-	"adjuntar_videos_videoteca": "Attach videos to the video library"
+	"adjuntar_videos_videoteca": "Attach videos to the video library",
+	"videotecas_publicas": "Video libraries of users",
+	"mensaje_pantalla_bienvenida_videotecas": "From this section you will have access to the public video libraries of the users."
 }

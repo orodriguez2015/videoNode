@@ -17,10 +17,8 @@ var stringUtil = require('../util/StringUtil.js');
 exports.showVideos = function(req,res,next) {
     var videoteca = req.Videoteca;
     var db = new database.DatabaseMysql();
-    var idUsuario = req.session.usuario.ID;
 
-    if(videoteca!=null && videoteca!=undefined && stringUtil.isNumber(idUsuario)) {
-        
+    if(videoteca!=null && videoteca!=undefined) {
         var sql = "select id,nombre,extension,ruta_relativa,publico from video where id_videoteca=" + videoteca.id;
         console.log(sql);
 
@@ -36,6 +34,33 @@ exports.showVideos = function(req,res,next) {
     }   
 };
 
+
+/**
+ * Renderiza la pantalla que muestra un listado de los videotecas públicas
+ * @param {request} req
+ * @param {response} res
+ * @param {next} next
+ */
+exports.showVideotecasPublicas = function(req,res,next) {    
+    var db = new database.DatabaseMysql();
+    
+    var sql = "select v.id,v.nombre,v.ruta,v.ruta_completa,v.idUsuario,DATE_FORMAT(v.fechaAlta,'%d/%m/%Y %T') as fechaAlta,u.nombre as nombreUsuario,u.apellido1 as apellidoUsuario1 " + 
+              "from videoteca v inner join Users u on (v.idUsuario = u.id) " + 
+              "where publico=1";
+
+    console.log(sql);
+
+    db.query(sql).then(resultado => {
+        db.close();
+        res.render("videos/videotecasPublicas",{videotecas:resultado,errors:{}});
+    })
+    .catch(err => {
+        console.log("Error al recuperar videoteca publicas: " + videoteca.id + ": " + err.message);
+        db.close();
+        next(err);
+    });
+    
+};
 
 
 /**
@@ -92,11 +117,9 @@ exports.uploadVideoScreen = function(req, res, next) {
  * @param next: Objeto next
  * @param idVideoteca: Id de la videoteca
  */
-exports.load = function(req, res, next, idVideoteca) {
-    var idUsuario = req.session.usuario.ID;
+exports.load = function(req, res, next, idVideoteca) { 
     var db = new database.DatabaseMysql();
-
-    var sql = "select * from videoteca where id=" + idVideoteca + " and idUsuario=" + idUsuario;
+    var sql = "select * from videoteca where id=" + idVideoteca;
     console.log("load sql: " + sql);
 
     db.query(sql).then(resultado => {
