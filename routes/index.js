@@ -472,6 +472,11 @@ router.get("/videos",videoController.showVideotecasPublicas);
 router.get("/tareas",cors({origin:'*',credentials:true,optionsSuccessStatus: 200}),tareasController.getTareas);
 //router.get("/tareas",cors(),tareasController.getTareas);
 
+/**
+ * Almacena una tarea en la lista de tareas
+ */
+router.post("/tarea",cors({origin:'*',credentials:true,optionsSuccessStatus: 200}),tareasController.guardarTarea);
+
 
 
 
