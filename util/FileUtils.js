@@ -148,7 +148,7 @@ exports.isMimeTypeImage = function(type) {
 exports.mkdirSync = function(dir) {
 
     if (dir != undefined && !fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
+        fs.mkdirSync(dir,0777);
     }
 };
 

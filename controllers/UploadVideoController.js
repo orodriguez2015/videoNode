@@ -124,7 +124,7 @@ exports.uploadVideoFile = function(req, res, next) {
                  * Sino existe la carpeta videos
                  */
                 if (!existsCarpetaVideos) {
-                    console.log("No existe carpetaStore se crea");
+                    console.log("No existe carpeta videos se crea");
                     // Se crea la carpeta videos
                     fileUtils.mkdirSync(carpetaVideos);
                 }
