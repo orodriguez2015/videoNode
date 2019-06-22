@@ -326,7 +326,7 @@ function saveVideo(video,response) {
 
             db.beginTransaction().then(correcto=>{
 
-                var sql = "INSERT INTO VIDEO(NOMBRE,EXTENSION,ID_USUARIO,PUBLICO,ID_VIDEOTECA,FECHA_ALTA,RUTA_ABSOLUTA,RUTA_RELATIVA) VALUES(?)";
+                var sql = "INSERT INTO video(nombre,extension,id_usuario,publico,id_videoteca,fecha_alta,ruta_absoluta,ruta_relativa) values(?)";
                 console.log(sql);
 
                 var registro = [nombre,extension,idUsuario,publico,idVideoteca,new Date(),ruta_absoluta,ruta_relativa];
@@ -363,7 +363,7 @@ function saveVideo(video,response) {
                     db.rollbackTransaction().then(resultado=>{
                         db.close();
                         // Se elimina el fichero ya que se ha producido un error al insertar en BBDD
-                        fileUtils.deleteFile(ruta);
+                        fileUtils.deleteFile(ruta_absoluta);
 
                         devolverSalida(3,"Error al insertar video en BBDD",response);
 
@@ -372,7 +372,7 @@ function saveVideo(video,response) {
                         db.close();
 
                         // Se elimina el fichero ya que se ha producido un error al insertar en BBDD
-                        fileUtils.deleteFile(ruta);
+                        fileUtils.deleteFile(ruta_absoluta);
                         devolverSalida(3,"Error al insertar video en BBDD",response);
                         
                     });
