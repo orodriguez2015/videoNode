@@ -510,9 +510,7 @@ exports.deleteVideoteca = function(req, res, next) {
 
     // Se abre transacción
     db.beginTransaction().then(correcto=>{
-        var ruta = videoteca.ruta;
-        console.log("Ruta videoteca a borrar en disco: " + ruta);
-
+        
        /*
         * Se cuenta el número total de videotecas del usuario
         */
@@ -522,11 +520,11 @@ exports.deleteVideoteca = function(req, res, next) {
         db.query(sql).then(consulta => {
            console.log("Videoteca " + videoteca.id + " eliminada de bbdd");
 
-           console.log("Se procede a borrar los videos de la ruta = " + ruta);
+           console.log("Se procede a borrar los videos de la ruta = " + videoteca.ruta_completa);
            /*
             * Se procede a borrar la carpeta de la videoteca de forma recursiva
             */
-           fileUtil.deleteFolderRecursive(ruta);
+           fileUtil.deleteFolderRecursive(videoteca.ruta_completa);
 
            console.log("Videoteca borrada de disco");
         
