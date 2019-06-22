@@ -327,6 +327,9 @@ exports.saveVideoteca = function(req,res,next) {
 
     if(nombre!=undefined && carpeta!=undefined && nombre!='' && carpeta!='') {
 
+        var rutaDirectorioVideos = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
+            + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO);
+
         var rutaDirectorioVideosPadre = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
             + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO  + 
             constantes.FILE_SEPARATOR + idUsuario);
@@ -335,9 +338,20 @@ exports.saveVideoteca = function(req,res,next) {
             + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO  + 
             constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + carpeta);
 
+        console.log("rutaDirectorioVideos = " + rutaDirectorioVideos);
         console.log("rutaDirectorioVideosPadre = " + rutaDirectorioVideosPadre);
         console.log("rutaDirectorioVideoteca = " + rutaDirectorioVideoteca);
 
+
+        if(!fileUtil.existsFile(rutaDirectorioVideos)) {
+
+            console.log("No existe directorio: " + rutaDirectorioVideosPadre + ", se crea");
+            // Se crea el directorio padre
+            fileUtil.mkdirSync(rutaDirectorioVideos);
+            fileUtil.mkdirSync(rutaDirectorioVideosPadre);
+            fileUtil.mkdirSync(rutaDirectorioVideoteca);
+
+        }else
         if(!fileUtil.existsFile(rutaDirectorioVideosPadre)) {
             console.log("No existe directorio: " + rutaDirectorioVideosPadre + ", se crea");
             // Se crea el directorio padre
