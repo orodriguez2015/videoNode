@@ -208,7 +208,7 @@ exports.comprobarRutaVideoteca = function(req,res,next) {
             /**
              * Existe el directorio => Se comprueba si pertenece a la videoteca de otro usuario
              */
-            var sql = "SELECT COUNT(*) AS NUM FROM videoteca WHERE ruta='" + carpeta + "'";
+            var sql = "select count(*) as num from videoteca where ruta='" + carpeta + "'";
             console.log(sql);
 
             db.query(sql).then(numero=>{
@@ -274,7 +274,7 @@ exports.comprobarRutaOtraVideotecaUsuario = function(req,res,next) {
             /**
              * Existe el directorio => Se comprueba si pertenece a la videoteca de otro usuario
              */
-            var sql = "SELECT COUNT(*) AS NUM FROM videoteca WHERE ruta ='" + carpeta + "' and id!=" + idVideoteca;
+            var sql = "select count(*) as num from videoteca where ruta ='" + carpeta + "' and id!=" + idVideoteca;
             console.log(sql);
 
             db.query(sql).then(numero=>{
@@ -502,7 +502,7 @@ exports.deleteVideoteca = function(req, res, next) {
        /*
         * Se cuenta el número total de videotecas del usuario
         */
-        var sql = "DELETE FROM videoteca WHERE id=" + videoteca.id;
+        var sql = "delete from videoteca where id=" + videoteca.id;
         console.log("sql =" + sql);
 
         db.query(sql).then(consulta => {
@@ -596,7 +596,7 @@ exports.editarVideoteca = function(req,res,next) {
         var ruta_original = videoteca.ruta_completa;
         console.log("ruta_original = " + ruta_original);
 
-        var sql = "UPDATE videoteca SET nombre='" + nombre + "'" ;
+        var sql = "update videoteca set nombre='" + nombre + "'" ;
         
         if(cambioCarpeta) {
 
@@ -696,7 +696,7 @@ exports.existeVideo = function(req,res,next) {
 
     if(idVideoteca!=null && nombre!=null && nombre.length>0) {
 
-        var sql = "SELECT COUNT(*) AS NUM FROM VIDEO WHERE ID_VIDEOTECA=" + idVideoteca + " AND NOMBRE='" + nombre + "'";
+        var sql = "SELECT COUNT(*) AS NUM FROM video WHERE id_videoteca=" + idVideoteca + " and nombre='" + nombre + "'";
 
         db.query(sql).then(resultado=>{
 
@@ -738,7 +738,7 @@ exports.deleteVideo = function(req, res, next) {
        /*
         * Se cuenta el número total de videotecas del usuario
         */
-        var sql = "DELETE FROM VIDEO WHERE ID=" + video.id;
+        var sql = "DELETE FROM video WHERE id=" + video.id;
         console.log("sql =" + sql);
 
         db.query(sql).then(consulta => {
@@ -811,7 +811,7 @@ exports.publicarVideo = function(req, res, next) {
     if (video != undefined && user != undefined && publico != undefined) {
         var db = new database.DatabaseMysql();
 
-        var sql = "UPDATE video SET PUBLICO=" + publico + " WHERE ID=" + video.id;
+        var sql = "UPDATE video SET publico=" + publico + " where id=" + video.id;
         console.log(sql);
 
         db.query(sql).then(results => {
