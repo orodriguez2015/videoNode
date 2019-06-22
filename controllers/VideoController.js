@@ -208,7 +208,7 @@ exports.comprobarRutaVideoteca = function(req,res,next) {
             /**
              * Existe el directorio => Se comprueba si pertenece a la videoteca de otro usuario
              */
-            var sql = "SELECT COUNT(*) AS NUM FROM VIDEOTECA WHERE RUTA ='" + carpeta + "'";
+            var sql = "SELECT COUNT(*) AS NUM FROM videoteca WHERE ruta='" + carpeta + "'";
             console.log(sql);
 
             db.query(sql).then(numero=>{
@@ -274,7 +274,7 @@ exports.comprobarRutaOtraVideotecaUsuario = function(req,res,next) {
             /**
              * Existe el directorio => Se comprueba si pertenece a la videoteca de otro usuario
              */
-            var sql = "SELECT COUNT(*) AS NUM FROM VIDEOTECA WHERE RUTA ='" + carpeta + "' AND ID!=" + idVideoteca;
+            var sql = "SELECT COUNT(*) AS NUM FROM videoteca WHERE ruta ='" + carpeta + "' and id!=" + idVideoteca;
             console.log(sql);
 
             db.query(sql).then(numero=>{
@@ -355,7 +355,7 @@ exports.saveVideoteca = function(req,res,next) {
         }
 
 
-        var sql = "INSERT INTO VIDEOTECA(nombre,ruta,ruta_completa,idUsuario,publico) VALUES ('" + nombre + "','" + carpeta + "','" +  rutaDirectorioVideoteca + "'," + idUsuario + "," + publico +  ")";
+        var sql = "INSERT INTO videoteca(nombre,ruta,ruta_completa,idUsuario,publico) VALUES ('" + nombre + "','" + carpeta + "','" +  rutaDirectorioVideoteca + "'," + idUsuario + "," + publico +  ")";
         console.log("sql: " + sql);
         db.query(sql).then(resultado =>{
     
@@ -502,7 +502,7 @@ exports.deleteVideoteca = function(req, res, next) {
        /*
         * Se cuenta el número total de videotecas del usuario
         */
-        var sql = "DELETE FROM VIDEOTECA WHERE ID=" + videoteca.id;
+        var sql = "DELETE FROM videoteca WHERE id=" + videoteca.id;
         console.log("sql =" + sql);
 
         db.query(sql).then(consulta => {
@@ -596,7 +596,7 @@ exports.editarVideoteca = function(req,res,next) {
         var ruta_original = videoteca.ruta_completa;
         console.log("ruta_original = " + ruta_original);
 
-        var sql = "UPDATE VIDEOTECA SET NOMBRE='" + nombre + "'" ;
+        var sql = "UPDATE videoteca SET nombre='" + nombre + "'" ;
         
         if(cambioCarpeta) {
 
@@ -608,10 +608,10 @@ exports.editarVideoteca = function(req,res,next) {
             /*
              * Si hay cambio de carpeta, hay que recalcular la nueva ruta completa en disco
             */
-            sql = sql  + ",RUTA='" + carpeta + "',RUTA_COMPLETA='" + ruta_nueva + "'";
+            sql = sql  + ",ruta='" + carpeta + "',ruta_completa='" + ruta_nueva + "'";
         }
         
-        sql = sql + ",PUBLICO=" + publico + ",FECHAMODIFICACION=NOW() WHERE ID = " + videoteca.id;
+        sql = sql + ",publico=" + publico + ",fechaModificacion=NOW() where id = " + videoteca.id;
 
         console.log("sql: " + sql);''
 
