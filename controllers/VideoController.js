@@ -5,7 +5,7 @@ var constantes = require('../config/constantes.json');
 var config = fileUtil.getContentConfigBBDDFile();
 var database = require('../db/DatabaseMysql.js');
 var stringUtil = require('../util/StringUtil.js');
-
+var utilities = require('../util/Utilities.js');
 
 
 /**
@@ -583,14 +583,7 @@ exports.editarVideoteca = function(req,res,next) {
     var carpeta = req.body.carpeta;
     var publico = req.body.publico;
     var idUsuario = req.session.usuario.ID;
-
     var videoteca = req.Videoteca;
-
-
-    console.log("editarVideoteca nombre =  " + nombre + ", carpeta = " + carpeta + ", publico = " + publico + ",idUsuario = " + idUsuario);
-    console.log("editarVideoteca idVideoteca =  " + videoteca.id);
-
-    console.log("publico: " + publico);
 
     if(nombre!=undefined && carpeta!=undefined && nombre!='' && carpeta!='') {
 
@@ -600,27 +593,27 @@ exports.editarVideoteca = function(req,res,next) {
         }
 
         console.log("cambioCarpeta = " + cambioCarpeta);
-
-       
-        try {
-
-        var ruta_nueva = '';
+    
+        var rutaVideotecaNueva = '';
+        var rutaRelativaVideoteca = '';
         var ruta_original = videoteca.ruta_completa;
+        
         console.log("ruta_original = " + ruta_original);
+        console.log("rutaVideotecaNueva = " + rutaVideotecaNueva);
 
         var sql = "update videoteca set nombre='" + nombre + "'" ;
         
         if(cambioCarpeta) {
-
-
-            ruta_nueva = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
+            rutaVideotecaNueva = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
                 + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO  + 
                 constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + carpeta);
+
+            rutaRelativaVideoteca = constantes.DIRECTORIO_VIDEO + constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + carpeta;    
     
             /*
              * Si hay cambio de carpeta, hay que recalcular la nueva ruta completa en disco
             */
-            sql = sql  + ",ruta='" + carpeta + "',ruta_completa='" + ruta_nueva + "'";
+            sql = sql  + ",ruta='" + carpeta + "',ruta_completa='" + rutaVideotecaNueva + "'";
         }
         
         sql = sql + ",publico=" + publico + ",fechaModificacion=NOW() where id = " + videoteca.id;
@@ -630,26 +623,94 @@ exports.editarVideoteca = function(req,res,next) {
         db.beginTransaction().then(correcto => {
             console.log("Iniciada transacción contra la BBDD");
             if(correcto) {
-
-                /********************/ 
                 db.query(sql).then(resultado =>{
 
-                    if(cambioCarpeta) {
-                        fileUtil.renombrarDirectorio(ruta_original,ruta_nueva);
-                    }
+                    /*
+                     * Se actualiza la ruta de los vídeos de la videotecz
+                     */
+                    var reg = [videoteca.id];
+                    var registros = new Array();
+                    registros.push(reg);
 
-                    db.commitTransaction().then(obj=>{
+                    console.log("registros = " + JSON.stringify(registros));
 
-                        console.log("Confirmando transaccion");
-                        db.close();
-                        var resultado = {
-                            status: 0, descStatus: 'OK'
-                        };
+                    var sql = "select id,nombre,extension from video where id_videoteca=?";
 
-                        httpUtil.devolverJSON(res,resultado);
-                    });
+                    db.query(sql,registros).then(videos=>{
+                        console.log("videos recuperados = " + JSON.stringify(videos));
 
+                        console.log("rutaVideotecaNueva = " + rutaVideotecaNueva + ",rutaRelativaVideoteca = " + rutaRelativaVideoteca);
+
+                        videos.forEach(function(item){
+
+                            var params = utilities.convertirParametrosSqlVideos(rutaRelativaVideoteca,rutaVideotecaNueva,item);
+                            var sqlUpdateVideo = "update video set ruta_relativa ='" + params[0] + "',ruta_absoluta='" + params[1] + "' where id=" + item.id;
+                            console.log(sqlUpdateVideo);
+
+                            
+                            db.query(sqlUpdateVideo).then(datos=>{  
+                                console.log("Se han actualizado las rutas relativa y absoluta de los vídeos");
+                                /*
+                                *  Se renombra el directorio en disco con el nombre nuevo del directorio indicado por el usuario
+                                */
+                                try {
+                                    if(cambioCarpeta) {
+                                        fileUtil.renombrarDirectorio(ruta_original,carpeta);
+                                    }
+
+                                    db.commitTransaction().then(obj=>{
+                                        console.log("Confirmando transaccion");
+                                        db.close();
+                                        var resultado = {
+                                            status: 0, descStatus: 'OK'
+                                        };
+                
+                                        httpUtil.devolverJSON(res,resultado);
+                                    });
+                                }catch(err) {
+                                    
+                                    console.log("Error renombrado carpeta = " + err.message);
+
+                                    db.rollbackTransaction().then(obj=>{
+                                        db.close();
+
+                                        var resultado = {
+                                            status: 2, descStatus: "Error renombrado carpeta = " + err.message
+                                        };
+                
+                                        httpUtil.devolverJSON(res,resultado);
+
+                                    });
+                                }// catch
+                            }).catch(error=>{
+                                console.log("Se ha producido al actualizar las rutas relativa/absoluta de los vídeos de la videoteca = " + error.message);
+                                db.rollbackTransaction().then(obj=>{
+                                    db.close();
+
+                                    var resultado = {
+                                        status: 2, descStatus: "Se ha producido al actualizar las rutas relativa/absoluta de los vídeos de la videoteca = " + error.message
+                                    };
             
+                                    httpUtil.devolverJSON(res,resultado);
+
+                                });
+                            });
+
+                        });
+
+                    }).catch(err=>{
+                        console.log("Se ha producido un error al recuperar vídeos de una videoteca = " + err.message);
+
+                        db.rollbackTransaction().then(obj=>{
+                            db.close();
+
+                            var resultado = {
+                                status: 2, descStatus: "Se ha producido un error al recuperar vídeos de una videoteca = " + err.message
+                            };
+    
+                            httpUtil.devolverJSON(res,resultado);
+                        });
+                    });
 
                 }) .catch(err => {
                     console.log('Error al actualizar videoteca: ' + err.message);
@@ -658,7 +719,7 @@ exports.editarVideoteca = function(req,res,next) {
                         console.log("Abortando transaccion");
                         db.close();
                         var resultado = {
-                            status: 2, descStatus: 'Se ha producido un error'
+                            status: 2, descStatus: 'Error al actualizar videoteca: ' + err.message
                         };
 
                         httpUtil.devolverJSON(res,resultado);
@@ -678,13 +739,6 @@ exports.editarVideoteca = function(req,res,next) {
 
             httpUtil.devolverJSON(res,resultado);
         });
-
-
-
-
-    }catch(err) {
-        console.log("error " + err.message);
-    }
 
     }
 

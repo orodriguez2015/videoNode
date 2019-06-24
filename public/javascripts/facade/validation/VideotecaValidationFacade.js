@@ -83,7 +83,7 @@ function VideotecaValidationFacade() {
         
         videoFacade.editarVideoteca(idVideoteca,videoteca,
             function(data) { // onSuccess
-
+                    console.log("editarVideoteaca = " + JSON.stringify(data));
                 
                 switch(data.status) {
                     case 0: {    
@@ -92,6 +92,11 @@ function VideotecaValidationFacade() {
                     }
 
                     case 1: {
+                        messagesArea.showMessageError(messages.mensaje_error_actualizar_videoteca);
+                        break;
+                    }
+
+                    case 2: {
                         messagesArea.showMessageError(messages.mensaje_error_actualizar_videoteca);
                         break;
                     }

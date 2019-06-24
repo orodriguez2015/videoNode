@@ -49,6 +49,7 @@
           <%=videos[i].id %>
         </p>
 
+        <%=videos[i].ruta_relativa%>
         <% if(session.usuario!=undefined) { %>
           <img src="<%= imagePublico %>" id="imgPublico<%=videos[i].id %>" border="0" width="26" height="26" title="" alt="" onclick="videoFacade.publicarVideo(<%=videos[i].id %>,videoFacade.onSuccessPublicarVideo,videoFacade.onErrorPublicaVideo);" />
           <img src="/images/full_trash.png" border="0" width="20" height="20" title="Eliminar" alt="Eliminar" onclick="videoFacade.eliminarVideo(<%=videos[i].id %>,videoFacade.onSuccessEliminarVideo,videoFacade.onErrorEliminarVideo);" />
