@@ -121,37 +121,24 @@ class FotoFacade {
                                 flag = false;
                             }
 
-                            bootbox.confirm({
-                                title: messages.atencion,
-                                message: message,
-                                buttons: {
-                                    cancel: {
-                                        label: messages.boton_cancelar,
-                                        className: 'btn btn-danger'
-                                    },
-                                    confirm: {
-                                        label: messages.boton_confirmar,
-                                        className: 'btn btn-success'
-                                    }
-                                },
-                                callback: function(result) {
-                                    if (result) {
-                                        fotoFacade.setPublishPhoto(id, flag);
 
-                                    } //if
-                                }
+                            DialogFacade.showConfirmation(messages.atencion_titulo_modal,message,function(result){
+                                if (result) {
+                                    fotoFacade.setPublishPhoto(id, flag);
+                                } //if
                             });
+
                         } // if
                         break;
                     }
 
                 case 1: {
-                        bootbox.alert(messages.mensaje_error_no_permiso_editar_album);
+                        DialogFacade.showAlert(messages.mensaje_error_no_permiso_editar_album);
                         break;
                     }
 
                 case 2: {
-                        bootbox.alert(messages.mensaje_error_comprobar_permisos_editar_album);
+                        DialogFacade.showAlert(messages.mensaje_error_comprobar_permisos_editar_album);
                         break;
                     }
 
@@ -159,7 +146,7 @@ class FotoFacade {
             } // switch
 
         }, function(err) {
-            bootbox.alert(messages.mensaje_error_cambio_visibilidad_foto);
+            DialogFacade.showAlert(messages.mensaje_error_cambio_visibilidad_foto);
         });
 
     };
@@ -240,24 +227,12 @@ class FotoFacade {
 
                             if (id != undefined) {
 
-                                bootbox.confirm({
-                                    title: messages.atencion_titulo_modal,
-                                    message: messages.mensaje_eliminar_foto_1 + id + messages.mensaje_eliminar_foto_2,
-                                    buttons: {
-                                        cancel: {
-                                            label: messages.boton_cancelar,
-                                            className: 'btn btn-danger'
-                                        },
-                                        confirm: {
-                                            label: messages.boton_confirmar,
-                                            className: 'btn btn-success'
-                                        }
-                                    },
-                                    callback: function(result) {
-                                        if (result) {
-                                            fotoFacade.deletePhoto(id);
+                                const titulo  = messages.atencion_titulo_modal;
+                                const mensaje = messages.mensaje_eliminar_foto_1 + id + messages.mensaje_eliminar_foto_2;
 
-                                        } //if
+                                DialogFacade.showConfirmation(titulo,mensaje,function(result){
+                                    if (result) {
+                                        fotoFacade.deletePhoto(id);
                                     }
                                 });
                             }
@@ -267,19 +242,19 @@ class FotoFacade {
 
                     case 1:
                         {
-                            bootbox.alert(messages.mensaje_error_no_permiso_borrar_album);
+                            DialogFacade.showAlert(messages.mensaje_error_no_permiso_borrar_album);
                             break;
                         }
 
                     case 2:
                         {
-                            bootbox.alert(messages.mensaje_error_comprobar_permiso_borrar_album);
+                            DialogFacade.showAlert(messages.mensaje_error_comprobar_permiso_borrar_album);
                             break;
                         }
                 }
             },
             function(err) {
-                bootbox.alert(messages.mensaje_error_comprobar_permiso_borrar_album);
+                DialogFacade.showAlert(messages.mensaje_error_comprobar_permiso_borrar_album);
             });
     }
 
@@ -301,7 +276,7 @@ class FotoFacade {
         }); 
 
         if(seleccionados==null || seleccionados.length==0) {
-            bootbox.alert(messages.mensaje_seleccionar_fotografia);
+            DialogFacade.showAlert(messages.mensaje_seleccionar_fotografia);
 
         } else {
 
@@ -323,12 +298,12 @@ class FotoFacade {
 
 
     onSuccessBorradoFotografiaMultiple(data) {
-        bootbox.alert("OK");
+        DialogFacade.showAlert("OK");
     }
 
 
     onErrorBorradoFotografiaMultiple(error) {
-        bootbox.alert(messages.mensaje_error_borrado_fotografias);
+        DialogFacade.showAlert(messages.mensaje_error_borrado_fotografias);
         
     }
 

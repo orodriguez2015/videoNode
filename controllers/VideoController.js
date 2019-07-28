@@ -5,7 +5,6 @@ var constantes = require('../config/constantes.json');
 var config = fileUtil.getContentConfigBBDDFile();
 var database = require('../db/DatabaseMysql.js');
 var stringUtil = require('../util/StringUtil.js');
-var utilities = require('../util/Utilities.js');
 
 
 /**
@@ -504,8 +503,6 @@ exports.deleteVideoteca = function(req, res, next) {
     var videoteca = req.Videoteca;
     var resultado = {};
 
-    console.log("deleteVideoteca init");
-
     console.log("deleteVideoteca idVideoteca = " + videoteca.id);
 
     // Se abre transacción
@@ -585,6 +582,12 @@ exports.editarVideoteca = function(req,res,next) {
     var idUsuario = req.session.usuario.ID;
     var videoteca = req.Videoteca;
 
+
+    console.log("editarVideoteca nombre =  " + nombre + ", carpeta = " + carpeta + ", publico = " + publico + ",idUsuario = " + idUsuario);
+    console.log("editarVideoteca idVideoteca =  " + videoteca.id);
+
+    console.log("publico: " + publico);
+
     if(nombre!=undefined && carpeta!=undefined && nombre!='' && carpeta!='') {
 
         var cambioCarpeta  = false;
@@ -592,156 +595,153 @@ exports.editarVideoteca = function(req,res,next) {
             cambioCarpeta = true;
         }
 
+        console.log("carpeta videoteca=  " + carpeta);
+        console.log("videoteca.ruta = " + videoteca.ruta);
         console.log("cambioCarpeta = " + cambioCarpeta);
-    
-        var rutaVideotecaNueva = '';
-        var rutaRelativaVideoteca = '';
+
+        var ruta_nueva = '';
+        var ruta_relativa_nueva = '';
         var ruta_original = videoteca.ruta_completa;
-        
         console.log("ruta_original = " + ruta_original);
-        console.log("rutaVideotecaNueva = " + rutaVideotecaNueva);
 
         var sql = "update videoteca set nombre='" + nombre + "'" ;
         
         if(cambioCarpeta) {
-            rutaVideotecaNueva = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
+            ruta_nueva = path.join(__dirname, constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR 
                 + constantes.DIRECTORIO_PUBLIC + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO  + 
                 constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + carpeta);
 
-            rutaRelativaVideoteca = constantes.DIRECTORIO_VIDEO + constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + carpeta;    
+            ruta_relativa_nueva = constantes.FILE_SEPARATOR + constantes.DIRECTORIO_VIDEO + constantes.FILE_SEPARATOR + idUsuario + constantes.FILE_SEPARATOR + carpeta
     
             /*
              * Si hay cambio de carpeta, hay que recalcular la nueva ruta completa en disco
             */
-            sql = sql  + ",ruta='" + carpeta + "',ruta_completa='" + rutaVideotecaNueva + "'";
+            sql = sql  + ",ruta='" + carpeta + "',ruta_completa='" + ruta_nueva + "'";
         }
         
-        sql = sql + ",publico=" + publico + ",fechaModificacion=NOW() where id = " + videoteca.id;
+        sql = sql + ",publico=" + publico + ",fechaModificacion=NOW() where id =" + videoteca.id;
+        console.log("sql: " + sql);
 
-        console.log("sql: " + sql);''
+        if(!cambioCarpeta) {
+            // Sólo se actualiza la videoteca y no hay cambio de ruta ni en la videoteca ni en los vídeos
+            console.log("2");
+            db.query(sql).then(salida =>{
+                // No hay cambio carpeta, por tanto no hay que actualizar la ruta de los vídeos
+                db.commitTransaction().then(salida=>{
+                    console.log("Confirmando transaccion 2");
+                    db.close();
+                    var resultado = {
+                        status: 0, descStatus: 'OK'
+                    };
 
-        db.beginTransaction().then(correcto => {
-            console.log("Iniciada transacción contra la BBDD");
-            if(correcto) {
-                db.query(sql).then(resultado =>{
-
-                    /*
-                     * Se actualiza la ruta de los vídeos de la videotecz
-                     */
-                    var reg = [videoteca.id];
-                    var registros = new Array();
-                    registros.push(reg);
-
-                    console.log("registros = " + JSON.stringify(registros));
-
-                    var sql = "select id,nombre,extension from video where id_videoteca=?";
-
-                    db.query(sql,registros).then(videos=>{
-                        console.log("videos recuperados = " + JSON.stringify(videos));
-
-                        console.log("rutaVideotecaNueva = " + rutaVideotecaNueva + ",rutaRelativaVideoteca = " + rutaRelativaVideoteca);
-
-                        videos.forEach(function(item){
-
-                            var params = utilities.convertirParametrosSqlVideos(rutaRelativaVideoteca,rutaVideotecaNueva,item);
-                            var sqlUpdateVideo = "update video set ruta_relativa ='" + params[0] + "',ruta_absoluta='" + params[1] + "' where id=" + item.id;
-                            console.log(sqlUpdateVideo);
-
-                            
-                            db.query(sqlUpdateVideo).then(datos=>{  
-                                console.log("Se han actualizado las rutas relativa y absoluta de los vídeos");
-                                /*
-                                *  Se renombra el directorio en disco con el nombre nuevo del directorio indicado por el usuario
-                                */
-                                try {
-                                    if(cambioCarpeta) {
-                                        fileUtil.renombrarDirectorio(ruta_original,carpeta);
-                                    }
-
-                                    db.commitTransaction().then(obj=>{
-                                        console.log("Confirmando transaccion");
-                                        db.close();
-                                        var resultado = {
-                                            status: 0, descStatus: 'OK'
-                                        };
-                
-                                        httpUtil.devolverJSON(res,resultado);
-                                    });
-                                }catch(err) {
-                                    
-                                    console.log("Error renombrado carpeta = " + err.message);
-
-                                    db.rollbackTransaction().then(obj=>{
-                                        db.close();
-
-                                        var resultado = {
-                                            status: 2, descStatus: "Error renombrado carpeta = " + err.message
-                                        };
-                
-                                        httpUtil.devolverJSON(res,resultado);
-
-                                    });
-                                }// catch
-                            }).catch(error=>{
-                                console.log("Se ha producido al actualizar las rutas relativa/absoluta de los vídeos de la videoteca = " + error.message);
-                                db.rollbackTransaction().then(obj=>{
-                                    db.close();
-
-                                    var resultado = {
-                                        status: 2, descStatus: "Se ha producido al actualizar las rutas relativa/absoluta de los vídeos de la videoteca = " + error.message
-                                    };
-            
-                                    httpUtil.devolverJSON(res,resultado);
-
-                                });
-                            });
-
-                        });
-
-                    }).catch(err=>{
-                        console.log("Se ha producido un error al recuperar vídeos de una videoteca = " + err.message);
-
-                        db.rollbackTransaction().then(obj=>{
-                            db.close();
-
-                            var resultado = {
-                                status: 2, descStatus: "Se ha producido un error al recuperar vídeos de una videoteca = " + err.message
-                            };
-    
-                            httpUtil.devolverJSON(res,resultado);
-                        });
-                    });
-
-                }) .catch(err => {
-                    console.log('Error al actualizar videoteca: ' + err.message);
-
-                    db.rollbackTransaction().then(obj=>{
-                        console.log("Abortando transaccion");
-                        db.close();
-                        var resultado = {
-                            status: 2, descStatus: 'Error al actualizar videoteca: ' + err.message
-                        };
-
-                        httpUtil.devolverJSON(res,resultado);
-                    });
+                    httpUtil.devolverJSON(res,resultado);
                 });
+            }).catch(err=>{
+                console.log("Se ha producido un error al actualizar la videoteca = " + err.message);
+                db.rollbackTransaction().then(salida=>{
+                    db.close();
+                    var resultado = {
+                        status: 2, descStatus: 'Se ha producido un error'
+                    };
+    
+                    httpUtil.devolverJSON(res,resultado);
+                });
+            });
+        } else {
+            // Como hay cambio de carpeta en la que se alojan los vídeos en el servidor, hay 
+            // que modificar la ruta absoluta y relativa de los vídeos que componen la videoteca
 
-            }
+            db.beginTransaction().then(correcto => {
 
-        }).catch(error=>{
+                return db.query(sql);
+                
+              }).then(resultado =>{
+      
+                   /*
+                    * Es necesario actualizar la rutas de los vídeos de las videotecas  
+                    */
+                  let SQL_VIDEOS = "select id,nombre from video where id_videoteca=" + videoteca.id;
+                  console.log("sql = " + SQL_VIDEOS);
+                  return db.query(SQL_VIDEOS);
+      
+              }).then(videos=>{
+                  console.log("Se han recuperado los videos de la videoteca " + videoteca.id);
+                  console.log("Videos recuperados = " + JSON.stringify(videos));
+      
+                  var SQL_UPDATE_RUTA_VIDEOS = "update video set ruta_relativa= ?,ruta_absoluta= ? where id= ?";
+                  var registro = new Array();
+                  var registros = new Array();
+              
+                  /**
+                   * Se actualiza la ruta relativa y absoluta de los vídeos de la videoteca
+                   */
+                  var contador = 0;
+                  videos.map(function(video){
+      
+                      var pathRelativo = ruta_relativa_nueva + constantes.FILE_SEPARATOR + video.nombre;
+                      var pathAbsoluto = ruta_nueva + constantes.FILE_SEPARATOR + video.nombre;
+      
+                      registro = [pathRelativo,pathAbsoluto,video.id];
+                      db.query(SQL_UPDATE_RUTA_VIDEOS,registro).then(correcto=>{
+                          contador++;
+                          
+                      }).catch(errorUpdate=>{
+                          console.log('Error al actualizar videoteca: ' + error.message);
+      
+                          db.rollbackTransaction().then(obj=>{
+                              console.log("Abortando transaccion");
+                              db.close();
+                              var resultado = {
+                                  status: 2, descStatus: 'Se ha producido un error'
+                              };
+              
+                              httpUtil.devolverJSON(res,resultado);
+                          });        
+                      });
+      
+                  });
+                          
+              })
+              .then(result=>{
+                  console.log("Se han actualizado las ruta absoluta/relativa de los vídeos");
+      
+                  /**
+                   * Se renombra el directorio de la videoteca en disco
+                   */
+                  if(cambioCarpeta) {
+                      fileUtil.renombrarDirectorio(ruta_original,ruta_nueva);
+                  }
+      
+                  /**
+                   * Se confirma la transacción
+                   */
+                  db.commitTransaction().then(obj=>{
+      
+                      console.log("Confirmando transaccion");
+                      db.close();
+                      var resultado = {
+                          status: 0, descStatus: 'OK'
+                      };
+      
+                      httpUtil.devolverJSON(res,resultado);
+                  });
+      
+              }).catch(error=>{
+                  console.log('Error al actualizar videoteca: ' + error.message);
+      
+                  db.rollbackTransaction().then(obj=>{
+                      console.log("Abortando transaccion");
+                      db.close();
+                      var resultado = {
+                          status: 2, descStatus: 'Se ha producido un error'
+                      };
+      
+                      httpUtil.devolverJSON(res,resultado);
+                  });      
+              });
 
-            db.close();
-            console.log("Se ha producido un error a iniciar la transacción contra la BBDD: " + error.message);
-            var resultado = {
-                status:1,
-                descStatus:''
-            }
-
-            httpUtil.devolverJSON(res,resultado);
-        });
-
+        }// else
     }
-
 };
 
 
@@ -755,25 +755,43 @@ exports.editarVideoteca = function(req,res,next) {
 exports.existeVideo = function(req,res,next) {
 
     var db = new database.DatabaseMysql();
-    var idVideoteca = req.body.idVideoteca;
     var nombre = req.body.nombre;
-    var idUsuario = req.session.usuario.ID
     var videoteca = req.Videoteca;
 
-    if(idVideoteca!=null && nombre!=null && nombre.length>0) {
+    console.log("existeVideo nombre = " + nombre);
 
-        var sql = "SELECT COUNT(*) AS NUM FROM video WHERE id_videoteca=" + idVideoteca + " and nombre='" + nombre + "'";
+    if(nombre!=null && nombre.length>0) {
 
-        db.query(sql).then(resultado=>{
+        var sql = "select count(*) as num from video where id_videoteca= ? and nombre= ?";
+        var registro = [videoteca.id,nombre];
+       
 
-            if(resultado[0].NUM>=1) {
-                // Existe en base de datos
-
+        db.query(sql,registro).then(resultado=>{
+            var salida = {
+                status:0,
+                descStatus: 'OK'
             }
+
+            console.log("resultado = " + JSON.stringify(resultado));
+            if(resultado[0].num>=1) {
+                // Existe en base de datos
+                salida.status = 1;
+                salida.descStatus = 'Existe el vídeo en la videoteca';
+            }
+
+            db.close();
+            httpUtil.devolverJSON(res,salida);
 
         }).catch(error=>{
             console.log("Error al comprobar si existe el video = "  + error.messsage);
             db.close();
+
+            var salida = {
+                status:2,
+                descStatus: 'Error al comprobar si existe vídeo en la videoteca ' + error.message 
+            }
+
+            httpUtil.devolverJSON(res,salida);
         });
 
     }// if

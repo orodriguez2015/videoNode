@@ -1,7 +1,7 @@
 /**
   * Devuelve la salida en formato JSON. Es utilizada por la función saveVideo
-  * @param res: Objeto de tipo Response
-  * @param respuesta: Objeto que contiene la respuesta y que se
+  * @param {response} res: Objeto de tipo Response
+  * @param {object} respuesta: Objeto que contiene la respuesta y que se
   *        convierte a JSON
   */
 exports.devolverJSON = function(res,respuesta) {

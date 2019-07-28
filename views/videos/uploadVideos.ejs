@@ -28,33 +28,23 @@
         <!--Edit Main Content Area here-->
         <div class="span12" id="divMain">
             <h1><%= __ ('adjuntar_videos_videoteca')%> <%= videoteca.nombre %></h1>
-        
-        </div>
-    </div>
-
-    <div class="row-fluid">
-        <div class="span12" id="divMain" style="margin-left:30px;">
-            <p>
-
-               
-            </p>
         </div>
     </div>
 
 
+<!-- Submenú de administración -->
+<% include ../menu/submenu_subir_video_admin %>
+   
     <div class="row-fluid">
         <div class="span12" id="divMain" style="margin-left:30px;">
             <p>
-
-                <!--
-                <form id="upload" method="POST" action="/upload?idVideoteca=<%=videoteca.id%>" enctype="multipart/form-data">
-                    -->
-                <form id="upload" name="upload" role="form" method="POST" action="" enctype="multipart/form-data" novalidate>    
+                    <form id="upload" name="upload" role="form" method="POST" action="" enctype="multipart/form-data" novalidate>    
                     <input type="hidden" name="idVideoteca" id="idVideoteca" value="<%=videoteca.id%>" />
 
-                    <span class="btn btn-default btn-file">
-                        <%= __('seleccionar') %> <input type="file" name="ficheros" id="ficheros" multiple class="btn btn-primary"/>
-                        </span>
+                    <span id="inputFile" name="inputFile" class="btn btn-default btn-file">
+                        <%= __('seleccionar') %> 
+                        <input type="file" name="ficheros" id="ficheros" class="btn btn-primary"/>
+                    </span>
 
                     <br>
                     <br>
@@ -88,31 +78,36 @@
 
 
     <script type="text/javascript" src="/javascripts/facade/progress/ProgressFacade.js"></script>
-    <script type="text/javascript" src="/javascripts/facade/video/UploadVideoFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/video/UploadVideoFacade.js"></script> 
+    <script type="text/javascript" src="/javascripts/facade/video/VideoFacade.js"></script>
 
     <script type="text/javascript">
         
-        var uploadVideoFacade = new UploadVideoFacade({
+        UploadVideoFacade.setConfiguracion({
             ID_VIDEOTECA: <%=videoteca.id%>,
             UPLOAD_VIDEOS : true
-        } );
+        });
 
         $("#ficheros").on("change", function(e) {    
-            uploadVideoFacade.procesarFicheros();
+            UploadVideoFacade.procesarFicheros();
         });
 
-        
+        $("#ficheros").on("click", function(e) {    
+            // Se oculta el área de mensajes
+            UploadVideoFacade.mostrarMensajeErrorFicherosSeleccionados(false);
+            UploadVideoFacade.mostrarMensajeFicherosSeleccionados(false);
+        });
+
         $('#botonCancelar').on("click",function(e){
-            uploadVideoFacade.mostrarMensajeFicherosSeleccionados(false);
-            uploadVideoFacade.mostrarBotoneraVideo(false);
-            uploadVideoFacade.mostrarMensajeErrorFicherosSeleccionados(false);
+            UploadVideoFacade.mostrarMensajeFicherosSeleccionados(false);
+            UploadVideoFacade.mostrarBotoneraVideo(false);
+            UploadVideoFacade.mostrarMensajeErrorFicherosSeleccionados(false);
         });
-
 
         $('#upload').submit(function(e){
-            return uploadVideoFacade.enviarFicheros();
+            return UploadVideoFacade.enviarFicheros();
         });
-    
+
     </script>
 
     

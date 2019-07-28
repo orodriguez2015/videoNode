@@ -1,0 +1,16 @@
+<div class="row-fluid">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" href="/album/admin"><%= __('inicio')%></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/album/<%=album.id%>""><%= __('editar_album')%></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" onclick="albumFacade.validateDeleteAlbum(<%=album.id%>);"> <%= __('eliminar_album')%></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="/album/photo/<%=album.id%>"> <%= __('ir_album')%></a>
+      </li>
+    </ul>
+  </div>

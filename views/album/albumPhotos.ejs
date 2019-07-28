@@ -8,7 +8,6 @@
             <h1>
                 <%=album.nombre%>
             </h1>
-            <hr>
             <p>
                 <%=album.descripcion%>
             </p>
@@ -16,36 +15,11 @@
     </div>
     <br>
 
-    <!-- MENÚ -->
-    <div class="row-fluid">
+     <!-- SUBMENÚ de administración-->
 
-        <nav class="navbar navbar-default">
-
-            <ul class="nav navbar-nav">
-
-                <li>
-                    <a href="/album/admin "><%= __('inicio')%></a>
-                </li>
-
-                <li>
-                    <a href="/album/<%=album.id%>"><%= __('editar_album')%></a>
-                </li>
-
-                <li>
-                    <a href="javascript:albumFacade.validateDeleteAlbum(<%=album.id%>,albumFacade.onSuccessDeleteAlbum,albumFacade.onErrorDeleteAlbum);">
-                        <%= __('eliminar_album')%>
-                </a>
-                </li>
-
-                <li>
-                    <a href="#" onclick="fotoFacade.validarBorradoMultiple();"><%= __('eliminar_fotografias')%></a>
-                </li>
-            </ul>
-        </nav>
-
-
-    </div>
-    <!-- MENÚ -->
+    <% include ../menu/submenu_contenido_album_admin %>
+   
+   
     <section>
         <% 
            var indice = 1; 
@@ -157,4 +131,3 @@
 <script type="text/javascript" src="/javascripts/facade/album/AlbumFacade.js"></script>
 <script type="text/javascript" src="/javascripts/facade/foto/FotoFacade.js"></script>
 <script type="text/javascript" src="/javascripts/facade/lightbox/LightBoxFacade.js"></script>
-<script type="text/javascript" src="/javascripts/vendor/bootbox/bootbox.js"></script>

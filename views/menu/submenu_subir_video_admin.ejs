@@ -1,0 +1,16 @@
+<div class="row-fluid">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" href="/videotecas"><%= __('inicio')%></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/videoteca/<%=videoteca.id%>""><%= __('editar_videoteca')%></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" onclick="videoFacade.deleteVideoteca(<%=videoteca.id %>);"> <%= __('eliminar_videoteca')%></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="/videoteca/videos/<%=videoteca.id%>"> <%= __('ir_a_videoteca')%></a>
+      </li>
+    </ul>
+  </div>

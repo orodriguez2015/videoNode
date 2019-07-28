@@ -1,33 +1,54 @@
 /**
- * Fachada para gestionar el alta de archivos al servidor
+ * Fachada para gestionar el alta de fotografías al servidor
  * @author <a href="mailto:oscar.rodriguezbrea@gmail.com">Óscar Rodríguez</a>
  */
 class UploadFileFacade {
-
+    
     /**
      * Constructor de la clase 
      */
     constructor() {
+        this.instance;
         this.URL_UPLOAD = "/upload";
         this.ID_DIV_MSG_ERROR = "msgErrorUpload";
         this.ID_DIV_MSG_SUCCESS = "msgSuccessUpload";
         this.PROCESSING_MODAL = "processingModal";
+        this.DIV_MSG_FICHEROS_SELECCIONADOS ="msgFicherosSeleccionados";
+        this.DIV_MSG_ERROR_FICHEROS_SELECCIONADOS ="msgErrorFicherosSeleccionados";
+        this.TIPOS_MIME_ADMITIDOS = new Array("image/jpeg", "image/png", "image/gif", "image/tiff");
+        this.FICHEROS_FORMATO_NO_VALIDO = new Array();
+        this.IMAGEN_FICHERO_CORRECTO = "/images/correcto.png";
+        this.IMAGEN_FICHERO_INCORRECTO = "/images/incorrecto.png";
 
-        $("#upl").on("change", function(e) {
-            $('#botonEnviar').attr("disabled", false);
-        });
+        // $("#ficheros").on("change", function(e) {
+        //     $('#botonEnviar').attr("disabled", false);
+        // });
     }
+
+
+    /**
+     * Devuelve la única instancia existente de esta clase
+     */
+    static getInstance() {
+         if(this.instance==undefined) {
+            this.instance = new UploadFileFacade();
+         }
+
+         return this.instance;
+    }
+
 
     /**
      * Función que se invoca a la hora de subir los archivos al servidor. Ejecuta las validaciones y si todo es correcto,
      * envía un objeto FormData con los ficheros al servidor
      * @param {config} Objeto con los valores de los diferentes parámetros de configuración
      */
-    uploadFiles(config) {
+    enviarFicheros(config) {
         var idAlbum = config.idAlbum;
 
         if (config == undefined || config.idAlbum == undefined) {
-            this.showMessageUpload(ID_DIV_MSG_ERROR, "No se puede adjuntar fotografías: Álbum desconocido");
+            this.showMessageUpload(ID_DIV_MSG_ERROR, messages.mensaje_error_album_desconocido);
+            return false;
         } else {
 
             if (this.validateFormatFiles()) {
@@ -36,7 +57,7 @@ class UploadFileFacade {
                  */
                 progressFacade.init({
                     idProgressModal: this.PROCESSING_MODAL,
-                    txtModalHeader: "Procesando fotografías"
+                    txtModalHeader: messages.procesando_fotografias
                 });
                 progressFacade.show();
 
@@ -65,8 +86,11 @@ class UploadFileFacade {
                     success: this.onSuccessUploadFiles.bind(this), // Se hace el bind para asociar el objeto actual a esta función, sino no se puede llamar a métodos del mismo objeto
                     error: this.onErrorUploadFiles.bind(this) // bind es necesario para que desde onErrorUploadFiles se pueda llamar a métodos de esta clase
                 });
+                
             } // else
         }
+
+        return false;
     };
 
 
@@ -76,7 +100,7 @@ class UploadFileFacade {
      */
     onErrorUploadFiles(err) {
         progressFacade.hide();
-        this.showMessageUpload(ID_DIV_MSG_ERROR, "Se ha producido un error al procesar la/s fotografía/s");
+        this.showMessageUpload(ID_DIV_MSG_ERROR, messages.mensaje_error_procesar_fotos);
         this.emptySelectedFiles();
     };
 
@@ -99,10 +123,10 @@ class UploadFileFacade {
                 {
                     progressFacade.hide();
                     if (data.proceso != undefined || data.proceso.length > 0) {
-                        this.showMessageUploadList(this.ID_DIV_MSG_SUCCESS, "Resultados:", this.toStringArray(data));
+                        this.showMessageUploadList(this.ID_DIV_MSG_SUCCESS, messages.resultados, this.toStringArray(data));
 
                     } else {
-                        this.showMessageUpload(this.ID_DIV_MSG_SUCCESS, "Las fotografías han sido añadidas al álbum");
+                        this.showMessageUpload(this.ID_DIV_MSG_SUCCESS, messages.fotografias_incluidas_album);
                     }
 
                     this.emptySelectedFiles();
@@ -113,14 +137,14 @@ class UploadFileFacade {
             case -1:
                 {
                     progressFacade.hide();
-                    this.showMessageUpload(this.ID_DIV_MSG_ERROR, "Se ha producido un error al grabar las fotografías en base de datos");
+                    this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.mensaje_error_grabar_fotografias);
                     this.emptySelectedFiles();
                     break;
                 }
             case -2:
                 {
                     progressFacade.hide();
-                    this.showMessageUpload(this.ID_DIV_MSG_ERROR, "Se ha producido un error al obtener conexión a la base de datos");
+                    this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.messages.mensaje_error_conexion_bbdd);
                     this.emptySelectedFiles();
                     break;
                 }
@@ -128,7 +152,7 @@ class UploadFileFacade {
             case -3:
                 {
                     progressFacade.hide();
-                    this.showMessageUpload(this.ID_DIV_MSG_ERROR, "Se ha producido un error al obtener conexión a la base de datos");
+                    this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.messages.mensaje_error_conexion_bbdd);
                     this.emptySelectedFiles();
                     break;
                 }
@@ -136,7 +160,7 @@ class UploadFileFacade {
             case -4:
                 {
                     progressFacade.hide();
-                    this.showMessageUpload(this.ID_DIV_MSG_ERROR, "Se ha producido un error al iniciar la transacción");
+                    this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.mensaje_error_iniciar_transaccion);
                     this.emptySelectedFiles();
                     break;
                 }
@@ -159,18 +183,18 @@ class UploadFileFacade {
                 switch (resultado.proceso[i].status) {
                     case 0:
                         {
-                            salida.push("La imagen " + resultado.proceso[i].name + " ha sido añadida al álbum");
+                            salida.push(messages.imagen_incluida_album_1 + resultado.proceso[i].name + messages.imagen_incluida_album_2);
                             break;
                         }
 
                     case 1:
                         {
-                            salida.push("La imagen " + resultado.proceso[i].name + " ya existe en el álbum");
+                            salida.push(messages.imagen_incluida_album_1 + resultado.proceso[i].name + messages.imagen_existe_album);
                             break;
                         }
                     case 2:
                         {
-                            salida.push("El fichero " + resultado.proceso[i].name + " no es una imagen");
+                            salida.push(messages.fichero + resultado.proceso[i].name + messages.fichero_no_imagen);
                             break;
                         }
                 } // switch
@@ -191,13 +215,13 @@ class UploadFileFacade {
         var pesoMaximoPorArchivo = 100000; // El peso máximo en bytes por archivo.
         var matrizDeTiposAdmitidos = new Array("image/jpeg", "image/png", "image/gif", "image/tiff");
         var erroresTipoAdmitidos = new Array();
-        var archivosSeleccionados = $("#upl")[0]["files"];
+        var archivosSeleccionados = $("#ficheros")[0]["files"];
 
         var numMaxArchivos = false;
         // Si se excede el número de archivos, marcamos que hay error.
         if (archivosSeleccionados.length > maximoDeArchivos) {
             exito = false;
-            this.showMessageUpload(this.ID_DIV_MSG_ERROR, "Sólo se puede subir un máximo de 10 imágenes");
+            this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.mensaje_error_subir_maximo_fotografías_1 + maximoDeArchivos + messages.mensaje_error_subir_maximo_fotografías_2);
             this.emptySelectedFiles();
 
         } else {
@@ -207,11 +231,7 @@ class UploadFileFacade {
                 for (var archivo in archivosSeleccionados) {
                     if (archivosSeleccionados[archivo]["name"] != undefined && archivosSeleccionados[archivo]["type"] != undefined) {
                         if (archivo != parseInt(archivo)) continue;
-                        /*
-                        if (archivosSeleccionados[archivo]['size'] > pesoMaximoPorArchivo) {
-                            erroresEnArchivos = true;
-                            break;
-                        }*/
+                        
                         if (matrizDeTiposAdmitidos.indexOf(archivosSeleccionados[archivo]["type"]) < 0) {
                             erroresTipoAdmitidos.push(archivosSeleccionados[archivo]["name"]);
                             erroresEnArchivos = true;
@@ -231,12 +251,12 @@ class UploadFileFacade {
                         }
                     } // for
 
-                    this.showMessageUploadList(this.ID_DIV_MSG_ERROR, "Los siguientes archivos no son imágenes: ", erroresTipoAdmitidos);
+                    this.showMessageUploadList(this.ID_DIV_MSG_ERROR, messages.mensaje_error_archivos_no_son_imagenes, erroresTipoAdmitidos);
                 }
                 this.emptySelectedFiles();
                 exito = false;
             } else if (archivosSeleccionados.length == 0) {
-                this.showMessageUpload(this.ID_DIV_MSG_ERROR, "Es necesario seleccionar alguna imagen");
+                this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.mensaje_error_archivos_no_son_imagenes);
                 this.hideDivMessage(this.ID_DIV_MSG_SUCCESS);
                 exito = false;
             }
@@ -261,19 +281,19 @@ class UploadFileFacade {
      * @param idDivMsgUpload Id del div que muestra los mensajes de éxito
      */
     replaceFieldSelectedFiles(idDivMsgError, idDivMsgUpload) {
-        $("#upl").replaceWith('<input type="file" name="upl[]" id="upl" multiple />');
+        this.vaciarCamposFicheros();
 
         /**
          * Se oculta los div que muestra los mensajes de éxito y error en el caso de que estuviesen visibles
          * Se deshabi
          */
 
-        $("#upl").on("click", function(e) {
+        $("#ficheros").on("click", function(e) {
             $("#" + idDivMsgError).css("display", "none");
             $("#" + idDivMsgUpload).css("display", "none");
         });
 
-        $("#upl").on("change", function(e) {
+        $("#ficheros").on("change", function(e) {
             $("#" + idDivMsgError).css("display", "none");
             $("#" + idDivMsgUpload).css("display", "none");
             $('#botonEnviar').attr("disabled", false);
@@ -330,7 +350,277 @@ class UploadFileFacade {
     hideDivMessage(idDiv) {
         $("#" + idDiv).css("display", "none");
     };
+
+
+    /**
+     * Esta función se encarga de eliminar dinámicamente el campo de tipo file para crear uno nuevo
+     * de forma dinámica
+     */
+    vaciarCamposFicheros() {
+    
+        this.FORM_DATA = new FormData();
+
+        // Se elimina el campo de tipo file con id="ficheros"
+        var ficheros = $('#ficheros');
+        ficheros.remove();
+
+        // Se crea dinámicamente el campo de tipo file con id="ficheros" dentro del span cno id="inputFile"
+        $('#inputFile').append("<input type=\"file\" name=\"ficheros[]\" multiple id=\"ficheros\" class=\"btn btn-primary\"/>");
+
+        // Es necesario añadir de nuevo los eventos correspondiente para detectar el cambio en el input recién creado.
+        // Esto se debe al haber sido eliminado anteriormente, se eliminan los listener que existiesen sobre el mismo
+        $("#ficheros").on("change", function(e) {    
+            UploadFileFacade.getInstance().procesarFicheros();
+        });
+
+        $("#ficheros").on("click", function(e) {        
+            UploadFileFacade.getInstance().onClickEventInputFicheros();
+        });
+    
+    }
+
+
+    /**
+     * Método invocado cuando se hace click sobre el botón [Seleccionar] que permite seleccionar ficheros
+     */
+    onClickEventInputFicheros() {
+        this.mostrarMensajeErrorFicherosSeleccionados(false);
+        this.mostrarMensajeFicherosSeleccionados(false);
+        this.vaciarListaFicherosFormatoNoValidos();
+        this.hideDivMessage();
+    }
+
+    /**
+     * Método invocado cuando se hace click sobre el botón [Cancelar]
+     */
+    onClickBotonCancelar() {
+        this.mostrarMensajeFicherosSeleccionados(false);
+        this.mostrarBotoneraVideo(false);
+        this.mostrarMensajeErrorFicherosSeleccionados(false);
+        this.vaciarListaFicherosFormatoNoValidos();
+        this.vaciarCamposFicheros();
+        this.hideDivMessage();
+    }
+
+
+     /**
+     * Muestra la lista de ficheros seleccionados por el usuario para subir al servidor
+     * @param {files} Colección con los ficheros seleccionados
+     */
+    mostrarFicherosSeleccionados(resultado) {
+        
+        var mime = (this.TIPOS_MIME_ADMITIDOS!=null)?new String(this.TIPOS_MIME_ADMITIDOS):"";
+        var tiposMime = mime.split(",");
+
+        if(resultado!=null && resultado!=undefined && resultado.length>0 ) {
+
+            var salida = "<p>" + messages.archivos_seleccionados + "</p>";
+            for(var i=0;i<resultado.length;i++) { 
+
+                var fichero  = resultado[i];
+                var imagen = window.location.origin + this.IMAGEN_FICHERO_CORRECTO;
+                var tooltip = messages.archivo_foto_permitido_1 +  fichero.nombre + messages.archivo_foto_permitido_2;
+
+                if(!tiposMime.includes(fichero.mime)) {
+                    imagen = window.location.origin + this.IMAGEN_FICHERO_INCORRECTO;
+                    tooltip = messages.archivo_foto_permitido_1 +  fichero.nombre + messages.archivo_foto_permitido_2;
+                }
+                
+                salida = salida + "<li>" + fichero.nombre + "&nbsp;&nbsp;" + "<img width=20 height=20 title='" + tooltip + "' alt='" + tooltip + "' src='"  + imagen + "'></li>";
+
+            }// for
+
+            $('#' + this.DIV_MSG_FICHEROS_SELECCIONADOS).html(salida);
+            $('#' + this.DIV_MSG_FICHEROS_SELECCIONADOS).css("display","block");
+            
+        }// if
+
+        if(this.FICHEROS_FORMATO_NO_VALIDO!=undefined && this.FICHEROS_FORMATO_NO_VALIDO.length>0) {
+            this.vaciarCamposFicheros();
+        }
+    }// mostrarFicherosSeleccionados
+
+
+     /**
+     * Permite mostrar o ocultar el área con los ficheros seleccionados
+     * @param {boolean} flag 
+     */
+    static mostrarMensajeErrorFicherosSeleccionados(flag) {
+        var valor = "none";
+        if(flag) {
+            valor = "block";
+        }
+        $('#' + this.DIV_MSG_ERROR_FICHEROS_SELECCIONADOS).css("display",valor);
+    }
+
+
+    /**
+     * Procesa los ficheros de tipo File seleccionados por el usuario
+     * @param {ficheros} Colección con los objetos de tipo File seleccionados por el usuario
+     * @return Objeto con atributos:
+     *           nombresFicheros que representa un array con los nombres de los ficheros seleccionados
+     *           tiposFicheros que representa un array con los tipos de los ficheros seleccionados
+     */
+    procesarFicheros() {
+        var ficheros = $("input[type=file]")[0].files;    
+        var datos = new Array();
+        var mime = (this.TIPOS_MIME_ADMITIDOS!=null)?new String(this.TIPOS_MIME_ADMITIDOS):"";
+        var tiposMime = mime.split(",");
+
+    
+        if(ficheros!=null && ficheros!=undefined) {
+
+            for(var i=0;i<ficheros.length;i++) {
+                var nombreFichero = ficheros[i].name;
+                var sizeFichero = ficheros[i].size;
+                var tipo = ficheros[i].type;
+
+                var dato = {};
+                dato.nombre = ficheros[i].name;
+                dato.mime   = ficheros[i].type;
+                dato.tamano = ficheros[i].size;
+
+                datos.push(dato);
+
+                if(!tiposMime.includes(tipo)) {
+                    this.FICHEROS_FORMATO_NO_VALIDO.push(nombreFichero);
+                }
+
+            }// for
+
+            this.mostrarFicherosSeleccionados(datos);
+            this.mostrarBotoneraVideo(true);
+
+            if(this.FICHEROS_FORMATO_NO_VALIDO.length>0) {
+                this.deshabilitarBotonEnviar(true);
+                this.anadirMensajeErrorFicherosSeleccionados(messages.mensaje_seleccion_fotos_no_validas);
+                this.mostrarMensajeErrorFicherosSeleccionados(true);
+                this.vaciarCamposFicheros();
+                this.vaciarListaFicherosFormatoNoValidos();
+            }
+
+        }// if
+
+        return datos;
+    };
+
+
+    /**
+     * Vacía la lista de ficheros con formato no válido seleccionados por el usuariorario
+     */
+    vaciarListaFicherosFormatoNoValidos() {
+        this.FICHEROS_FORMATO_NO_VALIDO = new Array();
+    }
+
+     /**
+     * Muestra la botonera de video
+     * @param {boolean} flag : True para mostrar la botonera de la pantalla de upload video y false en caso contrario
+     */
+    mostrarBotoneraVideo(flag) {
+
+        var value ="none";
+        var disabled = true;
+        if(flag!=undefined && flag!=null && flag==true) {
+            value = "block";
+            disabled = false;
+        } 
+
+        $('#botonEnviar').attr("disabled", disabled);
+        $('#botonCancelar').attr("disabled", disabled);
+        $('#botonEnviar').css("display",value);
+        $('#botonCancelar').css("display",value);
+    }
+
+
+     /**
+     * Permite habilitar/deshabilitar el botón de envio del formulario
+     * @param {Boolean} flag 
+     */
+    deshabilitarBotonEnviar(flag) {
+        if(flag !=undefined && flag!= null) {
+            $('#botonEnviar').attr('disabled',flag);
+        }
+    }
+
+
+    /**
+     * Permite mostrar o ocultar el área con los ficheros seleccionados
+     * @param {boolean} flag 
+     */
+    mostrarMensajeErrorFicherosSeleccionados(flag) {
+        var valor = "none";
+        if(flag) {
+            valor = "block";
+        }
+        $('#' + this.DIV_MSG_ERROR_FICHEROS_SELECCIONADOS).css("display",valor);
+    }
+
+    
+    /**
+     * Permite mostrar o ocultar el área con los ficheros seleccionados
+     * @param {boolean} flag 
+     */
+    mostrarMensajeFicherosSeleccionados(flag) {
+        var valor = "none";
+        if(flag) {
+            valor = "block";
+        }
+        $('#' + this.DIV_MSG_FICHEROS_SELECCIONADOS).css("display",valor);
+    }
+
+
+    /**
+     * Añade un mensaje de error para que sea mostrado en el área de mensajes de error
+     * @param {String} msg Mensaje a mostrar
+     */
+    anadirMensajeErrorFicherosSeleccionados(msg) {
+
+        // Se vacia el div de errores
+        $('#' + this.DIV_MSG_ERROR_FICHEROS_SELECCIONADOS).html("");
+        // Se muestra mensaje nuevo en div de errores
+        $('#' + this.DIV_MSG_ERROR_FICHEROS_SELECCIONADOS).html(msg);
+
+        /*
+        * Se muestra  el área de mensaje de error
+        */
+       this.mostrarMensajeErrorFicherosSeleccionados(true);
+    }
+
+
+     /**
+     * Muestra la lista de ficheros seleccionados por el usuario para subir al servidor
+     * @param {files} Colección con los ficheros seleccionados
+     */
+    mostrarFicherosSeleccionados(resultado) {
+        
+        var mime = (this.TIPOS_MIME_ADMITIDOS!=null)?new String(this.TIPOS_MIME_ADMITIDOS):"";
+        var tiposMime = mime.split(",");
+
+        if(resultado!=null && resultado!=undefined && resultado.length>0 ) {
+
+            var salida = "<p>" + messages.archivos_seleccionados + "</p>";
+            for(var i=0;i<resultado.length;i++) { 
+
+                var fichero  = resultado[i];
+                var imagen = window.location.origin + this.IMAGEN_FICHERO_CORRECTO;
+                var tooltip = messages.archivo_foto_permitido_1 +  fichero.nombre + messages.archivo_foto_permitido_2;
+
+                if(!tiposMime.includes(fichero.mime)) {
+                    imagen = window.location.origin + this.IMAGEN_FICHERO_INCORRECTO;
+                    tooltip = messages.archivo_foto_permitido_1 +  fichero.nombre + messages.archivo_foto_no_permitido;
+                }
+                
+                salida = salida + "<li>" + fichero.nombre + "&nbsp;&nbsp;" + "<img width=20 height=20 title='" + tooltip + "' alt='" + tooltip + "' src='"  + imagen + "'></li>";
+
+            }// for
+
+            $('#' + this.DIV_MSG_FICHEROS_SELECCIONADOS).html(salida);
+            $('#' + this.DIV_MSG_FICHEROS_SELECCIONADOS).css("display","block");
+            
+        }// if
+    }// mostrarFicherosSeleccionados
+
 };
 
-var uploadFileFacade = new UploadFileFacade();
-uploadFileFacade.disableSendButton(true);
+
+UploadFileFacade.getInstance().mostrarBotoneraVideo(false);

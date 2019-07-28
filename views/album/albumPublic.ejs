@@ -1,32 +1,32 @@
 <div class="row-fluid">
-    <!--Edit Main Content Area here-->
-    <div class="span12" id="divMain">
-
-        <h1><%= __('albumes_fotograficos_usuarios')%></h1>
-        <hr>
-        <p>
-            <%= __('mensaje_pantalla_bienvenida')%>
-            
-            <br>
-
-            <% for(var i=0;i<albumes.length;i++) { %>
-
-
-                <a href="/album/public/photo/<%=albumes[i].ID%>">
-                    <h2><strong><%=albumes[i].NOMBRE %></strong></h2>
-                </a>
-                <p>
-                    <%=albumes[i].DESCRIPCION %>
-                </p>
-                <p><%= __('dado_de_alta') %>
-                    <%=albumes[i].FECHAALTA %> <%= __('por') %>
-                        <%=albumes[i].NOMBREUSUARIO%>&nbsp;
-                            <%=albumes[i].APELLIDO1 %>
-                </p>
-
-                <% } %>
-        </p>
-
+        <!--Edit Main Content Area here-->
+        <div class="span12" id="divMain">
+    
+            <h1><%= __('albumes_fotograficos_usuarios')%></h1>
+            <hr>
+            <p>
+                <%= __('mensaje_pantalla_bienvenida')%>
+                
+                <br>
+    
+                <% for(var i=0;i<albumes.length;i++) { %>
+    
+    
+                    <a href="/album/public/photo/<%=albumes[i].ID%>">
+                        <h2><strong><%=albumes[i].NOMBRE %></strong></h2>
+                    </a>
+                    <p>
+                        <%=albumes[i].DESCRIPCION %>
+                    </p>
+                    <p><%= __('dado_de_alta') %>
+                        <%=albumes[i].FECHAALTA %> <%= __('por') %>
+                            <%=albumes[i].NOMBREUSUARIO%>&nbsp;
+                                <%=albumes[i].APELLIDO1 %>
+                    </p>
+    
+                    <% } %>
+            </p>
+    
+        </div>
+        <!--End Main Content here-->
     </div>
-    <!--End Main Content here-->
-</div>

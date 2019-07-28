@@ -80,6 +80,6 @@ class AlbumAdminTableFacade extends TableFacade {
      * @param idAlbum Id del álbum
      */
     imgDeleteAlbum(idAlbum) {
-        return "<img src=\"/images/full_trash.png\" border=\"0\" width=\"20\" height=\"20\" title=\"Eliminar\" alt=\"Eliminar\" onclick=\"albumFacade.validateDeleteAlbum(" + idAlbum + ",albumFacade.onSuccessDeleteAlbum,albumFacade.onErrorDeleteAlbum);\"/>";
+        return "<img src=\"/images/full_trash.png\" border=\"0\" width=\"20\" height=\"20\" title=\"Eliminar\" alt=\"Eliminar\" onclick=\"albumFacade.validateDeleteAlbum(" + idAlbum + ");\"/>";
     };
 }

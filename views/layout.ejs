@@ -85,79 +85,27 @@
                         </button>
                             <div class="nav-collapse collapse">
                                 <ul class="nav nav-pills ddmenu">
-                                    <li><a href="/"><%= __ ('inicio')%></a></li>
+                                    
+                                    <% include ./menu/menu_inicio %>
 
                                     <% if(session.usuario==undefined) { %>
-                                        <li><a href="/videos"><%= __ ('videos')%></a></li>
+                                        <% include ./menu/menu_videos %>
+                                        <% include ./menu/menu_album %>
                                     <% } %>
-                                
-                                    <%
-                                    if(session.usuario!=undefined) {
-                                    %>
+                        
+                                    <% if(session.usuario!=undefined) { %>
+                                        <% include ./menu/menu_videos_admin %>
+                                        <% include ./menu/menu_album_admin %>
+                                        <% include ./menu/menu_usuarios_admin %>
+                                    <% } %>
+                                       
+                                    <% include ./menu/menu_idioma %>
 
-                                    <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle"><%= __ ('videos')%> <b class="caret"></b></a>
-                                        <ul class="dropdown-menu">
-                                            <li><a href="/videoteca/nueva"><%= __ ('nuevo')%></a></li>
-                                            <li><a href="/videotecas"><%= __ ('tus_videotecas')%></a></li>
-                                        </ul>
-                                    </li>
- 
-
-
-                                        <li class="dropdown">
-                                            <a href="#" class="dropdown-toggle"><%= __ ('album')%><b class="caret"></b></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a href="/album/create"><%= __ ('nuevo')%></a></li>
-                                                <li><a href="/album/admin"><%= __ ('tus_albumes')%></a></li>
-
-                                            </ul>
-                                        </li>
-
-
-                                        <li class="dropdown">
-                                            <a href="#" class="dropdown-toggle"><%= __ ('usuarios')%> <b class="caret"></b></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a href="/user/new"><%= __ ('nuevo')%></a></li>
-                                                <li><a href="/users"><%= __ ('usuarios')%></a></li>
-
-                                            </ul>
-                                        </li>
-                                        <%
-                                    }
-                                    %>
-
-
-                                    <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle"><%= __ ('idioma')%> <b class="caret"></b></a>
-                                        <ul class="dropdown-menu">
-
-                                            <li><a href="#" onclick="urlFacade.recargarPantallaIdioma('es');"><%= __ ('espanol')%></a></li>
-                                            <li><a href="#" onclick="urlFacade.recargarPantallaIdioma('en');"><%= __ ('ingles')%></a></li>
-
-                                        </ul>
-                                    </li>
-
-
-
-                                            <%
-                                    if(session.usuario!=undefined) {
-                                    %>
-                                                <li class="dropdown">
-                                                    <a href="#" class="dropdown-toggle">
-                                                        <%= session.usuario.NOMBRE %>
-                                                            <%= session.usuario.APELLIDO1 %>
-                                                                <%= session.usuario.APELLIDO2 %>
-                                                                    <b class="caret"></b></a>
-                                                    <ul class="dropdown-menu">
-                                                        <li><a href="/profile"><%= __ ('perfil')%></a></li>
-                                                        <li><a href="/logout"><%= __ ('cerrar_sesion')%></a></li>
-
-                                                    </ul>
-                                                </li>
-                                                <% } else { %>
-                                                    <li><a href="#" onclick="loginFacade.show();">Login</a></li>
-                                                    <% } %>
+                                    <% if(session.usuario!=undefined) { %>                                              
+                                        <% include ./menu/menu_perfil %>
+                                    <% } else { %>
+                                        <% include ./menu/menu_login %>
+                                    <% } %>
 
                                 </ul>
                             </div>
@@ -242,6 +190,8 @@
     <script type="text/javascript" src="/javascripts/notify/MessagesNotificationArea.js"></script>
     <script type="text/javascript" src="/javascripts/facade/user/LoginFacade.js"></script>
     <script type="text/javascript" src="/javascripts/facade/url/UrlFacade.js"></script>
+    <script type="text/javascript" src="/javascripts/vendor/bootbox/bootbox.js"></script>
+    <script type="text/javascript" src="/javascripts/facade/dialog/DialogFacade.js"></script>
 
     <script type="text/javascript">
         var USER_ROOT = false;

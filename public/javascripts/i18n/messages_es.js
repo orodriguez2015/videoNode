@@ -107,6 +107,27 @@ var messages = {
     mensaje_ocultar_video: "¿Deseas ocultar el vídeo?",
     mensaje_mostrar_video: "¿Deseas hacer vísible el vídeo?",
     mensaje_error_cambiar_visibidad_video: "Se ha producido un error al cambiar la visibilidad del vídeo",
+    procesando_fotografias : "Procesando fotografías",
+    archivo_foto_permitido_1: "El archivo ",
+    archivo_foto_permitido_2: " tiene un formato de archivo válido",
+    archivo_foto_no_permitido: " tiene un formato de archivo no válida",
+    mensaje_seleccion_fotos_no_validas : "Entre la selección de archivos realizados hay algunos que tienen un formato de fotografía no válida. Realiza una nueva selección.",
+    imagen_incluida_album_1: "La imagen ",
+    imagen_incluida_album_2: " ha sido añadida al álbum",
+    imagen_existe_album: " ya existe en el álbum",
+    fichero: "El fichero ",
+    fichero_no_imagen: " no es una imagen ",
+    fotografias_incluidas_album : "Las fotografías han sido añadidas al álbum",
+    mensaje_error_grabar_fotografias : "Se ha producido un error al grabar las fotografías en base de datos",
+    mensaje_error_conexion_bbdd : "Se ha producido un error al obtener conexión a la base de datos",
+    mensaje_error_iniciar_transaccion : "Se ha producido un error al iniciar la transacción",
+    resultados : "Resultados: ",
+    mensaje_error_album_desconocido: "No se puede adjuntar fotografías: Álbum desconocido",
+    mensaje_error_procesar_fotos : "Se ha producido un error al procesar la/s fotografía/s",
+    mensaje_error_subir_maximo_fotografías_1: "Sólo se puede subir un máximo de ",
+    mensaje_error_subir_maximo_fotografías_2: " imágenes",
+    mensaje_error_archivos_no_son_imagenes : "Los siguientes archivos no son imágenes: ",
+    
 
 
 

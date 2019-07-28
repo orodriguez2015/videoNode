@@ -13,9 +13,13 @@ var cors = require('cors');
 var router = express.Router();
 
 
-router.get('/', function(req, res, next) {
-    res.redirect("/albums");
-});
+// router.get('/', function(req, res, next) {
+//     res.redirect("/albums");
+// });
+
+
+
+router.get("/", albumController.pantallaInicio);
 
 // GET /album. Carga de la pantalla de upload de imágenes
 router.get("/album/upload", userController.isAuthenticatedUser, uploadController.uploadImageScreen);
@@ -465,12 +469,19 @@ router.post("/video/publicar/:idVideo(\\d+)",userController.isAuthenticatedUser,
 router.get("/videos",videoController.showVideotecasPublicas);
 
 
+/**
+ * POST /videoteca/existe/video/:idVideoteca
+ * 
+ * Comprueba si existe un vídeo con un determinado nombre en una videoteca
+ */
+router.post("/videoteca/existe/video/:idVideoteca(\\d+)",userController.isAuthenticatedUser,videoController.existeVideo);
+
 
 /**
  * Servicio REST que devuelve un JSON sólo para hacer pruebas
  */
 router.get("/tareas",cors({origin:'*',credentials:true,optionsSuccessStatus: 200}),tareasController.getTareas);
-//router.get("/tareas",cors(),tareasController.getTareas);
+
 
 /**
  * Almacena una tarea en la lista de tareas

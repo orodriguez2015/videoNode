@@ -368,12 +368,10 @@ function UserFacade() {
         permissionFacade.validatePermission(6, function(data) {
 
             if (data != undefined) {
-                console.log("data: " + JSON.stringify(data));
                 switch (data.status) {
                     case 0:
                         {
                             if (id != undefined && activo != undefined) {
-
                                 var parametro = {
                                     idUsuario: id,
                                     activo: (activo == 1) ? 0 : 1
@@ -384,35 +382,45 @@ function UserFacade() {
                                     mensaje = messages.mensaje_confirmacion_activar_cuenta_usuario + id + "?";
                                 }
 
-                                bootbox.confirm({
-                                    title: messages.atencion,
-                                    message: mensaje,
-                                    buttons: {
-                                        cancel: {
-                                            label: messages.boton_cancelar,
-                                            className: 'btn btn-danger'
-                                        },
-                                        confirm: {
-                                            label: messages.boton_confirmar,
-                                            className: 'btn btn-success'
-                                        }
-                                    },
-                                    callback: function(result) {
-                                        
-                                        if (result) {
-                                            return $.ajax({
-                                                async: true,
-                                                context: this,
-                                                cache: false,
-                                                type: 'POST',
-                                                dataType: 'json',
-                                                data: parametro,
-                                                url: URL_USER_DISABLE_USER_ACCOUNT,
-                                                success: userFacade.onSuccessDisableUserAccount,
-                                                error: userFacade.onErrorDisableUserAccount
-                                            });
 
-                                        } //if
+                                DialogFacade.showConfirmation(messages.atencion_titulo_modal,mensaje,function(result){
+                                    if (result) {
+                                        return $.ajax({
+                                            async: true,
+                                            context: this,
+                                            cache: false,
+                                            type: 'POST',
+                                            dataType: 'json',
+                                            data: parametro,
+                                            url: URL_USER_DISABLE_USER_ACCOUNT,
+                                            success: function(data) {
+        
+                                                if (data != undefined) {
+                                                    switch (data.status) {
+                                                        case 0:
+                                                            {
+                                                                window.location.href = "/users";
+                                                                break;
+                                                            }
+                                        
+                                                        case 1:
+                                                            {
+                                                                messagesArea.showMessageError(messages.mensaje_error_activar_desactivar_cuenta_usuario);
+                                                                break;
+                                                            }
+                                        
+                                                        case 2:
+                                                            {
+                                                                messagesArea.showMessageError(messages.mensaje_error_conexion_bbdd);
+                                                                break;
+                                                            }
+                                                    }
+                                                }
+                                            },
+                                            error: function(data) {
+                                                messagesArea.showMessageError(messages.mensaje_error_activar_desactivar_cuenta_usuario);
+                                            }
+                                        });
                                     }
                                 });
                             }
@@ -420,15 +428,14 @@ function UserFacade() {
                             break;
                         }
 
-                    case 1:
-                        {
-                            bootbox.alert(messages.mensaje_error_no_permiso_deshabilitar_cuenta);
+                    case 1:{
+                            DialogFacade.showAlert(messages.mensaje_error_no_permiso_deshabilitar_cuenta);
                             break;
                         }
 
                     case 2:
                         {
-                            bootbox.alert(messages.mensaje_error_comprobar_permiso_deshabilitar_cuenta);
+                            DialogFacade.showAlert(messages.mensaje_error_comprobar_permiso_deshabilitar_cuenta);
                             break;
                         }
                 }
@@ -439,47 +446,6 @@ function UserFacade() {
         });
     };
 
-
-
-    /**
-     * Función que es invocada cuando la petición AJAX al servidor para dar de alta un 
-     * usuario, se ha ejecutado correctamente
-     * @param data Respuesta del servidor
-     */
-    this.onSuccessDisableUserAccount = function(data) {
-        
-        if (data != undefined) {
-            switch (data.status) {
-                case 0:
-                    {
-                        window.location.href = "/users";
-                        break;
-                    }
-
-                case 1:
-                    {
-                        messagesArea.showMessageError(messages.mensaje_error_activar_desactivar_cuenta_usuario);
-                        break;
-                    }
-
-                case 2:
-                    {
-                        messagesArea.showMessageError(messages.mensaje_error_conexion_bbdd);
-                        break;
-                    }
-            }
-        }
-    };
-
-
-    /**
-     * Función que es invocada cuando la petición AJAX al servidor para dar de alta un 
-     * usuario ha lanzado un error
-     * @param data Respuesta del servidor
-     */
-    this.onErrorDisableUserAccount = function(data) {
-        messagesArea.showMessageError(messages.mensaje_error_activar_desactivar_cuenta_usuario);
-    };
 
 
     /**

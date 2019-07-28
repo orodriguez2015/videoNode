@@ -50,7 +50,6 @@ function AlbumFacade() {
      * @param data
      */
     this.onSuccessEditAlbum = function(data) {
-        console.log("onSuccessEditAlbum: " + JSON.stringify(data));
         if (data != undefined) {
             switch (data.status) {
                 case 0:
@@ -109,54 +108,45 @@ function AlbumFacade() {
     this.validateDeleteAlbum = function(id, onSuccess, onError) {
         permissionFacade.validatePermission(6, function(data) {
             switch (data.status) {
-                case 0:
-                    {
-
+                case 0:{
                         if (id != undefined) {
-                            bootbox.confirm({
-                                title: messages.atencion_titulo_modal,
-                                message: messages.mensaje_eliminar_album_1 + " " +  id + " " +  messages.mensaje_eliminar_album_2,
-                                buttons: {
-                                    cancel: {
-                                        label: messages.boton_cancelar,
-                                        className: 'btn btn-danger'
-                                    },
-                                    confirm: {
-                                        label: messages.boton_confirmar,
-                                        className: 'btn btn-success'
-                                    }
-                                },
-                                callback: function(result) {
-                                    if (result) {
+                            const titulo  = messages.atencion_titulo_modal;
+                            const mensaje = messages.mensaje_eliminar_album_1 + " " +  id + " " +  messages.mensaje_eliminar_album_2;
 
-                                        return $.ajax({
-                                            async: true,
-                                            context: this,
-                                            cache: false,
-                                            type: 'POST',
-                                            dataType: 'json',
-                                            data: null,
-                                            url: URL_ALBUM + "/" + id + '?_method=DELETE',
-                                            success: onSuccess,
-                                            error: onError
-                                        });
-
-                                    } //if
+                            DialogFacade.showConfirmation(titulo,mensaje,function(result){
+                                if (result) {
+                                    
+                                    return $.ajax({
+                                        async: true,
+                                        context: this,
+                                        cache: false,
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        data: null,
+                                        url: URL_ALBUM + "/" + id + '?_method=DELETE',
+                                        success: function(data){                                            
+                                            if (data != undefined && data.status == 0) {
+                                                window.location.href = "/album/admin";
+                                            }
+                                        },
+                                        error: function(err){
+                                            messagesArea.showMessageError(messages.mensaje_error_eliminar_album);
+                                        }
+                                    });
                                 }
                             });
+
                         } // if
                         break;
                     }
 
-                case 1:
-                    {
-                        bootbox.alert(messages.mensaje_error_no_permiso_borrar_album);
+                case 1:{
+                        DialogFacade.showAlert(messages.mensaje_error_no_permiso_borrar_album);
                         break;
                     }
 
-                case 2:
-                    {
-                        bootbox.alert(messages.mensaje_error_comprobar_permiso_borrar_album);
+                case 2:{
+                        DialogFacade.showAlert(messages.mensaje_error_comprobar_permiso_borrar_album);
                         break;
                     }
             } // switch
@@ -165,29 +155,7 @@ function AlbumFacade() {
         }, function(err) {
             console.log("Error al verificar permiso")
         });
-
     };
-
-
-    /**
-     * Función invocada en caso de éxito al borrar un álbum
-     * @param data Respuesta del servidor
-     */
-    this.onSuccessDeleteAlbum = function(data) {
-        if (data != undefined && data.status == 0) {
-            window.location.href = "/album/admin";
-        }
-    };
-
-
-    /**
-     * Función invocada en caso de fallo al borrar un álbum
-     * @param err Respuesta del servidor
-     */
-    this.onErrorDeleteAlbum = function(err) {
-        messagesArea.showMessageError(messages.mensaje_error_eliminar_album);
-    };
-
 };
 
 var albumFacade = new AlbumFacade();

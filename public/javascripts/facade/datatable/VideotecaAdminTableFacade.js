@@ -81,6 +81,6 @@ class VideotecaAdminTableFacade extends TableFacade {
      * @param idVideoteca Id de la videoteca
      */
     imgDeleteVideoteca(idVideoteca) {
-        return "<img src=\"/images/full_trash.png\" border=\"0\" width=\"20\" height=\"20\" title=\"" + messages.eliminar + "\" alt=\"" + messages.eliminar + "\" onclick=\"videoFacade.deleteVideoteca(" + idVideoteca + ",videoFacade.onSuccessDeleteVideoteca,videoFacade.onErrorDeleteVideoteca);\"/>";
+        return "<img src=\"/images/full_trash.png\" border=\"0\" width=\"20\" height=\"20\" title=\"" + messages.eliminar + "\" alt=\"" + messages.eliminar + "\" onclick=\"videoFacade.deleteVideoteca(" + idVideoteca + ");\"/>";
     };
 }

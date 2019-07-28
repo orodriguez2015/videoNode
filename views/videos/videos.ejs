@@ -1,4 +1,3 @@
-
 <link href="/stylesheets/videojs/video-js.css" rel="stylesheet">
 <link href="/stylesheets/videojs/video-vim.css" rel="stylesheet">
 <script type="text/javascript" src="/javascripts/vendor/videojs/video.js"></script>   
@@ -19,11 +18,14 @@
       <h1>
           <%=videoteca.nombre%>
       </h1>
-      <hr>
   </div>
 </div>
-<br>
 
+<!-- Submenú de administración de videos -->
+<% include ../menu/submenu_videos_admin %>
+
+
+<!-- MENÚ -->
 <div class="row-fluid">
 
   <% for(var i=0;videos!=undefined && i<videos.length;i++) { 
@@ -49,10 +51,9 @@
           <%=videos[i].id %>
         </p>
 
-        <%=videos[i].ruta_relativa%>
         <% if(session.usuario!=undefined) { %>
-          <img src="<%= imagePublico %>" id="imgPublico<%=videos[i].id %>" border="0" width="26" height="26" title="" alt="" onclick="videoFacade.publicarVideo(<%=videos[i].id %>,videoFacade.onSuccessPublicarVideo,videoFacade.onErrorPublicaVideo);" />
-          <img src="/images/full_trash.png" border="0" width="20" height="20" title="Eliminar" alt="Eliminar" onclick="videoFacade.eliminarVideo(<%=videos[i].id %>,videoFacade.onSuccessEliminarVideo,videoFacade.onErrorEliminarVideo);" />
+          <img src="<%= imagePublico %>" id="imgPublico<%=videos[i].id %>" border="0" width="26" height="26" title="" alt="" onclick="videoFacade.publicarVideo(<%=videos[i].id %>);" />
+          <img src="/images/full_trash.png" border="0" width="20" height="20" title="Eliminar" alt="Eliminar" onclick="videoFacade.eliminarVideo(<%=videos[i].id %>);"/>
           <input type="hidden" id="publico<%=videos[i].id %>" name="publico<%=videos[i].id %>" value="<%=videos[i].publico %>" />
         <% } %>
       </div>
@@ -61,5 +62,4 @@
 
 </div>
 
-<script type="text/javascript" src="/javascripts/vendor/bootbox/bootbox.js"></script>
 <script type="text/javascript" src="/javascripts/facade/video/VideoFacade.js"></script>

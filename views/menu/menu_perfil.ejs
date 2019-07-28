@@ -1,0 +1,12 @@
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle">
+        <%= session.usuario.NOMBRE %>
+        <%= session.usuario.APELLIDO1 %>
+        <%= session.usuario.APELLIDO2 %>
+        <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu">
+        <li><a href="/profile"><%= __ ('perfil')%></a></li>
+        <li><a href="/logout"><%= __ ('cerrar_sesion')%></a></li>
+    </ul>
+</li>

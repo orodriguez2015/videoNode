@@ -12,7 +12,7 @@ class VideoFacade {
         this.URL_COMPROBAR_RUTA_VIDEOTECA = "/videoteca/comprobarRutaCarpetaUsuario";
         this.URL_COMPROBAR_RUTA_VIDEOTECA_USUARIO = "/videoteca/comprobarRutaOtraVideotecaUsuario";
         this.URL_GUARDAR_VIDEOTECA = "/videoteca/guardar";
-        this.URL_VIDEOTECA = "/videoteca";
+        this.URL_VIDEOTECA         = "/videoteca";
     };
 
     /**
@@ -60,100 +60,70 @@ class VideoFacade {
     };
 
 
-    /**
+
+   /**
      * Envia al servidor la petición de borrado de una videoteca
-     * @param id Objeto con los datos de la videoteca
-     * @param onSuccess Función invocada en caso de éxito
-     * @param onError Función invocada en caso de fallo
+     * @param {Integer} id Objeto con los datos de la videoteca
      */
-    deleteVideoteca(id,onSuccess,onError) {
+    deleteVideoteca(id) {
 
-        bootbox.confirm({
-            title: messages.atencion_titulo_modal,
-            message: messages.mensaje_eliminar_videoteca_1 + " " +  id + " " +  messages.mensaje_eliminar_videoteca_2,
-            buttons: {
-                cancel: {
-                    label: messages.boton_cancelar,
-                    className: 'btn btn-danger'
-                },
-                confirm: {
-                    label: messages.boton_confirmar,
-                    className: 'btn btn-success'
-                }
-            },
-            callback: function(result) {
+        const titulo  = messages.atencion_titulo_modal;
+        const mensaje = messages.mensaje_eliminar_videoteca_1 + " " +  id + " " +  messages.mensaje_eliminar_videoteca_2;
+
+        DialogFacade.showConfirmation(titulo,mensaje,function(result){
+            if (result) {
                 
-                if (result) {
-                    return $.ajax({
-                        async: false,
-                        context: this,
-                        cache: false,
-                        type: 'POST',
-                        dataType: 'json',
-                        data: null,
-                        url: "/videoteca/" + id +  '?_method=DELETE',
-                        success: onSuccess,
-                        error: onError
-                    });
-
-                } //if
+                return $.ajax({
+                    async: false,
+                    context: this,
+                    cache: false,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: null,
+                    url: "/videoteca/" + id +  '?_method=DELETE',
+                    success: function(resultado){
+                        // Función success
+                        if(resultado!=undefined) {
+                            switch(resultado.status) {
+                                case 0: {
+                                    window.location = "/videotecas";
+                                    break;
+                                }
                 
+                                case 1: {
+                                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca_crear_transaccion);
+                                    break;
+                                }
                 
-            }
-        });       
-    };
+                                case 2: {
+                                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca_confirmar_transaccion);
+                                    break;
+                                }
+                
+                                case 3: {
+                                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca);
+                                    break;
+                                }
+                
+                                default: {
+                                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca);
+                                    break;
+                                }
+                            }// switch
+                        }// if
+                    },
+                    error: function(error) {
+                        // Función error
+                        messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca);                    
+                    }
+                });
 
-
-    /**
-     * Función invocada si la ejecución del borrado de una videoteca ha tenido éxito
-     * @param {Object} resultado 
-     */
-    onSuccessDeleteVideoteca(resultado){
-        if(resultado!=undefined) {
-            switch(resultado.status) {
-                case 0: {
-                    window.location = "/videotecas";
-                    break;
-                }
-
-                case 1: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca_crear_transaccion);
-                    break;
-                }
-
-                case 2: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca_confirmar_transaccion);
-                    break;
-                }
-
-                case 3: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca);
-                    break;
-                }
-
-
-                default: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca);
-                    break;
-                }
-            }// switch
-        }// if
-
+            } //if
+        });
     }
 
 
-
-    /**
-     * Función que es invocada en caso de que la llamada al servidor para borrar una videoteca
-     * no se haya ejecutado correctamente
-     * @param {Error} error 
-     */
-    onErrorDeleteVideoteca(error){
-        messagesArea.showMessageError(messages.mensaje_error_eliminar_videoteca);
-    }
-
-
-
+  
     /**
      * Comprueba si una carpeta ya está asociada a otra videoteca del usuario actual
      * @param {Object} datos Objeto que contiene la ruta y el idVideoteca sobre la que se realiza
@@ -203,92 +173,64 @@ class VideoFacade {
 
 
     /**
-     * Elimina un vídeo del servidor
-     * @param {Integer} id Identificador de la videoteca
-     * @param {function} onSuccess Función invocada en caso de éxito
-     * @param {function} onError Función invocada en caso de fallo
+     * Elimina un vídeo de una videoteca
+     * @param {Integer} id Id del video
      */
-    eliminarVideo(id,onSuccess,onError) {
+    eliminarVideo(id) {
 
-        bootbox.confirm({
-            title: messages.atencion_titulo_modal,
-            message: messages.mensaje_desea_eliminar_video_1 + " " +  id + " " +  messages.mensaje_desea_eliminar_video_2,
-            buttons: {
-                cancel: {
-                    label: messages.boton_cancelar,
-                    className: 'btn btn-danger'
-                },
-                confirm: {
-                    label: messages.boton_confirmar,
-                    className: 'btn btn-success'
-                }
-            },
-            callback: function(result) {
+        const titulo =  messages.atencion_titulo_modal;
+        const mensaje = messages.mensaje_desea_eliminar_video_1 + " " +  id + " " +  messages.mensaje_desea_eliminar_video_2;
+        
+        DialogFacade.showConfirmation(titulo,mensaje,function(result){
+            if (result) {
+
+                return $.ajax({
+                    async: false,
+                    context: this,
+                    cache: false,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: null,
+                    url: "/video/" + id +  '?_method=DELETE',
+                    success: function(data){
+                        // Función Success
+                        if(data!=null && data!=undefined) {
+                            switch(data.status) {
+                                
+                                case 0: {
+                                    window.location = window.location.href;
+                                    break;
+                                }
                 
-                if (result) {
-                    return $.ajax({
-                        async: false,
-                        context: this,
-                        cache: false,
-                        type: 'POST',
-                        dataType: 'json',
-                        data: null,
-                        url: "/video/" + id +  '?_method=DELETE',
-                        success: onSuccess,
-                        error: onError
-                    });
-
-                } // if
-            }// callback
-        });       
-    }
-
-
-    /**
-     * Método a invocar en caso de éxito al eliminar un vídeo de BBDD
-     * @param {data} data 
-     */
-    onSuccessEliminarVideo(data) {
-    
-        if(data!=null && data!=undefined) {
-            switch(data.status) {
+                                case 1: {
+                                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video_crear_transaccion);
+                                    break;
+                                }
                 
-                case 0: {
-                    window.location = window.location.href;
-                    break;
-                }
-
-                case 1: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video_crear_transaccion);
-                    break;
-                }
-
-                case 2: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video_confirmar_transaccion);
-                    break;
-                }
-
-                case 3: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video);
-                    break;
-                }
-
-                default: {
-                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video);
-                    break;
-                }
-            }// switch
-        }
-    }// onSuccessEliminarVideo
-
-
-
-    /**
-     * Método a invocar en caso de error al eliminar un vídeo de BBDD
-     * @param {data} data 
-     */
-    onErrorEliminarVideo(data) {
-        messagesArea.showMessageError(messages.mensaje_error_eliminar_video);
+                                case 2: {
+                                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video_confirmar_transaccion);
+                                    break;
+                                }
+                
+                                case 3: {
+                                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video);
+                                    break;
+                                }
+                
+                                default: {
+                                    messagesArea.showMessageError(messages.mensaje_error_eliminar_video);
+                                    break;
+                                }
+                            }// switch
+                        }// if
+                    },
+                    error: function(err) {
+                        // Función error
+                        messagesArea.showMessageError(messages.mensaje_error_eliminar_video);
+                    }
+                });
+            }
+        });        
     }
 
 
@@ -300,89 +242,58 @@ class VideoFacade {
      * @param {Function} onError: Función onError
      */
     publicarVideo(id,onSuccess,onError) {
+
         if(id!=null && id!=undefined) {
+
             var publico = $('#publico' + id).val();
         
             if(publico!=null && publico!=undefined) {
 
+                const titulo  =  messages.atencion_titulo_modal;
+                const mensaje = (publico==1)?messages.mensaje_ocultar_video:messages.mensaje_mostrar_video;
                 var res = (publico==1) ? 0:1;
-                var mensaje = (publico==1)?messages.mensaje_ocultar_video:messages.mensaje_mostrar_video;
-
-                bootbox.confirm({
-                    title: messages.atencion_titulo_modal,
-                    message: mensaje,
-                    buttons: {
-                        cancel: {
-                            label: messages.boton_cancelar,
-                            className: 'btn btn-danger'
-                        },
-                        confirm: {
-                            label: messages.boton_confirmar,
-                            className: 'btn btn-success'
-                        }
-                    },
-                    callback: function(result) {
+            
+                DialogFacade.showConfirmation(titulo,mensaje,function(result){
+                    if (result) {
+    
+                        return $.ajax({
+                            async: false,
+                            context: this,
+                            cache: false,
+                            type: 'POST',
+                            dataType: 'json',
+                            data: {publico:res},
+                            url: "/video/publicar/" + id,
+                            success: function(data){
+                                // Función success
+                                if(data!=null && data!=undefined) {
+                                    switch(data.status) {
+                                        case 0: {
+                                            var pathImage = (data.publico == 1)?"/images/ojo_abierto.png":"/images/ojo_cerrado.png";
+                                            $('#publico' + data.id).val(data.publico);
+                                            $('#imgPublico' + data.id).attr("src", pathImage);
+                                            break;
+                                        }
                         
-                        
-                        if (result) {
-                            return $.ajax({
-                                async: false,
-                                context: this,
-                                cache: false,
-                                type: 'POST',
-                                dataType: 'json',
-                                data: {publico:res},
-                                url: "/video/publicar/" + id,
-                                success: onSuccess,
-                                error: onError
-                            });
-        
-                        } // if
-                        
-                    }// callback
-                });       
-
+                                        case 1: {
+                                            messagesArea.showMessageError(messages.mensaje_error_cambiar_visibidad_video);
+                                            break;
+                                        }
+                    
+                                    }// switch
+                                }
+                            },
+                            error: function(err) {
+                                // Función error
+                                messagesArea.showMessageError(messages.mensaje_error_cambiar_visibidad_video);
+                            }
+                        });
+                    }// if
+                });
             }// if
-
         }// if
     };
 
-
-    /**
-     * Método invocado en caso de éxito en la llamada a cambiar la visibilidad de un vídeo
-     * @param {Object} data : Respuesta del servidor
-     */
-    onSuccessPublicarVideo(data) {
-        
-        if(data!=null && data!=undefined) {
-
-            switch(data.status) {
-
-                case 0: {
-                    var pathImage = (data.publico == 1)?"/images/ojo_abierto.png":"/images/ojo_cerrado.png";
-                    $('#publico' + data.id).val(data.publico);
-                    $('#imgPublico' + data.id).attr("src", pathImage);
-                    break;
-                }
-
-                case 1: {
-                    messagesArea.showMessageError(messages.mensaje_error_cambiar_visibidad_video);
-                    break;
-                }
-
-            }// switch
-
-        }
-    };
-
-
-    /**
-     * Método invocado en caso de error en la llamada a cambiar la visibilidad de un vídeo
-     * @param {Object} data : Respuesta del servidor
-     */
-    onErrorPublicarVideo(data) {
-        messagesArea.showMessageError(messages.mensaje_error_cambiar_visibidad_video);
-    }
 
 }// VideoFacade
 

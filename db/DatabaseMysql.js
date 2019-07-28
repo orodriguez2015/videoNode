@@ -24,7 +24,8 @@ class DatabaseMysql {
                     host: config.mysql_server,
                     user: config.mysql_user,
                     password: config.mysql_pass,
-                    database: config.mysql_db_name
+                    database: config.mysql_db_name,
+                    multipleStatements: true
                 }
             } else {
 
@@ -32,7 +33,8 @@ class DatabaseMysql {
                     host: configuracion.host,
                     user: configuracion.user,
                     password: configuracion.password,
-                    database: configuracion.database
+                    database: configuracion.database,
+                    multipleStatements: true
                 }
             }
 
@@ -118,6 +120,15 @@ class DatabaseMysql {
                 resolve();
             });
         });
+    }
+
+
+    /**
+     * Permite escapar el valor de un parámetro sql a insertar/actualizar en BBDD
+     * @param {String} dato Valor a escapar 
+     */
+    escape(dato) {
+        return this.connection.escape(dato);
     }
 }
 

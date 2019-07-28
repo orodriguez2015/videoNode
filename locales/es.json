@@ -36,7 +36,8 @@
 	"login": "Login",
 	"autenticacion": "Autenticación",
 	"albumes_fotograficos_usuarios": "Álbumes fotográficos de los usuarios",
-	"mensaje_pantalla_bienvenida": "Desde esta sección tendrás acceso a los fotografías que los usuarios han publicado.",
+	"mensaje_pantalla_bienvenida_fotos": "Acceso a los fotografías que los usuarios han publicado.",
+	"mensaje_pantalla_bienvenida_videos": "Acceso a los vídeos que los usuarios han publicado.",
 	"dado_de_alta": "Dado de alta el ",
 	"por": "por ",
 	"visto": "Visto ",
@@ -75,5 +76,12 @@
 	"adjuntar_videos_videoteca": "Adjuntar vídeos a la videoteca",
 	"titulo_videos": "titulo_videos",
 	"videotecas_publicas": "Videotecas de los usuarios",
-	"mensaje_pantalla_bienvenida_videotecas": "Desde esta sección tendrás acceso a las videotecas públicas de los usuarios."
+	"mensaje_pantalla_bienvenida_videotecas": "Desde esta sección tendrás acceso a las videotecas públicas de los usuarios.",
+	"eliminar_videoteca": "Eliminar videoteca",
+	"ir_a_videoteca": "Ir a la videoteca",
+	"mensaje_pantalla_bienvenida": "Desde esta sección tendrás acceso a los fotografías que los usuarios han publicado",
+	"subir_video": "Subir vídeo",
+	"ir_videoteca": "ir_videoteca",
+	"fotografias": "Fotografías",
+	"subir_fotografias" : "Subir fotografías"
 }

@@ -21,6 +21,16 @@ var configuration = {
 
 
 /**
+ * Renderiza la vista correspondiente a la pantalla de inicio
+ * @param req: Objeto Request
+ * @param res: Objeto Response
+ * @param req: Objeto next
+ */
+exports.pantallaInicio = function(req,res,next) {
+    res.render("inicio/index");
+}
+
+/**
  * Renderiza la vista de alta de un álbum fotográfico
  * @param req: Objeto Request
  * @param res: Objeto Response

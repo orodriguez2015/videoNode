@@ -83,7 +83,7 @@ function VideotecaValidationFacade() {
         
         videoFacade.editarVideoteca(idVideoteca,videoteca,
             function(data) { // onSuccess
-                    console.log("editarVideoteaca = " + JSON.stringify(data));
+
                 
                 switch(data.status) {
                     case 0: {    

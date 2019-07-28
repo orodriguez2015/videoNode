@@ -37,7 +37,8 @@
 	"login": "Login",
 	"autenticacion": "Authentication",
 	"albumes_fotograficos_usuarios": "Photo albums of users",
-	"mensaje_pantalla_bienvenida": "From this section you will have access to the photographs that users have published.",
+	"mensaje_pantalla_bienvenida_fotos": "Access to the photographs that users have published",
+	"mensaje_pantalla_bienvenida_videos": "Access to videos that users have posted",
 	"dado_de_alta": "Discharged on ",
 	"por": "by ",
 	"visto": "Viewed ",
@@ -74,5 +75,12 @@
 	"editar_videoteca": "Edit video library",
 	"adjuntar_videos_videoteca": "Attach videos to the video library",
 	"videotecas_publicas": "Video libraries of users",
-	"mensaje_pantalla_bienvenida_videotecas": "From this section you will have access to the public video libraries of the users."
+	"mensaje_pantalla_bienvenida_videotecas": "From this section you will have access to the public video libraries of the users.",
+	"eliminar_videoteca": "Remove video library",
+	"ir_a_videoteca": "Go to the video library",
+	"mensaje_pantalla_bienvenida": "From this section you will have access to the photographs that users have published",
+	"subir_video" : "Upload video",
+	"fotografias" : "Photographs",
+	"subir_fotografias" : "Upload photos"
+
 }
