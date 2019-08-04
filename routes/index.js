@@ -436,10 +436,9 @@ router.get("/videoteca/upload/:idVideoteca(\\d+)", userController.isAuthenticate
 
 /**
  * GET /videos/:idVideoteca
- * Recupera el listado de vídeos de una determinada videoteca
+ * Recupera el listado de vídeos de una determinada videoteca para la gestión administrativa de la videoteca
  */
-router.get("/videos/:idVideoteca(\\d+)",videoController.showVideos);
-
+router.get("/videos/:idVideoteca(\\d+)",videoController.showVideosPublicos);
 
 
 /**

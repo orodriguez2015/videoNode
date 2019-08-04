@@ -1,0 +1,57 @@
+<link href="/stylesheets/videojs/video-js.css" rel="stylesheet">
+<link href="/stylesheets/videojs/video-vim.css" rel="stylesheet">
+<script type="text/javascript" src="/javascripts/vendor/videojs/video.js"></script>   
+<script type="text/javascript" charset="utf-8">
+  // Se activa la configuración de VideoJS
+  $(function(){
+    VideoJS.setup();
+  })
+
+</script> 
+
+<% include ../breadcrumbs/videos %>
+
+<div class="row-fluid">
+  <!--Edit Main Content Area here-->
+  <div class="span12" id="divMain">
+
+      <h1>
+          <%=videoteca.nombre%>
+      </h1>
+  </div>
+</div>
+
+
+
+<!-- MENÚ -->
+<div class="row-fluid">
+
+  <% for(var i=0;videos!=undefined && i<videos.length;i++) { 
+    
+        var imagePublico = (videos[i].publico==1)?"/images/ojo_abierto.png":"/images/ojo_cerrado.png";
+    
+    %>
+     
+     <div style="border: 0px solid blueviolet;float:left;margin-left:45px;">
+      
+        <div class="video-js-box vim-css">
+          <video class="video-js" width="310" height="185" preload="auto" controls>
+            <source src="<%=videos[i].ruta_relativa%>" type="video/mp4">
+            
+            <p style="display: none;">You need an HTML5 video compatible browser to view these skins.</p>
+          </video>
+          <ul class="vjs-controls" style="display: none; top: 229px;"><li class="vjs-play-control vjs-play"><span></span></li><li class="vjs-progress-control"><ul class="vjs-progress-holder"><li class="vjs-load-progress" style="width: 123.622px;"></li><li class="vjs-play-progress" style="width: 0px;"></li></ul></li><li class="vjs-time-control"><span class="vjs-current-time-display">00:00</span><span> / </span><span class="vjs-duration-display">00:47</span></li><li class="vjs-volume-control"><ul><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li class="vjs-volume-level-on"></li><li></li><li></li></ul></li><li class="vjs-fullscreen-control"><ul><li></li><li></li><li></li><li></li></ul></li></ul>
+        </div>
+
+        <h3><%=videos[i].nombre%></h3>
+        <p>
+          ID #
+          <%=videos[i].id %>
+        </p>
+
+     
+      </div>
+
+  <% }//for %>  
+
+</div>

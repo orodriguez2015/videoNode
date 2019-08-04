@@ -34,6 +34,33 @@ exports.showVideos = function(req,res,next) {
 };
 
 
+
+/**
+ * Renderiza la pantalla que muestra un listado de los vídeos públicos de una determinada videoteca
+ * @param {request} req
+ * @param {response} res
+ * @param {next} next
+ */
+exports.showVideosPublicos = function(req,res,next) {
+    var videoteca = req.Videoteca;
+    var db = new database.DatabaseMysql();
+
+    if(videoteca!=null && videoteca!=undefined) {
+        var sql = "select id,nombre,extension,ruta_relativa,publico from video where publico=1 and id_videoteca=" + videoteca.id;
+        console.log(sql);
+
+        db.query(sql).then(resultado => {
+            db.close();
+            res.render("videos/videosPublicos",{videos:resultado,videoteca:videoteca,errors:{}});
+        })
+        .catch(err => {
+            console.log("Error al recuperar videos publicos de la videoteca de id " + videoteca.id + ": " + err.message);
+            db.close();
+            next(err);
+        });
+    }   
+};
+
 /**
  * Renderiza la pantalla que muestra un listado de los videotecas públicas
  * @param {request} req
