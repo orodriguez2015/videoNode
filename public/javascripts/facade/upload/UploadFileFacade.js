@@ -19,10 +19,6 @@ class UploadFileFacade {
         this.FICHEROS_FORMATO_NO_VALIDO = new Array();
         this.IMAGEN_FICHERO_CORRECTO = "/images/correcto.png";
         this.IMAGEN_FICHERO_INCORRECTO = "/images/incorrecto.png";
-
-        // $("#ficheros").on("change", function(e) {
-        //     $('#botonEnviar').attr("disabled", false);
-        // });
     }
 
 
@@ -118,6 +114,7 @@ class UploadFileFacade {
      * @param {data} Respuesta del servidor
      */
     onSuccessUploadFiles(data) {
+        console.log("onSuccessUpload data = " + JSON.stringify(data));
         switch (data.status) {
             case 0:
                 {
@@ -139,21 +136,24 @@ class UploadFileFacade {
                     progressFacade.hide();
                     this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.mensaje_error_grabar_fotografias);
                     this.emptySelectedFiles();
+                    his.disableSendButton(true);
                     break;
                 }
             case -2:
                 {
                     progressFacade.hide();
-                    this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.messages.mensaje_error_conexion_bbdd);
+                    this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.mensaje_error_conexion_bbdd);
                     this.emptySelectedFiles();
+                    his.disableSendButton(true);
                     break;
                 }
 
             case -3:
                 {
                     progressFacade.hide();
-                    this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.messages.mensaje_error_conexion_bbdd);
+                    this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.memsaje_error_generar_miniaturas_imagenes);
                     this.emptySelectedFiles();
+                    his.disableSendButton(true);
                     break;
                 }
 
@@ -161,6 +161,7 @@ class UploadFileFacade {
                 {
                     progressFacade.hide();
                     this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.mensaje_error_iniciar_transaccion);
+                    his.disableSendButton(true);
                     this.emptySelectedFiles();
                     break;
                 }

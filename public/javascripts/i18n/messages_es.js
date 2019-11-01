@@ -127,6 +127,7 @@ var messages = {
     mensaje_error_subir_maximo_fotografías_1: "Sólo se puede subir un máximo de ",
     mensaje_error_subir_maximo_fotografías_2: " imágenes",
     mensaje_error_archivos_no_son_imagenes : "Los siguientes archivos no son imágenes: ",
+    memsaje_error_generar_miniaturas_imagenes: "Se ha producido un error al generar la/s miniatura/s de la/s imágenes seleccionadas",
     
 
 

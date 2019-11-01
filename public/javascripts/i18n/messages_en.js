@@ -125,6 +125,7 @@ var messages = {
     mensaje_error_subir_maximo_fotografías_1: "You can only upload a maximum of ",
     mensaje_error_subir_maximo_fotografías_2: " images",
     mensaje_error_archivos_no_son_imagenes : "The following files are not images: ",
+    memsaje_error_generar_miniaturas_imagenes: "An error occurred while generating the thumbnail (s) of the selected images",
 
 
    required: "This field is required.",

@@ -16,118 +16,69 @@
     <br>
 
      <!-- SUBMENÚ de administración-->
-
     <% include ../menu/submenu_contenido_album_admin %>
-   
-   
+    
     <section>
-        <% 
-           var indice = 1; 
-           var contador = 0;
-           var NUM_TOTAL_FILA = 4 
-           var NUM_FILAS = Math.round(indice/NUM_TOTAL_FILA) + 1; 
-        %>
+        <div class="row-fluid">
 
+        <div style="border: 0px solid blueviolet;float:left;margin-left:45px;">
+           
+            <% let listado = new Array(); %>
+            <% for(var i=0;fotos!=undefined && i<fotos.length;i++) { 
+                listado[i] = new String(fotos[i].RUTA);
+            %>
 
-            <!-- prueba -->
-            <table border="0" cellpadding="6">
-                <% for(var i=0;fotos!=undefined && i<fotos.length;i++) { %>
-                    <% if(contador==0) { // Se establece 4 fotos por fila %>
-                        <tr>
-                            <% }   %>
+                <%
+                var nombreImagen  = "ojo_abierto.png";
+                var tooltipImagen = "Imagen visible";
+                var publico       = false;
 
-                                <%
-                        var nombreImagen  = "ojo_abierto.png";
-                        var tooltipImagen = "Imagen visible";
-                        var publico       = false;
+                if(fotos[i].PUBLICO==0) {
+                    publico       = true;
+                    nombreImagen  = "ojo_cerrado.png";
+                    tooltipImagen = "Imagen no visible";
+                }
+                %>
 
-                        if(fotos[i].PUBLICO==0) {
-                            publico       = true;
-                            nombreImagen  = "ojo_cerrado.png";
-                            tooltipImagen = "Imagen no visible";
-                        }
-                        %>
-                                    <td>
-                                        <table>
-                                            <tr>
-                                                <td>
-                                                    <input type="checkbox" id="seleccionado[]" name="seleccionado[]" value="<%=fotos[i].ID%>">
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><img src="<%=fotos[i].RUTAMINIATURA%>" class="img-rounded" alt="
-                                                <%=fotos[i].NOMBRE%>" title="<%=fotos[i].NOMBRE%>" onclick="lightBoxFacade.openModalNuevo(<%=fotos[i].ID%>);lightBoxFacade.currentSlide(<%=indice%>)" /></td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <h3>
-                                                        <%=fotos[i].NOMBRE %>
-                                                    </h3>
-                                                    <p>
-                                                        <%= __('visto')%>
-                                                        <span id="visto<%=fotos[i].ID%>">
-                                                            <%=fotos[i].NUMEROVISUALIZACIONES %> 
-                                                        </span> 
-                                                        <%= __('veces')%>
-                                                    </p>
-                                                    <p>
-                                                        ID #
-                                                        <%=fotos[i].ID %>
-                                                    </p>
-                                                    <img src="/images/<%=nombreImagen%>" id="imgPublico<%=fotos[i].ID%>" border="0" width="26" height="26" title="<%=tooltipImagen%>" alt="<%=tooltipImagen%>" onclick="fotoFacade.validarVisibibilidadFoto(<%= fotos[i].ID %>);" />
-                                                    <img src="/images/full_trash.png" border="0" width="20" height="20" title="Eliminar" alt="Eliminar" onclick="fotoFacade.validarBorradoFoto(<%= fotos[i].ID %>);" />
-                                                    <input type="hidden" id="publico<%=fotos[i].ID%>" name="publico<%=fotos[i].ID%>" value="<%=fotos[i].PUBLICO%>" />
+                <div style="border: 0px solid blueviolet;float:left;margin-left:45px;">
+                    <img src="<%=fotos[i].RUTAMINIATURA%>" class="img-rounded" alt="<%=fotos[i].NOMBRE%>" title="<%=fotos[i].NOMBRE%>" onclick="ShowFotoLightBoxFacade.show('<%=i %>');" />
 
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
+                    <p class="tf-15 negrita">
+                        <%=fotos[i].NOMBRE %>
+                    </p>
+                    <p>
+                        <%= __('visto')%>
+                        <span id="visto<%=fotos[i].ID%>">
+                            <%=fotos[i].NUMEROVISUALIZACIONES %> 
+                        </span> 
+                        <%= __('veces')%>
+                    </p>
+                    <p>
+                        ID #
+                        <%=fotos[i].ID %>
+                    </p>
+                    <img src="/images/<%=nombreImagen%>" id="imgPublico<%=fotos[i].ID%>" border="0" width="26" height="26" title="<%=tooltipImagen%>" alt="<%=tooltipImagen%>" onclick="fotoFacade.validarVisibibilidadFoto(<%= fotos[i].ID %>);" />
+                    <img src="/images/full_trash.png" border="0" width="20" height="20" title="Eliminar" alt="Eliminar" onclick="fotoFacade.validarBorradoFoto(<%= fotos[i].ID %>);" />
+                    <input type="hidden" id="publico<%=fotos[i].ID%>" name="publico<%=fotos[i].ID%>" value="<%=fotos[i].PUBLICO%>" />
 
+                </div>    
 
-                                    <% indice++; contador++; %>
-                                        <% if(contador==NUM_TOTAL_FILA) { 
-                         contador=0;
-                     %>
-
-                        </tr>
-                        <% } %>
-                            <% } // for %>
-
-            </table>
-            <!-- prueba -->
+                <% } // for %>
+            </div>
+            </div>
     </section>
 
-    <!-- Se crea la modal para poder visualizar las fotografías en el LightBox -->
-    <% if(fotos!=undefined && fotos.length>0) { %>
-        <div id="myModal" class="modal-lightbox">
-            <span class="close cursor" onclick="lightBoxFacade.closeModal()">&times;</span>
-            <div class="modal-content-lightbox">
-
-                <% var indice = 1; %>
-                    <% for(var i=0;fotos!=undefined && i<fotos.length;i++) { %>
-                        <div class="mySlides">
-                            <div class="numbertext">
-                                <%=indice%> /
-                                    <%=fotos.length%>
-                            </div>
-                            <img src="<%=fotos[i].RUTA%>" style="width:100%">
-                        </div>
-                        <%
-          indice++;
-        }// for
-      %>
-
-                <a class="prev" onclick="lightBoxFacade.plusSlides(-1)">&#10094;</a>
-                <a class="next" onclick="lightBoxFacade.plusSlides(1)">&#10095;</a>
-
-                <div class="caption-container">
-                    <p id="caption"></p>
-                </div>
-            </div>
-        </div>
-        <% }// if %>
+    
+<div id="modalLightBox" class="modal-lightbox">
+    <div id="modal" class="modal-foto">
+        <!-- Aquí se mostrará el contenido de la fotografía en tamaño real-->
+    </div>
+</div>
 
 <script type="text/javascript" src="/javascripts/facade/user/PermissionFacade.js"></script>
 <script type="text/javascript" src="/javascripts/facade/album/AlbumFacade.js"></script>
 <script type="text/javascript" src="/javascripts/facade/foto/FotoFacade.js"></script>
-<script type="text/javascript" src="/javascripts/facade/lightbox/LightBoxFacade.js"></script>
+<script type="text/javascript" src="/javascripts/facade/lightbox/ShowFotoLightBoxFacade.js"></script>
+<script tyoe="text/javascript">    
+    ShowFotoLightBoxFacade.setFotos('<%= listado %>');
+</script>

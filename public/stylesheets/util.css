@@ -1,0 +1,15 @@
+/*
+ * Tipo de fuente de tamaño 16 puntos
+ */
+.tf-16 {
+    font-size:16pt;
+}
+
+.tf-15 {
+    font-size:15pt;
+}
+
+
+.negrita {
+    font-weight:bold;
+}

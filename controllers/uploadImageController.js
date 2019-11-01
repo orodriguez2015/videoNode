@@ -4,8 +4,7 @@ var constantes = require('../config/constantes.json');
 var database = require('../db/DatabaseMysql.js');
 // Upload de ficheros usando el middleware formidable
 var formidable = require('formidable');
-// Middleware para obtener las dimensiones de una imagen
-var sizeOf = require('image-size');
+
 // Middleware para poder ejecutar consultas contra la BBDD MySql
 // Middleware que contiene operaciones de utilidad en el manejo de ficheros
 var fileUtils = require('../util/FileUtils.js');
@@ -15,7 +14,10 @@ var httpResponse = require('../util/HttpResponseUtil.js');
 var path = require('path');
 var fs = require("fs");
 // Generación de un thumbnail
-var thumb = require("node-thumbnail").thumb;
+var ImageUtil = require("../util/ImageUtil.js");
+
+
+
 
 
 
@@ -253,9 +255,15 @@ exports.uploadImageFile = function(req, res, next) {
                     var RUTA_RELATIVA_ARCHIVO_SERVIDOR = CARPETA_ALBUM + constantes.FILE_SEPARATOR + fichero.name;
                     var PATH_RELATIVO_ARCHIVO = configUpload.relative_path_show_photo + req.session.usuario.ID + constantes.FILE_SEPARATOR + idAlbum + constantes.FILE_SEPARATOR + fichero.name;
                     var mimeType = fichero.type;
-                    var dimensions = sizeOf(RUTA_RELATIVA_ARCHIVO_SERVIDOR);
-                    var widthFile = dimensions.width;
-                    var heightFile = dimensions.height;
+
+                    /**
+                     *  Se obtienen las dimensiones de la imagen
+                     */
+                       
+                    var dimensions = ImageUtil.getTamanoImagen(RUTA_RELATIVA_ARCHIVO_SERVIDOR);
+                    var widthFile = dimensions.ancho;
+                    var heightFile = dimensions.alto;
+
 
                     /**
                      * Thumbnail
@@ -280,8 +288,6 @@ exports.uploadImageFile = function(req, res, next) {
                      */
                     fileUtils.deleteFile(fichero.path);
                 }
-
-
             }
         } // for
 
@@ -305,28 +311,26 @@ exports.uploadImageFile = function(req, res, next) {
             console.log(sql);
 
 
-
             db.beginTransaction().then(result=>{
+                ImageUtil.generarMiniaturaImagenes(nombresFicheros, function(err) {
 
-                generateThumbnails(nombresFicheros, CARPETA_ALBUM, function(err) {
                     if (err) {
                         /**
                          * No se han generado las miniaturas => Se borran de disco las fotografías de disco
                          */
-                        console.log("****** ERROR AL GENERAR MINIATURAS****");
                         fileUtils.deleteFileList(nombresFicheros);
                         fileUtils.deleteFileList(nombresFicherosMiniatura);
 
-                        connection.release();
+                        db.close();
                         var salida = { status: -3, descStatus: "Error al generar las miniaturas de las imagenes en disco" };
                         httpResponse.devolverJSON(res, salida);
+
                     } else {
                         /**
                          * Si se han generado las miniaturas
                          */
 
                         db.query(sql,[registros]).then(data=>{
-                            console.log("Tras insert : " + JSON.stringify(data));
                             db.commitTransaction();
                             db.close();
                             var salida = { status: 0, descStatus: "OK", proceso: resultadoFicherosProcesados };
@@ -341,12 +345,9 @@ exports.uploadImageFile = function(req, res, next) {
                             fileUtils.deleteFileList(nombresFicherosMiniatura);
                             var salida = { status: -1, descStatus: "Error al insertar en BBDD los datos de las fotografías: " + err.message };
                             httpResponse.devolverJSON(res, salida);
-
                         });
-
                     }
                 });
-
 
             }).catch(err=>{
                 console.log("Se ha producido un error: " + err.message);
@@ -364,57 +365,4 @@ exports.uploadImageFile = function(req, res, next) {
             });     
         }
     });
-};
-
-
-/**
- * Genera un thumbnail por cada una de las imagenes que se han subido al servidor
- * @param {images} Array con los nombres que tendrán los thumbnails 
- * @param {callback} Función callback que se invoca cuando 
- * @param {directoryImages} Directorio en el que se han almacenado las imagenes
- */
-async function generateThumbnails(images, directoryImages, callback) {
-    try {
-
-        var contador = 0;
-
-        for (i = 0; images != undefined && i < images.length; i++) {
-            var imageOriginal = images[i];
-            console.log("===> i: " + i);
-            await thumb({
-                    source: imageOriginal,
-                    destination: directoryImages,
-                    prefix: "",
-                    suffix: "_thumb",
-                    digest: false,
-                    hashingType: "sha1", // 'sha1', 'md5', 'sha256', 'sha512'
-                    width: 251,
-                    height: 188,
-                    concurrency: 10,
-                    quiet: false, // if set to 'true', console.log status messages will be supressed
-                    overwrite: false,
-                    basename: undefined, // basename of the thumbnail. If unset, the name of the source file is used as basename.
-                    ignore: false, // Ignore unsupported files in "dest"
-                    logger: function(message) {
-                        console.log(message);
-                    }
-                })
-                .then(function() {
-                    console.log("miniatura creada");
-                    contador++;
-                })
-                .catch(function(e) {
-                    console.log("Error thumb: " + e.message);
-                    callback(new Error("Error al generar la miniatura de la imagen"));
-                });
-        } // for
-
-        console.log("contador: " + contador);
-        if (contador == images.length) {
-            callback();
-        }
-    } catch (err) {
-        console.log("generateThumbnails error: " + err.message);
-        callback(new Error("Error al generar la miniatura de la imagen"));
-    }
 };

@@ -234,6 +234,7 @@ exports.extraerNombreExtension = function(fichero) {
 };
 
 
+
 /**
  * Devuelve un string con el contenido en formato JSON que tiene que tener el archivo de configuración
  * de base de datos

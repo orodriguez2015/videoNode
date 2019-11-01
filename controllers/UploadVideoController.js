@@ -4,8 +4,6 @@ var constantes = require('../config/constantes.json');
 var database = require('../db/DatabaseMysql.js');
 // Upload de ficheros usando el middleware formidable
 var formidable = require('formidable');
-// Middleware para obtener las dimensiones de una imagen
-var sizeOf = require('image-size');
 // Middleware para poder ejecutar consultas contra la BBDD MySql
 // Middleware que contiene operaciones de utilidad en el manejo de ficheros
 var fileUtils = require('../util/FileUtils.js');
