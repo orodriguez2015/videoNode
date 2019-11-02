@@ -15,7 +15,7 @@ var database = require('../db/DatabaseMysql.js');
 exports.load = function(req, res, next, idPhoto) {
 
     var db = new database.DatabaseMysql();
-    var sql = "select id,nombre,ruta,alto,ancho,tipomime,idAlbum,numeroVisualizaciones from foto  where id=" + idPhoto;
+    var sql = "select id,nombre,ruta,rutaMiniatura,alto,ancho,tipomime,idAlbum,numeroVisualizaciones from foto  where id=" + idPhoto;
 
     db.query(sql).then(foto => {
 
@@ -44,24 +44,31 @@ exports.load = function(req, res, next, idPhoto) {
 exports.deletePhoto = function(req, res, next) {
     var foto = req.Foto;
     var user = req.session.usuario;
-
     var db = new database.DatabaseMysql();
 
     try {
         if (foto != undefined && user != undefined) {
             // Se procede a eliminar la foto de disco
-            var path = __dirname + constantes.FILE_SEPARATOR + constantes.PARENT_DIR + config_upload.path_upload_photo + user.ID + constantes.FILE_SEPARATOR + foto.idAlbum + constantes.FILE_SEPARATOR + foto.nombre;
-            console.log("path: " + path);
+            var rutaImg = __dirname + constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_PUBLIC + foto.ruta;
+            var rutaImgMiniatura = __dirname + constantes.FILE_SEPARATOR + constantes.PARENT_DIR + constantes.FILE_SEPARATOR + constantes.DIRECTORIO_PUBLIC + foto.rutaMiniatura;
+            
+            console.log("Ruta foto origen a eliminar = " + rutaImg);
+            console.log("Ruta miniatura a eliminar = " + rutaImgMiniatura);
 
-            if (!fileUtil.existsFile(path)) {
-                console.log("No existe la fotografia a eliminar en el path: " + path);
-                httpUtil.devolverJSON(res, { status: 1, descStatus: "No existe la fotografia a eliminar en el path: " + path });
+            if (!fileUtil.existsFile(rutaImg)) {
+                console.log("No existe la fotografia a eliminar en el path: " + rutaImg);
+                httpUtil.devolverJSON(res, { status: 1, descStatus: "No existe la fotografia a eliminar en el path: " + rutaImg });
             } else {
 
-                if (fileUtil.deleteFile(path) != 0) {
+                if (fileUtil.deleteFile(rutaImg) != 0) {
                     console.log("Se ha producido un error al eliminar la fotografia del disco en el path: " + path);
                     httpUtil.devolverJSON(res, { status: 2, descStatus: "Se ha producido un error al eliminar la fotografia del disco en el path: " + path });
                 } else {
+
+                    /*
+                     * Se borra la miniatura y no se controla que pueda no existir en disco o que lance error  
+                     */
+                    fileUtil.deleteFile(rutaImgMiniatura);
 
                     // Se procede a eliminar el archivo de base de datos
                     var sql = "delete from foto where id=" + foto.id;
@@ -86,7 +93,6 @@ exports.deletePhoto = function(req, res, next) {
         console.log("Se ha producido un error técnico al eliminar una fotografía: " + err.message);
         httpUtil.devolverJSON(res, { status: 2, descStatus: "Se ha producido un error técnico al eliminar una fotografía: " + err.message });
     }
-
 };
 
 

@@ -36,15 +36,19 @@ exports.existsFile = function(pathFile) {
 exports.deleteFile = function(pathFile) {
     var salida = 1;
 
-    if (pathFile) {
+    var StringUtil = require('./StringUtil.js');
+
+    if (!StringUtil.isEmpty(pathFile)) {
         try {
             fs.unlinkSync(pathFile);
             salida = 0;
         } catch (err) {
             salida = 2;
-            console.log("deleteFile error: " + JSON.stringify(err));
             console.error("Error al borrar el archivo " + pathFile + " de disco: " + err.message);
         }
+    } else {
+        salida = 1;
+        console.log("No se puede borrar un archivo sin especificar la ruta en disco del mismo");
     }
     return salida;
 };
