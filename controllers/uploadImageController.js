@@ -15,8 +15,7 @@ var path = require('path');
 var fs = require("fs");
 // Generación de un thumbnail
 var ImageUtil = require("../util/ImageUtil.js");
-
-
+var ArrayUtil = require("../util/ArrayUtil.js");
 
 
 
@@ -69,9 +68,7 @@ exports.uploadImageFile = function(req, res, next) {
      * @param file Fichero
      */
     form.on('file', function(field, file) {
-        console.log("file");
         console.log("Archivo" + file.name + " recibido");
-
         ficheros.push(file);
     });
 
@@ -113,7 +110,7 @@ exports.uploadImageFile = function(req, res, next) {
                     // Se crea la subcarpeta store
                     fileUtils.mkdirSync(carpetaStore);
 
-                    console.log("No existe carpeta Store/foto se crea");
+                    console.log("No existe carpeta store/foto se crea");
                     // Se crea la subcarpeta photo dentro de la carpeta stotre
                     fileUtils.mkdirSync(carpetaStoreFoto);
 
@@ -200,13 +197,8 @@ exports.uploadImageFile = function(req, res, next) {
         // Si hay error, se devuelve un HTTP 500 con el código de error, ya que no funciona
         // el evento 'error' del middleware formidable
         var idUsuario = req.session.usuario.ID;
-        var contador = 0;
-        var registros = new Array();
-        var nombresFicheros = new Array();
-        var nombresFicherosMiniatura = new Array();
         var resultadoFicherosProcesados = new Array();
         var db = new database.DatabaseMysql();
-
 
         /*
          * Se genera el array con los valores de las fotografías que se pasan en la query de inserción
@@ -227,6 +219,7 @@ exports.uploadImageFile = function(req, res, next) {
                 console.log("ERROR_TIPO_MIME_FICHERO: " + ERROR_TIPO_MIME_FICHERO);
 
                 var resultadoProceso = { status: 0, descStatus: "OK" };
+                resultadoProceso.nombre = fichero.name // nombre de la imagen
 
                 /**
                  * Si existe el fichero
@@ -243,44 +236,37 @@ exports.uploadImageFile = function(req, res, next) {
                     resultadoProceso.descStatus = "El fichero " + fichero.name + " no es una imagen";
                 }
 
-                resultadoProceso.name = fichero.name;
-                resultadoFicherosProcesados.push(resultadoProceso);
-
-
                 /**
                  * Si el fichero es una imagen y no existe se añade en los arrays correspondientes para su proceso
                  */
                 if (resultadoProceso.status == 0) {
-
-                    var RUTA_RELATIVA_ARCHIVO_SERVIDOR = CARPETA_ALBUM + constantes.FILE_SEPARATOR + fichero.name;
-                    var PATH_RELATIVO_ARCHIVO = configUpload.relative_path_show_photo + req.session.usuario.ID + constantes.FILE_SEPARATOR + idAlbum + constantes.FILE_SEPARATOR + fichero.name;
-                    var mimeType = fichero.type;
-
+                    var RUTA_IMAGEN_DISCO = CARPETA_ALBUM + constantes.FILE_SEPARATOR + fichero.name;
+                    var PATH_RELATIVO_ARCHIVO = ImageUtil.getRutaRelativaAlbum(idAlbum,req.session.usuario.ID) + fichero.name;
+                   
                     /**
                      *  Se obtienen las dimensiones de la imagen
-                     */
-                       
-                    var dimensions = ImageUtil.getTamanoImagen(RUTA_RELATIVA_ARCHIVO_SERVIDOR);
+                     */    
+                    var dimensions = ImageUtil.getTamanoImagen(RUTA_IMAGEN_DISCO);
                     var widthFile = dimensions.ancho;
-                    var heightFile = dimensions.alto;
+                    var heightFile = dimensions.alto;                
 
-
-                    /**
-                     * Thumbnail
-                     */
-                    var datos = fileUtils.extraerNombreExtension(fichero.name);
-                    var NOMBRE_MINIATURA = datos[0] + constantes.THUMB + constantes.PUNTO + datos[1];
-
+                    var NOMBRE_MINIATURA = ImageUtil.getNombreMiniatura(fichero.name);
                     var RUTA_RELATIVA_MINIATURA_SERVIDOR = CARPETA_ALBUM + constantes.FILE_SEPARATOR + NOMBRE_MINIATURA;
-                    var PATH_RELATIVO_MINIATURA = configUpload.relative_path_show_photo + req.session.usuario.ID + constantes.FILE_SEPARATOR + idAlbum + constantes.FILE_SEPARATOR + NOMBRE_MINIATURA;
+                    var PATH_RELATIVO_MINIATURA = ImageUtil.getRutaRelativaAlbum(idAlbum,req.session.usuario.ID) + NOMBRE_MINIATURA;
 
-                    // Los campos de tipo datetime no pueden tomar el valor now() de mysql, se almacena en dicho campo el valor new Date()
-                    var registro = [fichero.name, PATH_RELATIVO_ARCHIVO, PATH_RELATIVO_MINIATURA, heightFile, widthFile, mimeType, idAlbum, new Date(), idUsuario];
-                    registros.push(registro);
-
-                    // Nombres de los ficheros
-                    nombresFicheros.push(RUTA_RELATIVA_ARCHIVO_SERVIDOR);
-                    nombresFicherosMiniatura.push(RUTA_RELATIVA_MINIATURA_SERVIDOR);
+                    resultadoProceso.miniatura = NOMBRE_MINIATURA;
+                    resultadoProceso.ancho  = widthFile;  // ancho de la imagen
+                    resultadoProceso.alto   = heightFile; // alto de la imagen
+                    resultadoProceso.ruta   = RUTA_IMAGEN_DISCO; // ruta de la imagen en el servidor
+                    resultadoProceso.rutaRelativaImagen = PATH_RELATIVO_ARCHIVO; // Ruta relativa de la imagen en el servidor para mostrarla
+                    
+                    resultadoProceso.tipoMime = fichero.type;
+                    resultadoProceso.idAlbum  = idAlbum;
+                    resultadoProceso.idUsuario = idUsuario;
+                    resultadoProceso.rutaMiniatura = RUTA_RELATIVA_MINIATURA_SERVIDOR; 
+                    resultadoProceso.rutaRelativaMiniatura = PATH_RELATIVO_MINIATURA; // Ruta relativa miniatura en el servidor para mostrarla
+                    resultadoProceso.fechaAlta = new Date();
+                
                 } else {
                     /**
                      * Se borra el fichero subido al servidor, para que no quede alojado en el disco ya que o no es una imagen, o ya 
@@ -288,6 +274,8 @@ exports.uploadImageFile = function(req, res, next) {
                      */
                     fileUtils.deleteFile(fichero.path);
                 }
+
+                resultadoFicherosProcesados.push(resultadoProceso);
             }
         } // for
 
@@ -296,7 +284,7 @@ exports.uploadImageFile = function(req, res, next) {
          * Si hay ficheros se procede a insertar la información en BBDD y se generan las imágenes
          * en miniatura
          */
-        if (nombresFicheros.length == 0) {
+        if (resultadoFicherosProcesados.length == 0) {
             httpResponse.devolverJSON(res, {
                 status: 0,
                 descStatus: "No hay ficheros",
@@ -310,43 +298,56 @@ exports.uploadImageFile = function(req, res, next) {
             var sql = "INSERT INTO foto(nombre,ruta,rutaMiniatura,alto,ancho,tipomime,idAlbum,fechaAlta,idUsuario) VALUES ?";
             console.log(sql);
 
-
             db.beginTransaction().then(result=>{
-                ImageUtil.generarMiniaturaImagenes(nombresFicheros, function(err) {
+                ImageUtil.generarMiniaturaImagenes(resultadoFicherosProcesados, function(err,registros) {
+                    // El parámetro err indica que se ha producido un error, y el parámetro registros contiene las imágenes
+                    // que se van a guardar en BBDD, que no tienen porque ser todas las que ha subido el usuario/a, puesto que 
+                    // el procesamiento de alguna fotografía puede terminar en error
 
                     if (err) {
                         /**
                          * No se han generado las miniaturas => Se borran de disco las fotografías de disco
                          */
-                        fileUtils.deleteFileList(nombresFicheros);
-                        fileUtils.deleteFileList(nombresFicherosMiniatura);
+                        try {
+                            fileUtils.deleteFileListProcesados(resultadoFicherosProcesados);
+                        }catch(err) {
 
+                        }
                         db.close();
-                        var salida = { status: -3, descStatus: "Error al generar las miniaturas de las imagenes en disco" };
+                        var salida = { status: -3, descStatus: "Error al generar las miniaturas de las imagenes en disco",proceso:resultadoFicherosProcesados };
                         httpResponse.devolverJSON(res, salida);
 
                     } else {
-                        /**
-                         * Si se han generado las miniaturas
-                         */
-
-                        db.query(sql,[registros]).then(data=>{
-                            db.commitTransaction();
-                            db.close();
-                            var salida = { status: 0, descStatus: "OK", proceso: resultadoFicherosProcesados };
-                            httpResponse.devolverJSON(res, salida);
-                        }).catch(err=>{
-                            console.log("Se ha producido un error al insertar fotos en BBDD: " + err.message);
+                        if(registros.length==0) {
+                            console.log("No hay imagenes que eliminar");
                             db.rollbackTransaction();
                             db.close();
-
-                            // TODO: Eliminar todas las fotografías que se hayan subido
-                            fileUtils.deleteFileList(nombresFicheros);
-                            fileUtils.deleteFileList(nombresFicherosMiniatura);
-                            var salida = { status: -1, descStatus: "Error al insertar en BBDD los datos de las fotografías: " + err.message };
+                            var salida = { status: -5, descStatus: "Las fotografías seleccionadas presentan errores y no se ha adjuntado ninguna al álbum",proceso:resultadoFicherosProcesados};
                             httpResponse.devolverJSON(res, salida);
-                        });
-                    }
+
+                        }else {
+
+                            /**
+                             * Se inserta en BBDD registros con los datos de cada imagen y su miniatura generada
+                             */
+                            db.query(sql,[registros]).then(data=>{
+                                db.commitTransaction();
+                                db.close();
+                                var salida = { status: 0, descStatus: "OK", proceso: resultadoFicherosProcesados };
+                                httpResponse.devolverJSON(res, salida);
+                            }).catch(err=>{
+                                console.log("Se ha producido un error al insertar fotos en BBDD: " + err.message);
+                                db.rollbackTransaction();
+                                db.close();
+    
+                                // Eliminar todas las fotografías que se hayan subido y miniaturas generadas
+                                fileUtils.deleteFileListProcesados(resultadoFicherosProcesados);
+
+                                var salida = { status: -1, descStatus: "Error al insertar en BBDD los datos de las fotografías: " + err.message, proceso:resultadoFicherosProcesados };
+                                httpResponse.devolverJSON(res, salida);
+                            });
+                        }// else
+                    }// else
                 });
 
             }).catch(err=>{
@@ -354,7 +355,7 @@ exports.uploadImageFile = function(req, res, next) {
                 db.close();
 
                 // Se eliminan las imagenes subidas por el usuario de disco
-                fileUtils.deleteFileList(nombresFicheros);
+                fileUtils.deleteFileListProcesados(resultadoFicherosProcesados);
     
                 // Se devuelve un JSON con la respuesta al servidor
                 httpUtil.devolverJSON(res, {

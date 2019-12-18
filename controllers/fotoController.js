@@ -55,12 +55,12 @@ exports.deletePhoto = function(req, res, next) {
             console.log("Ruta foto origen a eliminar = " + rutaImg);
             console.log("Ruta miniatura a eliminar = " + rutaImgMiniatura);
 
-            if (!fileUtil.existsFile(rutaImg)) {
-                console.log("No existe la fotografia a eliminar en el path: " + rutaImg);
-                httpUtil.devolverJSON(res, { status: 1, descStatus: "No existe la fotografia a eliminar en el path: " + rutaImg });
-            } else {
+            // if (!fileUtil.existsFile(rutaImg)) {
+            //     console.log("No existe la fotografia a eliminar en el path: " + rutaImg);
+            //     httpUtil.devolverJSON(res, { status: 1, descStatus: "No existe la fotografia a eliminar en el path: " + rutaImg });
+            // } else {
 
-                if (fileUtil.deleteFile(rutaImg) != 0) {
+                if (fileUtil.existsFile(rutaImg) && fileUtil.deleteFile(rutaImg) != 0) {
                     console.log("Se ha producido un error al eliminar la fotografia del disco en el path: " + path);
                     httpUtil.devolverJSON(res, { status: 2, descStatus: "Se ha producido un error al eliminar la fotografia del disco en el path: " + path });
                 } else {
@@ -87,7 +87,7 @@ exports.deletePhoto = function(req, res, next) {
 
                 } // else
 
-            } // else
+            //} // else
         }
     } catch (err) {
         console.log("Se ha producido un error técnico al eliminar una fotografía: " + err.message);

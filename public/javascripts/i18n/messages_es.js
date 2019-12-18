@@ -128,7 +128,8 @@ var messages = {
     mensaje_error_subir_maximo_fotografías_2: " imágenes",
     mensaje_error_archivos_no_son_imagenes : "Los siguientes archivos no son imágenes: ",
     memsaje_error_generar_miniaturas_imagenes: "Se ha producido un error al generar la/s miniatura/s de la/s imágenes seleccionadas",
-    
+    mensaje_error_generacion_miniatura : "Se ha producido un error al generar la miniatura de la imagen ",
+    mensaje_error_subida_fotografias_error : "Las fotografías seleccionadas presentan errores y no se ha adjuntado ninguna al álbum",
 
 
 

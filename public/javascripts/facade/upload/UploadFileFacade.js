@@ -96,7 +96,7 @@ class UploadFileFacade {
      */
     onErrorUploadFiles(err) {
         progressFacade.hide();
-        this.showMessageUpload(ID_DIV_MSG_ERROR, messages.mensaje_error_procesar_fotos);
+        this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.mensaje_error_procesar_fotos);
         this.emptySelectedFiles();
     };
 
@@ -113,8 +113,7 @@ class UploadFileFacade {
      * Función que es invocada cuando el envio de los archivos al servidor se ha ejecutado correctamente
      * @param {data} Respuesta del servidor
      */
-    onSuccessUploadFiles(data) {
-        console.log("onSuccessUpload data = " + JSON.stringify(data));
+    onSuccessUploadFiles(data) {    
         switch (data.status) {
             case 0:
                 {
@@ -136,7 +135,7 @@ class UploadFileFacade {
                     progressFacade.hide();
                     this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.mensaje_error_grabar_fotografias);
                     this.emptySelectedFiles();
-                    his.disableSendButton(true);
+                    this.disableSendButton(true);
                     break;
                 }
             case -2:
@@ -144,7 +143,7 @@ class UploadFileFacade {
                     progressFacade.hide();
                     this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.mensaje_error_conexion_bbdd);
                     this.emptySelectedFiles();
-                    his.disableSendButton(true);
+                    this.disableSendButton(true);
                     break;
                 }
 
@@ -153,7 +152,7 @@ class UploadFileFacade {
                     progressFacade.hide();
                     this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.memsaje_error_generar_miniaturas_imagenes);
                     this.emptySelectedFiles();
-                    his.disableSendButton(true);
+                    this.disableSendButton(true);
                     break;
                 }
 
@@ -161,10 +160,21 @@ class UploadFileFacade {
                 {
                     progressFacade.hide();
                     this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.mensaje_error_iniciar_transaccion);
-                    his.disableSendButton(true);
+                    this.disableSendButton(true);
                     this.emptySelectedFiles();
                     break;
+            }
+
+            case -5:{
+                progressFacade.hide();
+                this.showMessageUpload(this.ID_DIV_MSG_ERROR, messages.mensaje_error_subida_fotografias_error);
+                if (data.proceso != undefined || data.proceso.length > 0) {
+                    this.showMessageUploadList(this.ID_DIV_MSG_SUCCESS, messages.resultados, this.toStringArray(data))
                 }
+                this.disableSendButton(true);
+                this.emptySelectedFiles();
+                break;
+            }
         }
     };
 
@@ -184,20 +194,25 @@ class UploadFileFacade {
                 switch (resultado.proceso[i].status) {
                     case 0:
                         {
-                            salida.push(messages.imagen_incluida_album_1 + resultado.proceso[i].name + messages.imagen_incluida_album_2);
+                            salida.push(messages.imagen_incluida_album_1 + resultado.proceso[i].nombre + messages.imagen_incluida_album_2);
                             break;
                         }
 
                     case 1:
                         {
-                            salida.push(messages.imagen_incluida_album_1 + resultado.proceso[i].name + messages.imagen_existe_album);
+                            salida.push(messages.imagen_incluida_album_1 + resultado.proceso[i].nombre + messages.imagen_existe_album);
                             break;
                         }
                     case 2:
                         {
-                            salida.push(messages.fichero + resultado.proceso[i].name + messages.fichero_no_imagen);
+                            salida.push(messages.fichero + resultado.proceso[i].nombre + messages.fichero_no_imagen);
                             break;
                         }
+
+                    case 3: {
+                        salida.push(messages.mensaje_error_generacion_miniatura + resultado.proceso[i].nombre);
+                        break;
+                    }    
                 } // switch
             } // for
         } // if

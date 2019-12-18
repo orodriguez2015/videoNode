@@ -126,6 +126,8 @@ var messages = {
     mensaje_error_subir_maximo_fotografías_2: " images",
     mensaje_error_archivos_no_son_imagenes : "The following files are not images: ",
     memsaje_error_generar_miniaturas_imagenes: "An error occurred while generating the thumbnail (s) of the selected images",
+    mensaje_error_generacion_miniatura : "An error occurred while generating the thumbnail of the image ",
+    mensaje_error_subida_fotografias_error : "The selected photographs have errors and none have been attached to the album",
 
 
    required: "This field is required.",

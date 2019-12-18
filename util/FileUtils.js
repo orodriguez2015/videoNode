@@ -80,6 +80,34 @@ exports.deleteFileList = function(fileList) {
 };
 
 
+/**
+ * Elimina varios archivos del disco
+ * @param fileList Array con objetos que contiene la información de la fotografías a eliminar. Se eliminan
+ * tanto las imagenes originales como las miniaturas
+ * @return 0 => OK
+ *         1 => Path al archivo vacía
+ *         2 => Error al eliminar el archivo
+ */
+exports.deleteFileListProcesados = function(fileList) {
+    var salida = false;
+
+    try {
+        for (i = 0; fileList != undefined && i < fileList.length; i++) {
+            // Se elimina la imagen original subida al servidor
+            this.deleteFile(fileList[i].ruta);
+            // Se elimina la imagen en miniatura subida al servidor
+            this.deleteFile(fileList[i].rutaMiniatura);
+        }// flr
+
+        salida = true;
+    } catch (err) {
+        console.log("Error al borrar la lista de ficheros: " + err.message);
+        salida = false;
+    }
+
+    return salida;
+};
+
 
 /**
  * Lee el contenido de un fichero y lo devuelve el contenido del archivo, que puede ser texto o contenido en binario
