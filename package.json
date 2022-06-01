@@ -22,6 +22,6 @@
     "pngjs": "^3.3.0",
     "probe-image-size": "^5.0.0",
     "serve-favicon": "^2.5.0",
-    "sharp": "^0.23.3"
+    "sharp": "^0.30.5"
   }
 }
